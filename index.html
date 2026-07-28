@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+d<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -30,8 +30,38 @@
     </div>
 
     <script>
-        // Aquí conectaremos tu API de Google Sheets más adelante
-        console.log("Arquitectura de HLG-Tech cargada correctamente.");
-    </script>
+    const API_URL = https://sheetdb.io/api/v1/315mpve04cyog; // Aquí va tu URL de SheetDB
+
+    async function cargarProductos() {
+        try {
+            const respuesta = await fetch(API_URL);
+            const productos = await respuesta.json();
+            const contenedor = document.getElementById('app');
+            
+            contenedor.innerHTML = ''; // Limpiamos antes de cargar
+
+            productos.forEach(p => {
+                // Solo mostramos si el estado es 'Disponible'
+                if (p.Estado === 'Disponible') {
+                    contenedor.innerHTML += `
+                        <div class="card">
+                            <img src="${p.Imagen_URL}" alt="${p.Nombre}">
+                            <h3>${p.Nombre}</h3>
+                            <p><strong>Ref:</strong> ${p.Código}</p>
+                            <p class="specs">${p.Especificaciones}</p>
+                            <div class="precio">$${p.Precio}</div>
+                            <p><small>Stock: ${p.Stock}</small></p>
+                            <button onclick="window.location.href='https://wa.me/+5350110410text=Hola, me interesa el producto ${p.Nombre} (Ref: ${p.Código})'">Consultar</button>
+                        </div>
+                    `;
+                }
+            });
+        } catch (error) {
+            console.error("Error al conectar con la base de datos:", error);
+        }
+    }
+
+    cargarProductos();
+</script>
 </body>
 </html>
