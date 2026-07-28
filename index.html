@@ -44,8 +44,10 @@ if (p.Estado.toLowerCase() === 'disponible') {
             <p class="specs">${p.Especificaciones}</p>
             <div class="precio">$${p.Precio}</div>
             <p><small>Stock: ${p.Stock}</small></p>
-            <button onclick="window.location.href='https://wa.me/5350110410?text=Hola, me interesa el producto ${p.Nombre} (Ref: ${p.Código})'">Consultar</button>
+            <button onclick="window.location.href='https://wa.me/5350110410?text=Hola, me interesa el producto ${p.Nombre} (Cód: ${p.Código})'">Comprar</button>
+            <button onclick="window.location.href='https://wa.me/5350110410?text=Hola, necesito más información del producto ${p.Nombre} (Cód: ${p.Código})'">Consultar</button>
         </div>
+        
     `;
 }
                 });
