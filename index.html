@@ -2,25 +2,72 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HLG-Tech | Laptops y PC en Holguín</title>
+    <title>HLG-Tech | Laptops y PC</title>
+    <!-- Fuente moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; }
-        header { background: #1a1a1a; color: white; padding: 20px; text-align: center; }
-        .grid-productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
-        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .card img { width: 100%; border-radius: 4px; height: 200px; object-fit: cover; }
-        .precio { color: #007bff; font-weight: bold; font-size: 1.2em; margin: 10px 0; }
-        button { background: #007bff; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; border-radius: 4px; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0f0f1a, #1a1a2e); /* Fondo oscuro con degradado */
+            color: #ffffff; 
+            margin: 0; 
+            padding: 0;
+        }
+        header { 
+            padding: 40px 20px; 
+            text-align: center; 
+        }
+        h1 { font-size: 2.5em; margin: 0; color: #fff; }
+        .hero-desc { color: #a0a0a0; margin-bottom: 20px; }
+
+        .grid-productos { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+            padding: 20px; 
+            max-width: 1000px; 
+            margin: auto;
+        }
+        .card { 
+            background: #1e1e2d; /* Color de tarjeta estilo App */
+            padding: 15px; 
+            border-radius: 20px; /* Bordes muy redondeados como en la imagen */
+            border: 1px solid #2d2d44;
+            transition: 0.3s;
+        }
+        .card img { 
+            width: 100%; 
+            border-radius: 15px; 
+            height: 200px; 
+            object-fit: cover; 
+            margin-bottom: 10px;
+        }
+        .precio { color: #00f2ff; font-weight: 700; font-size: 1.5em; margin: 10px 0; }
+        
+        /* Botón estilo WhatsApp */
+        button { 
+            background: #25D366; /* Verde WhatsApp */
+            color: #000; 
+            border: none; 
+            padding: 12px; 
+            width: 100%; 
+            cursor: pointer; 
+            border-radius: 50px; /* Botón píldora */
+            font-weight: 700;
+            font-size: 1em;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: scale(1.03); background: #1ebe57; }
     </style>
 </head>
 <body>
     <header>
         <h1>HLG-Tech</h1>
-        <p>Tecnología de alto rendimiento en Holguín</p>
+        <p class="hero-desc">Hardware premium en Holguín</p>
     </header>
 
     <div id="app" class="grid-productos">
-        <p>Cargando productos...</p>
+        <p style="text-align:center;">Cargando catálogo...</p>
     </div>
 
     <script>
@@ -34,29 +81,22 @@
                 contenedor.innerHTML = ''; 
 
                 productos.forEach(p => {
-                    // ... dentro de tu ciclo forEach
-if (p.Estado.toLowerCase() === 'disponible') {
-    contenedor.innerHTML += `
-        <div class="card">
-            <img src="${p.Imagen_URL}" alt="${p.Nombre}">
-            <h3>${p.Nombre}</h3>
-            <!-- La línea de Ref: ${p.Código} ha sido eliminada de aquí para limpieza visual -->
-            <p class="specs">${p.Especificaciones}</p>
-            <div class="precio">$${p.Precio}</div>
-            <p><small>Stock: ${p.Stock}</small></p>
-            <button onclick="window.location.href='https://wa.me/5350110410?text=Hola, me interesa el producto ${p.Nombre} (Cód: ${p.Código})'">Comprar</button>
-            <button onclick="window.location.href='https://wa.me/5350110410?text=Hola, necesito más información del producto ${p.Nombre} (Cód: ${p.Código})'">Consultar</button>
-        </div>
-        
-    `;
-}
+                    if (p.Estado.toLowerCase() === 'disponible') {
+                        contenedor.innerHTML += `
+                            <div class="card">
+                                <img src="${p.Imagen_URL}" alt="${p.Nombre}">
+                                <h3>${p.Nombre}</h3>
+                                <p style="color:#aaa; font-size:0.9em;">${p.Especificaciones}</p>
+                                <div class="precio">$${p.Precio} USD</div>
+                                <button onclick="window.location.href='https://wa.me/5350110410?text=Hola, me interesa: ${p.Nombre} (Ref: ${p.Código})'">Pedir por WhatsApp</button>
+                            </div>
+                        `;
+                    }
                 });
             } catch (error) {
                 console.error("Error:", error);
-                document.getElementById('app').innerHTML = '<p>Error al cargar productos.</p>';
             }
         }
-
         cargarProductos();
     </script>
 </body>
