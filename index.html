@@ -66,6 +66,39 @@
         .btn-ask { background: #4a4a6a; color: white; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+/* --- ADAPTACIÓN PROFESIONAL --- */
+
+/* Para Móviles (Pantallas pequeñas) */
+@media (max-width: 600px) {
+    .hero { height: 300px; } /* Hero más compacto en móvil */
+    .hero h1 { font-size: 1.5em; }
+    
+    .carrusel { padding: 10px; gap: 10px; }
+    .card { min-width: 220px; } /* Tarjetas un poco más pequeñas */
+    
+    .btn { font-size: 0.8em; padding: 8px; }
+}
+
+/* Para PC (Pantallas grandes) */
+@media (min-width: 1024px) {
+    .hero { height: 400px; }
+    
+    /* En PC, queremos que el carrusel tenga un poco más de aire */
+    .carrusel { padding: 30px 50px; gap: 30px; }
+    
+    /* Efecto hover más marcado para PC */
+    .card:hover { 
+        transform: scale(1.03); 
+        box-shadow: 0 10px 30px rgba(0, 242, 255, 0.2);
+    }
+}
+.card h3 { 
+    font-size: 1.1em; 
+    margin: 10px 0; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; /* Pone tres puntos (...) si el nombre es muy largo */
+}
     </style>
 </head>
 <body>
@@ -77,6 +110,9 @@
 
     <div class="tabs" id="categoryTabs"></div>
     <div id="app"></div>
+<div id="loader" style="text-align: center; padding: 50px; color: #00f2ff;">
+    Cargando catálogo...
+</div>
 
     <script>
         const API_URL = 'https://sheetdb.io/api/v1/315mpve04cyog';
@@ -87,6 +123,7 @@
             todosLosProductos = await res.json();
             crearCategorias();
             renderizar(todosLosProductos);
+            document.getElementById('loader').style.display = 'none';
         }
 
         function crearCategorias() {
