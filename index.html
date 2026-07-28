@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HLG-Tech | Hardware Premium</title>
+    <title>HLG-Tech | Tienda Profesional</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body { 
@@ -12,7 +12,7 @@
             margin: 0; 
         }
 
-        /* Sección Hero mejorada */
+        /* Hero Section */
         .hero { 
             height: 500px; 
             display: flex; 
@@ -21,48 +21,62 @@
             align-items: center; 
             text-align: center;
             background: linear-gradient(rgba(15, 15, 26, 0.6), rgba(15, 15, 26, 0.6)), 
-                        url('https://res.cloudinary.com/kla50st7/image/upload/v1785262020/pc-gaming-platform-computer_iwbbli.avif'); 
+                        url(https://res.cloudinary.com/kla50st7/image/upload/v1785262020/pc-gaming-platform-computer_iwbbli.avif); 
             background-size: cover;          
             background-position: center;     
             border-bottom: 3px solid #00f2ff; 
             margin-bottom: 30px;
         }
 
-        /* Grid y tarjetas */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: auto; }
-        .card { 
-            background: rgba(30, 30, 45, 0.7); 
-            backdrop-filter: blur(10px); 
-            padding: 20px; 
-            border-radius: 20px; 
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; }
-        .precio { color: #00f2ff; font-weight: 700; font-size: 1.5em; margin: 10px 0; }
+        /* Tabs */
+        .tabs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+        .tab-btn { background: #1e1e2d; border: 1px solid #333; color: white; padding: 10px 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { background: #00f2ff; color: black; font-weight: bold; }
 
+        /* Categorías y Carruseles */
+        .categoria-seccion { margin-bottom: 40px; overflow: hidden; animation: fadeIn 0.8s ease-in; }
+        .titulo-cat { padding-left: 20px; font-size: 1.5em; color: #00f2ff; margin-bottom: 15px; }
+
+        .carrusel {
+            display: flex;
+            overflow-x: auto; 
+            gap: 20px;
+            padding: 20px;
+            scroll-behavior: smooth;
+            scrollbar-width: none; 
+        }
+        .carrusel::-webkit-scrollbar { display: none; } 
+
+        /* Tarjetas */
+        .card { 
+            min-width: 250px; 
+            background: rgba(30, 30, 45, 0.7); 
+            border-radius: 20px; 
+            padding: 15px; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; }
+        
         /* Botones */
         .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .btn { flex: 1; padding: 12px; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; }
-        .btn-buy { background: #25D366; color: black; }
+        .btn { flex: 1; padding: 10px; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; }
+        .btn-buy { background: #25D366; } 
         .btn-ask { background: #4a4a6a; color: white; }
 
-        /* Categorías */
-        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { background: #1e1e2d; border: 1px solid #333; color: white; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
-        .tab-btn.active { background: #00f2ff; color: black; font-weight: bold; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
-    <!-- ESTE ES EL ÚNICO HEADER QUE DEBE QUEDAR -->
+
     <header class="hero">
         <h1>HLG-Tech</h1>
         <p>Tecnología de alto rendimiento en Holguín</p>
     </header>
 
     <div class="tabs" id="categoryTabs"></div>
-    <div id="app" class="grid"></div>
-        <p style="text-align:center; width: 100%;">Cargando catálogo...</p>
-    </div>
+    <div id="app"></div>
 
     <script>
         const API_URL = 'https://sheetdb.io/api/v1/315mpve04cyog';
@@ -71,13 +85,14 @@
         async function cargar() {
             const res = await fetch(API_URL);
             todosLosProductos = await res.json();
-            renderizar(todosLosProductos);
             crearCategorias();
+            renderizar(todosLosProductos);
         }
 
         function crearCategorias() {
             const categorias = ['Todos', ...new Set(todosLosProductos.map(p => p.Categoria))];
-            document.getElementById('categoryTabs').innerHTML = categorias.map(c => 
+            const contenedor = document.getElementById('categoryTabs');
+            contenedor.innerHTML = categorias.map(c => 
                 `<button class="tab-btn ${c === 'Todos' ? 'active' : ''}" onclick="filtrar('${c}', this)">${c}</button>`
             ).join('');
         }
@@ -85,22 +100,41 @@
         function filtrar(cat, btn) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             if(btn) btn.classList.add('active');
+            
             const filtrados = cat === 'Todos' ? todosLosProductos : todosLosProductos.filter(p => p.Categoria === cat);
             renderizar(filtrados);
         }
 
         function renderizar(lista) {
-            document.getElementById('app').innerHTML = lista.map(p => `
-                <div class="card">
-                    <img src="${p.Imagen_URL}" alt="${p.Nombre}">
-                    <h3>${p.Nombre}</h3>
-                    <div class="precio">$${p.Precio} USD</div>
-                    <div class="btn-group">
-                        <button class="btn btn-buy" onclick="window.location.href='https://wa.me/5350110410?text=Hola, quiero comprar: ${p.Nombre}'">Comprar</button>
-                        <button class="btn btn-ask" onclick="window.location.href='https://wa.me/5350110410?text=Tengo una duda sobre: ${p.Nombre}'">Preguntar</button>
+            const app = document.getElementById('app');
+            app.innerHTML = ''; // Limpiamos
+
+            // Obtenemos categorías únicas de la lista que estamos filtrando
+            const cats = [...new Set(lista.map(p => p.Categoria))];
+
+            cats.forEach(cat => {
+                const productosPorCat = lista.filter(p => p.Categoria === cat);
+                
+                const seccion = document.createElement('div');
+                seccion.className = 'categoria-seccion';
+                seccion.innerHTML = `
+                    <h2 class="titulo-cat">${cat}</h2>
+                    <div class="carrusel">
+                        ${productosPorCat.map(p => `
+                            <div class="card">
+                                <img src="${p.Imagen_URL}" alt="${p.Nombre}">
+                                <h3>${p.Nombre}</h3>
+                                <p style="color:#aaa;">$${p.Precio} USD</p>
+                                <div class="btn-group">
+                                    <button class="btn btn-buy" onclick="window.location.href='https://wa.me/5350110410?text=Hola, quiero comprar: ${p.Nombre}'">Comprar</button>
+                                    <button class="btn btn-ask" onclick="window.location.href='https://wa.me/5350110410?text=Tengo una duda sobre: ${p.Nombre}'">Preguntar</button>
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
-                </div>
-            `).join('');
+                `;
+                app.appendChild(seccion);
+            });
         }
 
         cargar();
