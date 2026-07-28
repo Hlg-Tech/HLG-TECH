@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HLG-Tech | Tienda Profesional</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -55,50 +56,106 @@
             padding: 15px; 
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: transform 0.3s ease;
+            cursor: pointer;
         }
         .card:hover { transform: translateY(-5px); }
         .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; }
+        .card h3 { 
+            font-size: 1.1em; 
+            margin: 10px 0; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
         
         /* Botones */
         .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .btn { flex: 1; padding: 10px; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; }
-        .btn-buy { background: #25D366; } 
+        .btn { flex: 1; padding: 10px; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; text-align: center; }
+        .btn-buy { background: #25D366; color: white; } 
         .btn-ask { background: #4a4a6a; color: white; }
 
+        /* --- ESTILOS PARA EL MODAL (DETALLES DEL PRODUCTO) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background: #181826;
+            border: 1px solid #00f2ff;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.2);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .cerrar-modal {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 28px;
+            color: #aaa;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .cerrar-modal:hover { color: #00f2ff; }
+
+        .modal-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+        .modal-precio {
+            font-size: 1.4em;
+            color: #00f2ff;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .modal-desc {
+            color: #ccc;
+            line-height: 1.6;
+            margin: 15px 0 25px 0;
+            white-space: pre-line; /* Preserva los saltos de línea de la descripción */
+        }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-/* --- ADAPTACIÓN PROFESIONAL --- */
 
-/* Para Móviles (Pantallas pequeñas) */
-@media (max-width: 600px) {
-    .hero { height: 300px; } /* Hero más compacto en móvil */
-    .hero h1 { font-size: 1.5em; }
-    
-    .carrusel { padding: 10px; gap: 10px; }
-    .card { min-width: 220px; } /* Tarjetas un poco más pequeñas */
-    
-    .btn { font-size: 0.8em; padding: 8px; }
-}
+        /* Adaptación Responsive */
+        @media (max-width: 600px) {
+            .hero { height: 300px; }
+            .hero h1 { font-size: 1.5em; }
+            .carrusel { padding: 10px; gap: 10px; }
+            .card { min-width: 220px; }
+            .btn { font-size: 0.8em; padding: 8px; }
+            .modal-content { padding: 15px; }
+            .modal-img { height: 180px; }
+        }
 
-/* Para PC (Pantallas grandes) */
-@media (min-width: 1024px) {
-    .hero { height: 400px; }
-    
-    /* En PC, queremos que el carrusel tenga un poco más de aire */
-    .carrusel { padding: 30px 50px; gap: 30px; }
-    
-    /* Efecto hover más marcado para PC */
-    .card:hover { 
-        transform: scale(1.03); 
-        box-shadow: 0 10px 30px rgba(0, 242, 255, 0.2);
-    }
-}
-.card h3 { 
-    font-size: 1.1em; 
-    margin: 10px 0; 
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; /* Pone tres puntos (...) si el nombre es muy largo */
-}
+        @media (min-width: 1024px) {
+            .hero { height: 400px; }
+            .carrusel { padding: 30px 50px; gap: 30px; }
+            .card:hover { 
+                transform: scale(1.03); 
+                box-shadow: 0 10px 30px rgba(0, 242, 255, 0.2);
+            }
+        }
     </style>
 </head>
 <body>
@@ -110,20 +167,39 @@
 
     <div class="tabs" id="categoryTabs"></div>
     <div id="app"></div>
-<div id="loader" style="text-align: center; padding: 50px; color: #00f2ff;">
-    Cargando catálogo...
-</div>
+    
+    <div id="loader" style="text-align: center; padding: 50px; color: #00f2ff;">
+        Cargando catálogo...
+    </div>
+
+    <!-- ESTRUCTURA DEL MODAL DE DETALLES -->
+    <div id="modalProducto" class="modal" onclick="cerrarDetalles(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="cerrar-modal" onclick="cerrarDetalles()">&times;</span>
+            <img id="modalImg" class="modal-img" src="" alt="Producto">
+            <h2 id="modalTitulo" style="margin: 0; color: white;"></h2>
+            <div id="modalPrecio" class="modal-precio"></div>
+            <p id="modalDesc" class="modal-desc"></p>
+            <div class="btn-group">
+                <button id="modalBtnBuy" class="btn btn-buy">Comprar</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const API_URL = 'https://sheetdb.io/api/v1/315mpve04cyog';
         let todosLosProductos = [];
 
         async function cargar() {
-            const res = await fetch(API_URL);
-            todosLosProductos = await res.json();
-            crearCategorias();
-            renderizar(todosLosProductos);
-            document.getElementById('loader').style.display = 'none';
+            try {
+                const res = await fetch(API_URL);
+                todosLosProductos = await res.json();
+                crearCategorias();
+                renderizar(todosLosProductos);
+                document.getElementById('loader').style.display = 'none';
+            } catch (error) {
+                document.getElementById('loader').innerText = 'Error al cargar los productos.';
+            }
         }
 
         function crearCategorias() {
@@ -144,9 +220,8 @@
 
         function renderizar(lista) {
             const app = document.getElementById('app');
-            app.innerHTML = ''; // Limpiamos
+            app.innerHTML = ''; 
 
-            // Obtenemos categorías únicas de la lista que estamos filtrando
             const cats = [...new Set(lista.map(p => p.Categoria))];
 
             cats.forEach(cat => {
@@ -157,14 +232,14 @@
                 seccion.innerHTML = `
                     <h2 class="titulo-cat">${cat}</h2>
                     <div class="carrusel">
-                        ${productosPorCat.map(p => `
-                            <div class="card">
+                        ${productosPorCat.map((p, index) => `
+                            <div class="card" onclick="abrirDetalles('${p.Nombre.replace(/'/g, "\\'")}')">
                                 <img src="${p.Imagen_URL}" alt="${p.Nombre}">
                                 <h3>${p.Nombre}</h3>
                                 <p style="color:#aaa;">$${p.Precio} USD</p>
-                                <div class="btn-group">
-                                    <button class="btn btn-buy" onclick="window.location.href='https://wa.me/5350110410?text=Hola, quiero comprar: ${p.Nombre}'">Comprar</button>
-                                    <button class="btn btn-ask" onclick="window.location.href='https://wa.me/5350110410?text=Tengo una duda sobre: ${p.Nombre}'">Preguntar</button>
+                                <div class="btn-group" onclick="event.stopPropagation()">
+                                    <button class="btn btn-buy" onclick="window.location.href='https://wa.me/5350110410?text=Hola, quiero comprar: ${encodeURIComponent(p.Nombre)}'">Comprar</button>
+                                    <button class="btn btn-ask" onclick="window.location.href='https://wa.me/5350110410?text=Tengo una duda sobre: ${encodeURIComponent(p.Nombre)}'">Saber más...</button>
                                 </div>
                             </div>
                         `).join('')}
@@ -172,6 +247,32 @@
                 `;
                 app.appendChild(seccion);
             });
+        }
+
+        // FUNCIONES DEL MODAL
+        function abrirDetalles(nombreProducto) {
+            const prod = todosLosProductos.find(p => p.Nombre === nombreProducto);
+            if (!prod) return;
+
+            document.getElementById('modalImg').src = prod.Imagen_URL;
+            document.getElementById('modalTitulo').innerText = prod.Nombre;
+            document.getElementById('modalPrecio').innerText = `$${prod.Precio} USD`;
+            
+            // Toma la columna 'Descripcion' o 'Detalle' de la hoja de cálculo.
+            document.getElementById('modalDesc').innerText = prod.Descripcion || prod.Detalle || 'Sin descripción disponible para este producto.';
+
+            const btnBuy = document.getElementById('modalBtnBuy');
+            btnBuy.onclick = () => {
+                window.location.href = `https://wa.me/5350110410?text=Hola, quiero comprar: ${encodeURIComponent(prod.Nombre)}`;
+            };
+
+            document.getElementById('modalProducto').style.display = 'flex';
+        }
+
+        function cerrarDetalles(event) {
+            if (!event || event.target.id === 'modalProducto' || event.target.className === 'cerrar-modal') {
+                document.getElementById('modalProducto').style.display = 'none';
+            }
         }
 
         cargar();
