@@ -1,21 +1,15 @@
-d<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>HLG-Tech | Laptops y PC en Holguín</title>
     <style>
-        /* Estilos Minimalistas y Alto Contraste */
         body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; }
         header { background: #1a1a1a; color: white; padding: 20px; text-align: center; }
-        .grid-productos { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 20px; 
-            padding: 20px; 
-        }
+        .grid-productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
         .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .card img { width: 100%; border-radius: 4px; }
-        .precio { color: #007bff; font-weight: bold; font-size: 1.2em; }
+        .card img { width: 100%; border-radius: 4px; height: 200px; object-fit: cover; }
+        .precio { color: #007bff; font-weight: bold; font-size: 1.2em; margin: 10px 0; }
         button { background: #007bff; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; border-radius: 4px; }
     </style>
 </head>
@@ -26,42 +20,41 @@ d<!DOCTYPE html>
     </header>
 
     <div id="app" class="grid-productos">
-        <!-- Aquí cargaremos los productos -->
+        <p>Cargando productos...</p>
     </div>
 
     <script>
-    const API_URL = https://sheetdb.io/api/v1/315mpve04cyog; // Aquí va tu URL de SheetDB
+        const API_URL = 'https://sheetdb.io/api/v1/315mpve04cyog';
 
-    async function cargarProductos() {
-        try {
-            const respuesta = await fetch(API_URL);
-            const productos = await respuesta.json();
-            const contenedor = document.getElementById('app');
-            
-            contenedor.innerHTML = ''; // Limpiamos antes de cargar
+        async function cargarProductos() {
+            try {
+                const respuesta = await fetch(API_URL);
+                const productos = await respuesta.json();
+                const contenedor = document.getElementById('app');
+                contenedor.innerHTML = ''; 
 
-            productos.forEach(p => {
-                // Solo mostramos si el estado es 'Disponible'
-                if (p.Estado === 'Disponible') {
-                    contenedor.innerHTML += `
-                        <div class="card">
-                            <img src="${p.Imagen_URL}" alt="${p.Nombre}">
-                            <h3>${p.Nombre}</h3>
-                            <p><strong>Ref:</strong> ${p.Código}</p>
-                            <p class="specs">${p.Especificaciones}</p>
-                            <div class="precio">$${p.Precio}</div>
-                            <p><small>Stock: ${p.Stock}</small></p>
-                            <button onclick="window.location.href='https://wa.me/+5350110410text=Hola, me interesa el producto ${p.Nombre} (Ref: ${p.Código})'">Consultar</button>
-                        </div>
-                    `;
-                }
-            });
-        } catch (error) {
-            console.error("Error al conectar con la base de datos:", error);
+                productos.forEach(p => {
+                    if (p.Estado === 'Disponible') {
+                        contenedor.innerHTML += `
+                            <div class="card">
+                                <img src="${p.Imagen_URL}" alt="${p.Nombre}">
+                                <h3>${p.Nombre}</h3>
+                                <p><strong>Ref:</strong> ${p.Código}</p>
+                                <p class="specs">${p.Especificaciones}</p>
+                                <div class="precio">$${p.Precio}</div>
+                                <p><small>Stock: ${p.Stock}</small></p>
+                                <button onclick="window.location.href='https://wa.me/5350110410?text=Hola, me interesa el producto ${p.Nombre} (Ref: ${p.Código})'">Consultar</button>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('app').innerHTML = '<p>Error al cargar productos.</p>';
+            }
         }
-    }
 
-    cargarProductos();
-</script>
+        cargarProductos();
+    </script>
 </body>
 </html>
