@@ -34,19 +34,20 @@
                 contenedor.innerHTML = ''; 
 
                 productos.forEach(p => {
-                    if (p.Estado === 'Disponible') {
-                        contenedor.innerHTML += `
-                            <div class="card">
-                                <img src="${p.Imagen_URL}" alt="${p.Nombre}">
-                                <h3>${p.Nombre}</h3>
-                                <p><strong>Ref:</strong> ${p.Código}</p>
-                                <p class="specs">${p.Especificaciones}</p>
-                                <div class="precio">$${p.Precio}</div>
-                                <p><small>Stock: ${p.Stock}</small></p>
-                                <button onclick="window.location.href='https://wa.me/5350110410?text=Hola, me interesa el producto ${p.Nombre} (Ref: ${p.Código})'">Consultar</button>
-                            </div>
-                        `;
-                    }
+                    // ... dentro de tu ciclo forEach
+if (p.Estado.toLowerCase() === 'disponible') {
+    contenedor.innerHTML += `
+        <div class="card">
+            <img src="${p.Imagen_URL}" alt="${p.Nombre}">
+            <h3>${p.Nombre}</h3>
+            <!-- La línea de Ref: ${p.Código} ha sido eliminada de aquí para limpieza visual -->
+            <p class="specs">${p.Especificaciones}</p>
+            <div class="precio">$${p.Precio}</div>
+            <p><small>Stock: ${p.Stock}</small></p>
+            <button onclick="window.location.href='https://wa.me/5350110410?text=Hola, me interesa el producto ${p.Nombre} (Ref: ${p.Código})'">Consultar</button>
+        </div>
+    `;
+}
                 });
             } catch (error) {
                 console.error("Error:", error);
