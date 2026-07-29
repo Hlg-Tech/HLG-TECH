@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HLG-Tech | Tienda Profesional</title>
+    <title>HLG-Tech</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body { 
@@ -14,20 +14,64 @@
         }
 
         /* Hero Section */
-        .hero { 
-            height: 500px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            text-align: center;
-            background: linear-gradient(rgba(15, 15, 26, 0.6), rgba(15, 15, 26, 0.6)), 
-                        url(https://res.cloudinary.com/kla50st7/image/upload/v1785268319/Gemini_Generated_Image_slx850slx850slx8_tzfqck.png); 
-            background-size: cover;          
-            background-position: center;     
-            border-bottom: 3px solid #00f2ff; 
-            margin-bottom: 30px;
-        }
+.hero { 
+    min-height: 420px;
+    height: 100vh; /* Se adapta según la altura de la pantalla */
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    text-align: center;
+    background: linear-gradient(rgba(15, 15, 26, 0.75), rgba(15, 15, 26, 0.75)), 
+                url(https://res.cloudinary.com/kla50st7/image/upload/v1785343940/Gemini_Generated_Image_9e7gng9e7gng9e7g_okv4ap.jpg); 
+    background-size: cover;          
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-bottom: 3px solid #00f2ff; 
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+/* Título más grande y llamativo */
+.hero h1 {
+    font-size: 3.5em; /* Aumentado de tamaño */
+    margin: 0 0 10px 0;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(0, 242, 255, 0.6); /* Destello neón */
+    font-weight: 700;
+}
+
+.hero p {
+    font-size: 1.2em;
+    margin-bottom: 25px;
+    color: #cccccc;
+}
+
+/* Botón del Hero */
+.btn-hero {
+    background: #00f2ff;
+    color: #0f0f1a;
+    padding: 12px 30px;
+    font-size: 1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+}
+
+.btn-hero:hover {
+    transform: scale(1.05);
+    background: #ffffff;
+    box-shadow: 0 0 25px rgba(0, 242, 255, 0.8);
+}
+
+/* Ajuste de scroll suave para toda la página */
+html {
+    scroll-behavior: smooth;
+}
 
         /* Tabs */
         .tabs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
@@ -38,27 +82,35 @@
         .categoria-seccion { margin-bottom: 40px; overflow: hidden; animation: fadeIn 0.8s ease-in; }
         .titulo-cat { padding-left: 20px; font-size: 1.5em; color: #00f2ff; margin-bottom: 15px; }
 
-        .carrusel {
-            display: flex;
-            overflow-x: auto; 
-            gap: 20px;
-            padding: 20px;
-            scroll-behavior: smooth;
-            scrollbar-width: none; 
-        }
-        .carrusel::-webkit-scrollbar { display: none; } 
+        /* Carrusel */
+.carrusel {
+    display: flex;
+    overflow-x: auto; 
+    gap: 20px;
+    padding: 20px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    justify-content: flex-start; /* Impide que las tarjetas se centren o estiren si hay pocas */
+    align-items: stretch;
+}
+.carrusel::-webkit-scrollbar { display: none; } 
 
-        /* Tarjetas */
-        .card { 
-            min-width: 250px; 
-            background: rgba(30, 30, 45, 0.7); 
-            border-radius: 20px; 
-            padding: 15px; 
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
+/* Tarjetas */
+.card { 
+    /* Fijamos el tamaño exacto para que no dependa de la cantidad */
+    width: 260px;
+    min-width: 260px; 
+    max-width: 260px;
+    
+    background: rgba(30, 30, 45, 0.7); 
+    border-radius: 20px; 
+    padding: 15px; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    box-sizing: border-box; /* Asegura que el padding no altere el ancho */
+}
         .card:hover { transform: translateY(-5px); }
        .card img { 
     width: 100%; 
@@ -162,16 +214,32 @@
 
         /* Adaptación Responsive */
         @media (max-width: 600px) {
-            .hero { height: 300px; }
-            .hero h1 { font-size: 1.5em; }
+            
+            .hero { height: 350px; }
+            .hero h1 { font-size: 2.2em; }
+            .hero p { font-size: 1em; }
             .carrusel { padding: 10px; gap: 10px; }
-            .card { min-width: 220px; }
+            .card { 
+        width: 220px;
+        min-width: 220px; 
+        max-width: 220px;
+    }
             .btn { font-size: 0.8em; padding: 8px; }
+            .btn-hero { padding: 10px 20px; font-size: 0.9em; }
             .modal-content { padding: 15px; }
             .modal-img { height: 180px; }
         }
 
         @media (min-width: 1024px) {
+    .hero { 
+        height: 420px; /* Evita que crezca desproporcionadamente en monitores grandes */
+        max-height: 500px;
+        background-position: center 25%; /* Enfoca la parte central/superior del setup gaming */
+    }
+
+    .hero h1 { 
+        font-size: 3.8em; 
+    }{
             .hero { height: 400px; }
             .carrusel { padding: 30px 50px; gap: 30px; }
             .card:hover { 
@@ -184,9 +252,15 @@
 <body>
 
     <header class="hero">
-        <h1>HLG-Tech</h1>
-        <p>Tecnología de alto rendimiento en Holguín</p>
-    </header>
+<p style="text-align: center; color: #00f2ff;">
+                        Hardware & Gaming Premium
+                      </p>
+    <h1>Maximiza tu Potencial</h1>
+    <p>Componentes, PCs Gamers, Teléfonos y Accesorios de última generación. Construye la máquina de tus sueños</p>
+    
+    <!-- Botón con enlace al catálogo -->
+    <a href="#categoryTabs" class="btn-hero">Ver Catálogo</a>
+</header>
 
     <div class="tabs" id="categoryTabs"></div>
     <div id="app"></div>
@@ -205,7 +279,7 @@
             <div id="modalStock"></div>
             <p id="modalDesc" class="modal-desc"></p>
             <div class="btn-group">
-                <button id="modalBtnBuy" class="btn btn-buy">Comprar por WhatsApp</button>
+                <button id="modalBtnBuy" class="btn btn-buy">?=¡Comprar Ahora!</button>
             </div>
         </div>
     </div>
@@ -217,7 +291,11 @@
         async function cargar() {
             try {
                 const res = await fetch(API_URL);
-                todosLosProductos = await res.json();
+                const data = await res.json();                
+                todosLosProductos = data.filter(p => {
+            const visible = String(p.Mostrar).toUpperCase();
+            return visible === 'TRUE' || visible === '1';
+        });
                 crearCategorias();
                 renderizar(todosLosProductos);
                 document.getElementById('loader').style.display = 'none';
@@ -332,5 +410,27 @@
 
         cargar();
     </script>
+ <hr>
+    <div class="footer">
+      <p style="text-align: center; padding: 50px; color: #00f2ff;">
+                        &copy; 2026 Hlg-Tech.
+                         Todos los derechos reservados
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+          </table>
+          <!--[if (gte mso 9)|(IE)]>
+              </td>
+            </tr>
+          </table>
+          <![endif]-->
+        </td>
+      </tr>
+    </table>
+  </center>
 </body>
 </html>
