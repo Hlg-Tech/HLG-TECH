@@ -60,7 +60,13 @@
             position: relative;
         }
         .card:hover { transform: translateY(-5px); }
-        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; }
+       .card img { 
+    width: 100%; 
+    aspect-ratio: 1 / 1; /* Forzar proporción cuadrada */
+    height: auto;        /* Deja que la altura se calcule sola según el ancho */
+    object-fit: cover; 
+    border-radius: 15px; 
+}
         .card h3 { 
             font-size: 1.1em; 
             margin: 10px 0 5px 0; 
@@ -129,11 +135,13 @@
         .cerrar-modal:hover { color: #00f2ff; }
 
         .modal-img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 15px;
-            margin-bottom: 15px;
+    width: 100%;
+    aspect-ratio: 1 / 1; /* También cuadrada en el modal */
+    max-height: 350px;   /* Para que no ocupe demasiado espacio vertical en PC */
+    object-fit: contain; /* Muestra el producto completo sin recortar nada */
+    background: #10101c;  /* Fondo oscuro por si la imagen tiene espacios libres */
+    border-radius: 15px;
+    margin-bottom: 15px;
         }
 
         .modal-precio {
