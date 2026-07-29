@@ -57,24 +57,39 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: transform 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
         .card:hover { transform: translateY(-5px); }
         .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; }
         .card h3 { 
             font-size: 1.1em; 
-            margin: 10px 0; 
+            margin: 10px 0 5px 0; 
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis; 
         }
         
+        /* Badges e Indicadores de Stock */
+        .badge-stock {
+            display: inline-block;
+            font-size: 0.8em;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .stock-disponible { background: rgba(0, 242, 255, 0.15); color: #00f2ff; border: 1px solid #00f2ff; }
+        .stock-bajo { background: rgba(255, 170, 0, 0.15); color: #ffaa00; border: 1px solid #ffaa00; }
+        .stock-agotado { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid #ff4d4d; }
+
         /* Botones */
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
         .btn { flex: 1; padding: 10px; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; text-align: center; }
         .btn-buy { background: #25D366; color: white; } 
         .btn-ask { background: #4a4a6a; color: white; }
+        .btn-disabled { background: #333 !important; color: #777 !important; cursor: not-allowed !important; }
 
-        /* --- ESTILOS PARA EL MODAL (DETALLES DEL PRODUCTO) --- */
+        /* Estilos para el Modal (Detalles) */
         .modal {
             display: none;
             position: fixed;
@@ -125,14 +140,14 @@
             font-size: 1.4em;
             color: #00f2ff;
             font-weight: bold;
-            margin: 10px 0;
+            margin: 5px 0;
         }
 
         .modal-desc {
             color: #ccc;
             line-height: 1.6;
-            margin: 15px 0 25px 0;
-            white-space: pre-line; /* Preserva los saltos de línea de la descripción */
+            margin: 15px 0 20px 0;
+            white-space: pre-line;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -172,16 +187,17 @@
         Cargando catálogo...
     </div>
 
-    <!-- ESTRUCTURA DEL MODAL DE DETALLES -->
+    <!-- ESTRUCTURA DEL MODAL -->
     <div id="modalProducto" class="modal" onclick="cerrarDetalles(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="cerrar-modal" onclick="cerrarDetalles()">&times;</span>
             <img id="modalImg" class="modal-img" src="" alt="Producto">
             <h2 id="modalTitulo" style="margin: 0; color: white;"></h2>
             <div id="modalPrecio" class="modal-precio"></div>
+            <div id="modalStock"></div>
             <p id="modalDesc" class="modal-desc"></p>
             <div class="btn-group">
-                <button id="modalBtnBuy" class="btn btn-buy">Comprar</button>
+                <button id="modalBtnBuy" class="btn btn-buy">Comprar por WhatsApp</button>
             </div>
         </div>
     </div>
@@ -218,6 +234,18 @@
             renderizar(filtrados);
         }
 
+        // Función auxilar para dar formato al badge de Stock
+        function obtenerBadgeStock(stockVal) {
+            const num = parseInt(stockVal) || 0;
+            if (num <= 0) {
+                return `<span class="badge-stock stock-agotado">Agotado</span>`;
+            } else if (num <= 3) {
+                return `<span class="badge-stock stock-bajo">¡Últimas ${num} unidades!</span>`;
+            } else {
+                return `<span class="badge-stock stock-disponible">Stock: ${num} disponibles</span>`;
+            }
+        }
+
         function renderizar(lista) {
             const app = document.getElementById('app');
             app.innerHTML = ''; 
@@ -232,17 +260,26 @@
                 seccion.innerHTML = `
                     <h2 class="titulo-cat">${cat}</h2>
                     <div class="carrusel">
-                        ${productosPorCat.map((p, index) => `
+                        ${productosPorCat.map((p) => {
+                            const stockNum = parseInt(p.Stock) || 0;
+                            const estaAgotado = stockNum <= 0;
+                            
+                            return `
                             <div class="card" onclick="abrirDetalles('${p.Nombre.replace(/'/g, "\\'")}')">
                                 <img src="${p.Imagen_URL}" alt="${p.Nombre}">
                                 <h3>${p.Nombre}</h3>
-                                <p style="color:#aaa;">$${p.Precio} USD</p>
+                                <p style="color:#aaa; margin: 2px 0;">$${p.Precio} USD</p>
+                                ${obtenerBadgeStock(p.Stock)}
                                 <div class="btn-group" onclick="event.stopPropagation()">
-                                    <button class="btn btn-buy" onclick="window.location.href='https://wa.me/5350110410?text=Hola, quiero comprar: ${encodeURIComponent(p.Nombre)}'">Comprar</button>
-                                    <button class="btn btn-ask" onclick="window.location.href='https://wa.me/5350110410?text=Tengo una duda sobre: ${encodeURIComponent(p.Nombre)}'">Saber más...</button>
+                                    <button class="btn btn-buy ${estaAgotado ? 'btn-disabled' : ''}" 
+                                            ${estaAgotado ? 'disabled' : ''} 
+                                            onclick="window.location.href='https://wa.me/5350110410?text=Hola, quiero comprar: ${encodeURIComponent(p.Nombre)}'">
+                                        ${estaAgotado ? 'Agotado' : 'Comprar'}
+                                    </button>
+                                    <button class="btn btn-ask" onclick="window.location.href='https://wa.me/5350110410?text=Tengo una duda sobre: ${encodeURIComponent(p.Nombre)}'">Preguntar</button>
                                 </div>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
                 `;
                 app.appendChild(seccion);
@@ -254,17 +291,27 @@
             const prod = todosLosProductos.find(p => p.Nombre === nombreProducto);
             if (!prod) return;
 
+            const stockNum = parseInt(prod.Stock) || 0;
+            const estaAgotado = stockNum <= 0;
+
             document.getElementById('modalImg').src = prod.Imagen_URL;
             document.getElementById('modalTitulo').innerText = prod.Nombre;
             document.getElementById('modalPrecio').innerText = `$${prod.Precio} USD`;
-            
-            // Toma la columna 'Descripcion' o 'Detalle' de la hoja de cálculo.
+            document.getElementById('modalStock').innerHTML = obtenerBadgeStock(prod.Stock);
             document.getElementById('modalDesc').innerText = prod.Descripcion || prod.Detalle || 'Sin descripción disponible para este producto.';
 
             const btnBuy = document.getElementById('modalBtnBuy');
-            btnBuy.onclick = () => {
-                window.location.href = `https://wa.me/5350110410?text=Hola, quiero comprar: ${encodeURIComponent(prod.Nombre)}`;
-            };
+            if (estaAgotado) {
+                btnBuy.innerText = 'Producto Agotado';
+                btnBuy.className = 'btn btn-buy btn-disabled';
+                btnBuy.onclick = null;
+            } else {
+                btnBuy.innerText = 'Comprar por WhatsApp';
+                btnBuy.className = 'btn btn-buy';
+                btnBuy.onclick = () => {
+                    window.location.href = `https://wa.me/5350110410?text=Hola, quiero comprar: ${encodeURIComponent(prod.Nombre)}`;
+                };
+            }
 
             document.getElementById('modalProducto').style.display = 'flex';
         }
