@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Center - HLG-Tech</title>
+    <title>Panel de Control - HLG-Tech</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -76,7 +76,7 @@
         .auth-card button:hover { box-shadow: 0 0 15px rgba(0, 242, 255, 0.6); }
         #authError { color: #ff4d4d; font-size: 0.8em; margin-top: 10px; display: none; }
 
-        /* --- NAVBAR DEL BACKOFFICE --- */
+        /* --- NAVBAR DEL PANEL --- */
         .backoffice-nav {
             display: flex;
             justify-content: space-between;
@@ -348,6 +348,24 @@
             color: #0f0f1a;
         }
 
+        /* Botón de Reintentar en Tablas */
+        .btn-retry {
+            background: rgba(0, 242, 255, 0.15);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+        .btn-retry:hover {
+            background: var(--accent);
+            color: #0f0f1a;
+        }
+
         /* --- OVERLAY DE CARGA NEON --- */
         #neonLoaderOverlay {
             display: none;
@@ -395,7 +413,7 @@
     <div id="authScreen">
         <div class="auth-card">
             <h2>Acceso Restringido</h2>
-            <p>Introduce tu correo</p>
+            <p>Introduce tu correo para entrar al Centro de Control.</p>
             <input type="email" id="adminEmailInput" placeholder="tucorreo@dominio.com" autocomplete="email">
             <button onclick="verificarAcceso()">Ingresar al Sistema</button>
             <div id="authError">Correo no autorizado o error de conexión.</div>
@@ -406,7 +424,7 @@
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <nav class="sidebar" id="appSidebar">
         <div class="sidebar-header">
-            <span class="logo">HLG<span>-Back</span></span>
+            <span class="logo">HLG<span>-Panel</span></span>
             <button class="close-sidebar" onclick="toggleSidebar()">&times;</button>
         </div>
         <ul class="sidebar-menu">
@@ -432,7 +450,7 @@
     <!-- VISTA 1: HOME DASHBOARD -->
     <main id="view-home" class="view-section active main-container">
         <div class="welcome-banner">
-            <h1>Centro de Control</h1>
+            <h1>Panel de Control Principal</h1>
             <p>Resumen general del catálogo.</p>
         </div>
 
@@ -443,7 +461,7 @@
                 <div class="value" id="statTotal">--</div>
             </div>
             <div class="stat-card" onclick="cambiarVista('productos')">
-                <h3>Con Stock</h3>
+                <h3>En Stock</h3>
                 <div class="value" id="statStock" style="color: #00f2ff;">--</div>
             </div>
             <div class="stat-card" onclick="cambiarVista('categorias')">
@@ -494,13 +512,13 @@
             <input type="text" id="filtroTexto" placeholder="🔍 Buscar nombre o código..." oninput="aplicarFiltrosProductos()">
             
             <select id="filtroCategoria" onchange="aplicarFiltrosProductos()">
-                <option value="todos">Todas las Categorías</option>
+                <option value="todos">📂 Todas las Categorías</option>
             </select>
 
             <select id="filtroStock" onchange="aplicarFiltrosProductos()">
-                <option value="todos">Stock: Todos</option>
+                <option value="todos">Todos</option>
                 <option value="con_stock">Con Stock</option>
-                <option value="sin_stock">Sin Stock</option>
+                <option value="sin_stock">Sin Stock (Agotados)</option>
             </select>
 
             <select id="filtroPublicado" onchange="aplicarFiltrosProductos()">
@@ -617,7 +635,7 @@
                 <label for="prodFileImage" id="fileDropBox" style="display:flex; align-items:center; justify-content:space-between; width:100%; padding:10px 14px; background:#10101c; border:1px dashed var(--border-color); border-radius:10px; color:#fff; box-sizing:border-box; cursor:pointer; transition:all 0.3s;">
                     <div style="display:flex; align-items:center; gap:10px; overflow:hidden;">
                         <span style="font-size:1.2em;">📁</span>
-                        <span id="fileLabelText" style="font-size:0.85em; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Haz clic para seleccionar imagen...</span>
+                        <span id="fileLabelText" style="font-size:0.85em; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Seleccionar imagen...</span>
                     </div>
                     <span style="background:rgba(0, 242, 255, 0.15); color:var(--accent); padding:4px 10px; border-radius:6px; font-size:0.75em; font-weight:bold; white-space:nowrap;">Explorar</span>
                 </label>
@@ -630,7 +648,7 @@
             </div>
 
             <div style="display:flex; gap:10px;">
-                <button onclick="guardarProductoSubmit()" style="flex:1; padding:10px; background:#00f2ff; color:#0f0f1a; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Guardar Producto</button>
+                <button onclick="guardarProductoSubmit()" style="flex:1; padding:10px; background:#00f2ff; color:#0f0f1a; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Guardar</button>
                 <button onclick="cerrarModalProducto()" style="flex:1; padding:10px; background:transparent; color:#aaa; border:1px solid rgba(255,255,255,0.1); border-radius:8px; cursor:pointer;">Cancelar</button>
             </div>
         </div>
@@ -657,7 +675,7 @@
 
         let cacheAdmins = [];
         let globalDataCache = null;
-        let modoEdicion = 'nuevo'; // 'nuevo' o 'editar'
+        let modoEdicion = 'nuevo';
         let codigoEditandoActual = '';
         let imagenActualUrl = '';
 
@@ -683,7 +701,9 @@
                 ocultarLoaderNeon();
             } catch (e) {
                 ocultarLoaderNeon();
-                alert("No se pudo sincronizar con Google Sheets.");
+                alert("No se pudo sincronizar.");
+                // Si falla la sincronización manual estando en productos, mostramos el botón de reintentar
+                mostrarErrorTablaProductos();
             }
         }
 
@@ -731,6 +751,7 @@
                     }
                 } catch (e) {
                     console.error("No se pudo validar sesión offline", e);
+                    mostrarErrorTablaProductos();
                 }
                 localStorage.removeItem('hlg_admin_email');
             }
@@ -791,8 +812,23 @@
             });
         }
 
+        function mostrarErrorTablaProductos() {
+            const tbody = document.getElementById('tablaProductosBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align:center; padding: 25px;">
+                        <span style="color: #ff4d4d; display:block; margin-bottom:8px;">Error al cargar o sincronizar los productos.</span>
+                        <button class="btn-retry" onclick="sincronizarDatosRemotos()">Reintentar Carga</button>
+                    </td>
+                </tr>
+            `;
+        }
+
         function aplicarFiltrosProductos() {
-            if (!globalDataCache || !globalDataCache.productos) return;
+            if (!globalDataCache || !globalDataCache.productos) {
+                mostrarErrorTablaProductos();
+                return;
+            }
             const tbody = document.getElementById('tablaProductosBody');
             tbody.innerHTML = "";
 
@@ -847,7 +883,7 @@
                     <td>$${precio}</td>
                     <td>${stock}</td>
                     <td><span class="badge ${estaPublicado ? 'badge-pub' : 'badge-unpub'}">${estaPublicado ? 'Publicado' : 'Oculto'}</span></td>
-                    <td><button class="btn-edit-row" onclick="abrirModalEditarProducto('${codigo}')">✏️ Editar</button></td>
+                    <td><button class="btn-edit-row" onclick="abrirModalEditarProducto('${codigo}')">Editar</button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -871,7 +907,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="color:var(--text-muted);">${index + 1}</td>
-                    <td style="color:var(--accent); font-weight:bold;">🏷️ ${cat}</td>
+                    <td style="color:var(--accent); font-weight:bold;">${cat}</td>
                     <td>${cantidadProd} producto(s)</td>
                 `;
                 tbody.appendChild(tr);
