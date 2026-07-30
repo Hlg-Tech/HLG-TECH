@@ -336,7 +336,7 @@
 <body>
 
     <div id="bannerActualizacion">
-        ✨ ¡Hay actualizaciones disponibles!
+         ¡Hay actualizaciones disponibles!
         <button onclick="aplicarActualizacion()">Actualizar</button>
     </div>
 
@@ -360,7 +360,7 @@
         </div>
     </header>
 
-    <div id="toastInventario">✅ ¡Inventario al día y sincronizado!</div>
+    <div id="toastInventario">¡Inventario al día y sincronizado!</div>
 
     <header class="hero">
         <p style="color: #00f2ff;">Hardware & Gaming Premium</p>
@@ -399,6 +399,9 @@
 
         async function cargar(esSilencioso = false) {
             try {
+                if (!esSilencioso) {
+                    document.getElementById('loader').innerHTML = 'Cargando catálogo...';
+                }
                 const res = await fetch(API_URL);
                 const data = await res.json();                
                 
@@ -421,7 +424,12 @@
                     document.getElementById('loader').style.display = 'none';
                 }
             } catch (error) {
-                if (!esSilencioso) document.getElementById('loader').innerText = 'Error al cargar los productos.';
+                if (!esSilencioso) {
+                    document.getElementById('loader').innerHTML = `
+                        <p style="color: #ff4d4d; margin-bottom: 10px;">Error al cargar los productos.</p>
+                        <button onclick="cargar(false)" style="background: #00f2ff; color: #0f0f1a; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);">Reintentar</button>
+                    `;
+                }
             }
         }
 
