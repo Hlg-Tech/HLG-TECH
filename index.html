@@ -11,297 +11,469 @@
             background-color: #0f0f1a; 
             color: white; 
             margin: 0; 
+            overflow-x: hidden;
+        }
+
+        /* Barra de Navegación Superior */
+        .navbar-hlg {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(20, 20, 30, 0.95);
+            border-bottom: 2px solid rgba(0, 242, 255, 0.3);
+            padding: 10px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            gap: 10px;
+        }
+
+        .nav-left .logo {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .nav-left .logo span { color: #00f2ff; }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            justify-content: flex-end;
+            flex: 1;
+        }
+
+        /* Selector de Moneda Personalizado */
+        .custom-select-wrapper {
+            position: relative;
+            user-select: none;
+        }
+
+        .custom-select-btn {
+            background-color: #181828;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 7px 24px 7px 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+            background-size: 12px;
+        }
+
+        .custom-select-btn:hover {
+            border-color: #00f2ff;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+        }
+
+        .custom-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 6px);
+            background: #181826;
+            border: 1px solid #00f2ff;
+            border-radius: 12px;
+            overflow: hidden;
+            z-index: 1200;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+            min-width: 90px;
+        }
+
+        .custom-dropdown.open {
+            display: block;
+        }
+
+        .custom-option {
+            padding: 8px 12px;
+            font-size: 0.85em;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .custom-option:hover {
+            background: rgba(0, 242, 255, 0.15);
+            color: #00f2ff;
+        }
+
+        /* Buscador adaptable */
+        .nav-right input#buscador {
+            width: 120px;
+            padding: 7px 10px;
+            background: #181828;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            color: #fff;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+        }
+
+        .nav-right input#buscador:focus {
+            outline: none;
+            border-color: #00f2ff;
+            width: 160px;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+        }
+
+        /* Sugerencias */
+        .sugerencias-box {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            width: 220px;
+            background: #181826;
+            border: 1px solid #00f2ff;
+            border-radius: 12px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 1300;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+        .sugerencia-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+        }
+        .sugerencia-item:hover { background: rgba(0, 242, 255, 0.1); }
+        .sugerencia-item img { width: 30px; height: 30px; object-fit: cover; border-radius: 6px; }
+        .sugerencia-info h4 { font-size: 0.8em; margin: 0 0 2px 0; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+        .sugerencia-info span { font-size: 0.7em; color: #00f2ff; font-weight: bold; }
+
+        /* Notificación Toast */
+        #toastInventario {
+            visibility: hidden;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #181826;
+            color: #fff;
+            border: 2px solid #00f2ff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            z-index: 3000;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            font-size: 0.85em;
+            text-align: center;
+            transition: opacity 0.3s, bottom 0.3s;
+            opacity: 0;
+            width: 85%;
+            max-width: 320px;
+            box-sizing: border-box;
+        }
+        #toastInventario.show {
+            visibility: visible;
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        #bannerActualizacion {
+            display: none;
+            background: linear-gradient(90deg, #00f2ff, #0077ff);
+            color: #0f0f1a;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.85em;
+            font-weight: bold;
+            position: sticky;
+            top: 51px;
+            z-index: 999;
+        }
+        #bannerActualizacion button {
+            background: #0f0f1a;
+            color: #00f2ff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-left: 8px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         /* Hero Section */
-.hero { 
-    min-height: 420px;
-    height: 100vh; /* Se adapta según la altura de la pantalla */
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; 
-    text-align: center;
-    background: linear-gradient(rgba(15, 15, 26, 0.75), rgba(15, 15, 26, 0.75)), 
-                url(https://res.cloudinary.com/kla50st7/image/upload/v1785343940/Gemini_Generated_Image_9e7gng9e7gng9e7g_okv4ap.jpg); 
-    background-size: cover;          
-    background-position: center center;
-    background-repeat: no-repeat;
-    border-bottom: 3px solid #00f2ff; 
-    margin-bottom: 30px;
-    padding: 0 20px;
-}
+        .hero { 
+            min-height: 350px;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center;
+            background: linear-gradient(rgba(15, 15, 26, 0.75), rgba(15, 15, 26, 0.75)), 
+                        url(https://res.cloudinary.com/kla50st7/image/upload/v1785343940/Gemini_Generated_Image_9e7gng9e7gng9e7g_okv4ap.jpg); 
+            background-size: cover;          
+            background-position: center;
+            border-bottom: 3px solid #00f2ff; 
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+        .hero h1 { font-size: 2.2em; margin: 0 0 10px 0; color: #ffffff; text-shadow: 0 0 15px rgba(0, 242, 255, 0.6); }
+        .hero p { font-size: 1em; margin-bottom: 20px; color: #cccccc; }
+        .btn-hero {
+            background: #00f2ff; color: #0f0f1a; padding: 10px 25px; font-size: 0.95em; font-weight: bold;
+            border: none; border-radius: 30px; cursor: pointer; text-decoration: none;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+        }
+        html { scroll-behavior: smooth; }
 
-/* Título más grande y llamativo */
-.hero h1 {
-    font-size: 3.5em; /* Aumentado de tamaño */
-    margin: 0 0 10px 0;
-    color: #ffffff;
-    text-shadow: 0 0 15px rgba(0, 242, 255, 0.6); /* Destello neón */
-    font-weight: 700;
-}
-
-.hero p {
-    font-size: 1.2em;
-    margin-bottom: 25px;
-    color: #cccccc;
-}
-
-/* Botón del Hero */
-.btn-hero {
-    background: #00f2ff;
-    color: #0f0f1a;
-    padding: 12px 30px;
-    font-size: 1em;
-    font-weight: bold;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
-}
-
-.btn-hero:hover {
-    transform: scale(1.05);
-    background: #ffffff;
-    box-shadow: 0 0 25px rgba(0, 242, 255, 0.8);
-}
-
-/* Ajuste de scroll suave para toda la página */
-html {
-    scroll-behavior: smooth;
-}
-
-        /* Tabs */
-        .tabs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
-        .tab-btn { background: #1e1e2d; border: 1px solid #333; color: white; padding: 10px 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        /* Tabs y Carruseles */
+        .tabs { display: flex; justify-content: center; gap: 8px; margin: 15px 10px; flex-wrap: wrap; }
+        .tab-btn { background: #1e1e2d; border: 1px solid #333; color: white; padding: 8px 16px; border-radius: 18px; cursor: pointer; font-size: 0.9em; transition: 0.3s; }
         .tab-btn.active { background: #00f2ff; color: black; font-weight: bold; }
+        .categoria-seccion { margin-bottom: 30px; overflow: hidden; }
+        .titulo-cat { padding-left: 20px; font-size: 1.3em; color: #00f2ff; margin-bottom: 10px; }
+        .carrusel { display: flex; overflow-x: auto; gap: 15px; padding: 15px 20px; scroll-behavior: smooth; scrollbar-width: none; }
+        .carrusel::-webkit-scrollbar { display: none; } 
 
-        /* Categorías y Carruseles */
-        .categoria-seccion { margin-bottom: 40px; overflow: hidden; animation: fadeIn 0.8s ease-in; }
-        .titulo-cat { padding-left: 20px; font-size: 1.5em; color: #00f2ff; margin-bottom: 15px; }
+        /* Tarjetas con Efecto Neón y Zoom en Hover */
+        .card { 
+            width: 220px; 
+            min-width: 220px; 
+            max-width: 220px; 
+            background: rgba(30, 30, 45, 0.75); 
+            border-radius: 16px; 
+            padding: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer; 
+            position: relative; 
+            box-sizing: border-box;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-        /* Carrusel */
-.carrusel {
-    display: flex;
-    overflow-x: auto; 
-    gap: 20px;
-    padding: 20px;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    justify-content: flex-start; /* Impide que las tarjetas se centren o estiren si hay pocas */
-    align-items: stretch;
-}
-.carrusel::-webkit-scrollbar { display: none; } 
+        .card img { 
+            width: 100%; 
+            aspect-ratio: 1 / 1; 
+            object-fit: cover; 
+            border-radius: 12px; 
+            transition: transform 0.35s ease;
+        }
 
-/* Tarjetas */
-.card { 
-    /* Fijamos el tamaño exacto para que no dependa de la cantidad */
-    width: 260px;
-    min-width: 260px; 
-    max-width: 260px;
-    
-    background: rgba(30, 30, 45, 0.7); 
-    border-radius: 20px; 
-    padding: 15px; 
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s ease;
-    cursor: pointer;
-    position: relative;
-    box-sizing: border-box; /* Asegura que el padding no altere el ancho */
-}
-        .card:hover { transform: translateY(-5px); }
-       .card img { 
-    width: 100%; 
-    aspect-ratio: 1 / 1; /* Forzar proporción cuadrada */
-    height: auto;        /* Deja que la altura se calcule sola según el ancho */
-    object-fit: cover; 
-    border-radius: 15px; 
-}
         .card h3 { 
-            font-size: 1.1em; 
-            margin: 10px 0 5px 0; 
+            font-size: 1em; 
+            margin: 8px 0 4px 0; 
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis; 
+            transition: color 0.3s ease;
+        }
+
+        /* Efecto al pasar el puntero (Hover) */
+        .card:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: #00f2ff;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4), inset 0 0 10px rgba(0, 242, 255, 0.1);
+            background: rgba(30, 30, 45, 0.95);
+        }
+
+        .card:hover img {
+            transform: scale(1.05);
+        }
+
+        .card:hover h3 {
+            color: #00f2ff;
         }
         
-        /* Badges e Indicadores de Stock */
-        .badge-stock {
-            display: inline-block;
-            font-size: 0.8em;
-            padding: 3px 8px;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
+        .badge-stock { display: inline-block; font-size: 0.75em; padding: 2px 6px; border-radius: 10px; margin-bottom: 6px; font-weight: bold; }
         .stock-disponible { background: rgba(0, 242, 255, 0.15); color: #00f2ff; border: 1px solid #00f2ff; }
         .stock-bajo { background: rgba(255, 170, 0, 0.15); color: #ffaa00; border: 1px solid #ffaa00; }
         .stock-agotado { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid #ff4d4d; }
 
-        /* Botones */
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        .btn { flex: 1; padding: 10px; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; text-align: center; }
+        .btn-group { display: flex; gap: 8px; margin-top: 8px; }
+        .btn { flex: 1; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-weight: bold; font-size: 0.85em; text-align: center; transition: all 0.2s; }
         .btn-buy { background: #25D366; color: white; } 
+        .btn-buy:hover:not(.btn-disabled) { box-shadow: 0 0 10px rgba(37, 211, 102, 0.6); }
         .btn-ask { background: #4a4a6a; color: white; }
+        .btn-ask:hover { background: #5c5c82; }
         .btn-disabled { background: #333 !important; color: #777 !important; cursor: not-allowed !important; }
 
-        /* Estilos para el Modal (Detalles) */
+        /* Modal */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 20px;
-            box-sizing: border-box;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
+            justify-content: center; align-items: center; z-index: 2000; padding: 15px; box-sizing: border-box;
         }
-
         .modal-content {
-            background: #181826;
-            border: 1px solid #00f2ff;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 25px;
-            position: relative;
+            background: #181826; border: 1px solid #00f2ff; border-radius: 18px; max-width: 450px;
+            width: 100%; max-height: 85vh; overflow-y: auto; padding: 20px; position: relative;
             box-shadow: 0 0 25px rgba(0, 242, 255, 0.2);
-            animation: fadeIn 0.3s ease-out;
         }
-
-        .cerrar-modal {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 28px;
-            color: #aaa;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+        .cerrar-modal { position: absolute; top: 12px; right: 15px; font-size: 24px; color: #aaa; cursor: pointer; }
         .cerrar-modal:hover { color: #00f2ff; }
+        .modal-img { width: 100%; aspect-ratio: 1 / 1; max-height: 280px; object-fit: contain; background: #10101c; border-radius: 12px; margin-bottom: 12px; }
+        .modal-precio { font-size: 1.2em; color: #00f2ff; font-weight: bold; margin: 5px 0; }
+        .modal-desc { color: #ccc; font-size: 0.9em; line-height: 1.5; margin: 10px 0 15px 0; white-space: pre-line; }
 
-        .modal-img {
-    width: 100%;
-    aspect-ratio: 1 / 1; /* También cuadrada en el modal */
-    max-height: 350px;   /* Para que no ocupe demasiado espacio vertical en PC */
-    object-fit: contain; /* Muestra el producto completo sin recortar nada */
-    background: #10101c;  /* Fondo oscuro por si la imagen tiene espacios libres */
-    border-radius: 15px;
-    margin-bottom: 15px;
-        }
-
-        .modal-precio {
-            font-size: 1.4em;
-            color: #00f2ff;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-
-        .modal-desc {
-            color: #ccc;
-            line-height: 1.6;
-            margin: 15px 0 20px 0;
-            white-space: pre-line;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Adaptación Responsive */
-        @media (max-width: 600px) {
-            
-            .hero { height: 350px; }
-            .hero h1 { font-size: 2.2em; }
-            .hero p { font-size: 1em; }
-            .carrusel { padding: 10px; gap: 10px; }
-            .card { 
-        width: 220px;
-        min-width: 220px; 
-        max-width: 220px;
-    }
-            .btn { font-size: 0.8em; padding: 8px; }
-            .btn-hero { padding: 10px 20px; font-size: 0.9em; }
-            .modal-content { padding: 15px; }
-            .modal-img { height: 180px; }
-        }
-
-        @media (min-width: 1024px) {
-    .hero { 
-        height: 420px; /* Evita que crezca desproporcionadamente en monitores grandes */
-        max-height: 500px;
-        background-position: center 25%; /* Enfoca la parte central/superior del setup gaming */
-    }
-
-    .hero h1 { 
-        font-size: 3.8em; 
-    }{
-            .hero { height: 400px; }
-            .carrusel { padding: 30px 50px; gap: 30px; }
-            .card:hover { 
-                transform: scale(1.03); 
-                box-shadow: 0 10px 30px rgba(0, 242, 255, 0.2);
-            }
+        @media(min-width: 768px) {
+            .navbar-hlg { padding: 15px 30px; }
+            .hero h1 { font-size: 3.5em; }
+            .hero { min-height: 420px; height: 100vh; }
+            .card { width: 260px; min-width: 260px; max-width: 260px; }
+            .nav-right input#buscador { width: 180px; }
+            .nav-right input#buscador:focus { width: 240px; }
+            .custom-select-btn { padding: 9px 30px 9px 14px; font-size: 0.9em; }
         }
     </style>
 </head>
 <body>
 
+    <div id="bannerActualizacion">
+        ✨ ¡Hay actualizaciones disponibles!
+        <button onclick="aplicarActualizacion()">Actualizar</button>
+    </div>
+
+    <header class="navbar-hlg">
+        <div class="nav-left">
+            <a onclick="restablecerTodo()" class="logo">HLG<span>-Tech</span></a>
+        </div>
+        <div class="nav-right">
+            <div class="custom-select-wrapper" id="customSelect">
+                <div class="custom-select-btn" onclick="toggleDropdown(event)">
+                    <span id="monedaTextoBtn">USD</span>
+                </div>
+                <div class="custom-dropdown" id="customDropdown">
+                    <div class="custom-option" onclick="seleccionarMoneda('USD', 'USD')">USD</div>
+                    <div class="custom-option" onclick="seleccionarMoneda('CUP', 'CUP')">CUP</div>
+                </div>
+            </div>
+
+            <input type="text" id="buscador" placeholder="Buscar..." autocomplete="off">
+            <div id="sugerenciasBox" class="sugerencias-box"></div>
+        </div>
+    </header>
+
+    <div id="toastInventario">✅ ¡Inventario al día y sincronizado!</div>
+
     <header class="hero">
-<p style="text-align: center; color: #00f2ff;">
-                        Hardware & Gaming Premium
-                      </p>
-    <h1>Maximiza tu Potencial</h1>
-    <p>Componentes, PCs Gamers, Teléfonos y Accesorios de última generación. Construye la máquina de tus sueños</p>
-    
-    <!-- Botón con enlace al catálogo -->
-    <a href="#categoryTabs" class="btn-hero">Ver Catálogo</a>
-</header>
+        <p style="color: #00f2ff;">Hardware & Gaming Premium</p>
+        <h1>Maximiza tu Potencial</h1>
+        <p>Componentes, PCs Gamers, Teléfonos y Accesorios.</p>
+        <a href="#categoryTabs" class="btn-hero">Ver Catálogo</a>
+    </header>
 
     <div class="tabs" id="categoryTabs"></div>
     <div id="app"></div>
     
-    <div id="loader" style="text-align: center; padding: 50px; color: #00f2ff;">
+    <div id="loader" style="text-align: center; padding: 40px; color: #00f2ff;">
         Cargando catálogo...
     </div>
 
-    <!-- ESTRUCTURA DEL MODAL -->
     <div id="modalProducto" class="modal" onclick="cerrarDetalles(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="cerrar-modal" onclick="cerrarDetalles()">&times;</span>
             <img id="modalImg" class="modal-img" src="" alt="Producto">
-            <h2 id="modalTitulo" style="margin: 0; color: white;"></h2>
+            <h2 id="modalTitulo" style="margin: 0; font-size: 1.2em; color: white;"></h2>
             <div id="modalPrecio" class="modal-precio"></div>
             <div id="modalStock"></div>
             <p id="modalDesc" class="modal-desc"></p>
             <div class="btn-group">
-                <button id="modalBtnBuy" class="btn btn-buy">?=¡Comprar Ahora!</button>
+                <button id="modalBtnBuy" class="btn btn-buy">¡Comprar Ahora!</button>
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = 'https://sheetdb.io/api/v1/315mpve04cyog';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwDDv6JsXCYPZfS9n4n494iQ_nuEQx7qQWeJK1T0q4nTAwcMmfLo491X-C1Ik70R221Zw/exec';
         let todosLosProductos = [];
+        let tasaCambioCUP = 320;
+        let monedaActual = 'USD';
+        let datosNuevosEnEspera = null;
 
-        async function cargar() {
+        async function cargar(esSilencioso = false) {
             try {
                 const res = await fetch(API_URL);
                 const data = await res.json();                
-                todosLosProductos = data.filter(p => {
-            const visible = String(p.Mostrar).toUpperCase();
-            return visible === 'TRUE' || visible === '1';
-        });
-                crearCategorias();
-                renderizar(todosLosProductos);
-                document.getElementById('loader').style.display = 'none';
+                
+                const productosProcesados = data.productos.filter(p => {
+                    const visible = String(p.Mostrar).toUpperCase();
+                    return visible === 'TRUE' || visible === '1';
+                });
+                const nuevaTasa = parseFloat(data.tasa) || 320;
+
+                if (esSilencioso) {
+                    if (JSON.stringify(productosProcesados) !== JSON.stringify(todosLosProductos) || nuevaTasa !== tasaCambioCUP) {
+                        datosNuevosEnEspera = { productos: productosProcesados, tasa: nuevaTasa };
+                        document.getElementById('bannerActualizacion').style.display = 'block';
+                    }
+                } else {
+                    todosLosProductos = productosProcesados;
+                    tasaCambioCUP = nuevaTasa;
+                    crearCategorias();
+                    renderizar(todosLosProductos);
+                    document.getElementById('loader').style.display = 'none';
+                }
             } catch (error) {
-                document.getElementById('loader').innerText = 'Error al cargar los productos.';
+                if (!esSilencioso) document.getElementById('loader').innerText = 'Error al cargar los productos.';
             }
+        }
+
+        function aplicarActualizacion() {
+            if (datosNuevosEnEspera) {
+                todosLosProductos = datosNuevosEnEspera.productos;
+                tasaCambioCUP = datosNuevosEnEspera.tasa;
+                crearCategorias();
+                const botonActivo = document.querySelector('.tab-btn.active');
+                filtrar(botonActivo ? botonActivo.innerText : 'Todos', null);
+                document.getElementById('bannerActualizacion').style.display = 'none';
+                datosNuevosEnEspera = null;
+                mostrarToast();
+            }
+        }
+
+        function mostrarToast() {
+            const toast = document.getElementById('toastInventario');
+            toast.className = 'show';
+            setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 3500);
+        }
+
+        function formatearPrecio(precioUSD) {
+            const num = parseFloat(precioUSD) || 0;
+            if (monedaActual === 'CUP') {
+                const totalCUP = num * tasaCambioCUP;
+                return `${totalCUP.toLocaleString('es-CU')} CUP`;
+            } else {
+                return `$${num.toFixed(2)} USD`;
+            }
+        }
+
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            document.getElementById('customDropdown').classList.toggle('open');
+            document.getElementById('sugerenciasBox').style.display = 'none';
+        }
+
+        function seleccionarMoneda(valor, textoEtiqueta) {
+            monedaActual = valor;
+            document.getElementById('monedaTextoBtn').innerText = textoEtiqueta;
+            document.getElementById('customDropdown').classList.remove('open');
+            const botonActivo = document.querySelector('.tab-btn.active');
+            filtrar(botonActivo ? botonActivo.innerText : 'Todos', null);
+        }
+
+        function restablecerTodo() {
+            document.getElementById('buscador').value = '';
+            document.getElementById('sugerenciasBox').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            filtrar('Todos', document.querySelector('.tab-btn'));
+            mostrarToast();
         }
 
         function crearCategorias() {
@@ -313,34 +485,28 @@ html {
         }
 
         function filtrar(cat, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-            
+            if(btn) {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
             const filtrados = cat === 'Todos' ? todosLosProductos : todosLosProductos.filter(p => p.Categoria === cat);
             renderizar(filtrados);
         }
 
-        // Función auxilar para dar formato al badge de Stock
         function obtenerBadgeStock(stockVal) {
             const num = parseInt(stockVal) || 0;
-            if (num <= 0) {
-                return `<span class="badge-stock stock-agotado">Agotado</span>`;
-            } else if (num <= 3) {
-                return `<span class="badge-stock stock-bajo">¡Últimas ${num} unidades!</span>`;
-            } else {
-                return `<span class="badge-stock stock-disponible">Stock: ${num} disponibles</span>`;
-            }
+            if (num <= 0) return `<span class="badge-stock stock-agotado">Agotado</span>`;
+            if (num <= 3) return `<span class="badge-stock stock-bajo">¡Últimas ${num}!</span>`;
+            return `<span class="badge-stock stock-disponible">Stock: ${num}</span>`;
         }
 
         function renderizar(lista) {
             const app = document.getElementById('app');
             app.innerHTML = ''; 
-
             const cats = [...new Set(lista.map(p => p.Categoria))];
 
             cats.forEach(cat => {
                 const productosPorCat = lista.filter(p => p.Categoria === cat);
-                
                 const seccion = document.createElement('div');
                 seccion.className = 'categoria-seccion';
                 seccion.innerHTML = `
@@ -349,42 +515,43 @@ html {
                         ${productosPorCat.map((p) => {
                             const stockNum = parseInt(p.Stock) || 0;
                             const estaAgotado = stockNum <= 0;
+                            const precioMostrado = formatearPrecio(p.Precio);
                             
                             return `
                             <div class="card" onclick="abrirDetalles('${p.Nombre.replace(/'/g, "\\'")}')">
                                 <img src="${p.Imagen_URL}" alt="${p.Nombre}">
                                 <h3>${p.Nombre}</h3>
-                                <p style="color:#aaa; margin: 2px 0;">$${p.Precio} USD</p>
+                                <p style="color:#aaa; margin: 2px 0; font-size: 0.9em;">${precioMostrado}</p>
                                 ${obtenerBadgeStock(p.Stock)}
                                 <div class="btn-group" onclick="event.stopPropagation()">
                                     <button class="btn btn-buy ${estaAgotado ? 'btn-disabled' : ''}" 
                                             ${estaAgotado ? 'disabled' : ''} 
-                                            onclick="window.location.href='https://wa.me/5350110410?text=Hola, quiero comprar: ${encodeURIComponent(p.Nombre)}'">
-                                        ${estaAgotado ? 'Agotado' : 'Comprar'}
+                                            onclick="window.location.href='https://wa.me/5350110410?text=Hola, quiero comprar: ${encodeURIComponent(p.Nombre)} (${precioMostrado})'">
+                                        ${estaAgotado ? 'Agotado' : 'Comprar Ahora'}
                                     </button>
-                                    <button class="btn btn-ask" onclick="window.location.href='https://wa.me/5350110410?text=Tengo una duda sobre: ${encodeURIComponent(p.Nombre)}'">Preguntar</button>
+                                    <button class="btn btn-ask" onclick="window.location.href='https://wa.me/5350110410?text=Hola, quiero saber más de: ${encodeURIComponent(p.Nombre)}'">Saber más...</button>
                                 </div>
                             </div>
-                        `}).join('')}
+                            `}).join('')}
                     </div>
                 `;
                 app.appendChild(seccion);
             });
         }
 
-        // FUNCIONES DEL MODAL
         function abrirDetalles(nombreProducto) {
             const prod = todosLosProductos.find(p => p.Nombre === nombreProducto);
             if (!prod) return;
 
             const stockNum = parseInt(prod.Stock) || 0;
             const estaAgotado = stockNum <= 0;
+            const precioMostrado = formatearPrecio(prod.Precio);
 
             document.getElementById('modalImg').src = prod.Imagen_URL;
             document.getElementById('modalTitulo').innerText = prod.Nombre;
-            document.getElementById('modalPrecio').innerText = `$${prod.Precio} USD`;
+            document.getElementById('modalPrecio').innerText = precioMostrado;
             document.getElementById('modalStock').innerHTML = obtenerBadgeStock(prod.Stock);
-            document.getElementById('modalDesc').innerText = prod.Descripcion || prod.Detalle || 'Sin descripción disponible para este producto.';
+            document.getElementById('modalDesc').innerText = prod.Descripcion || prod.Detalle || 'Sin descripción disponible.';
 
             const btnBuy = document.getElementById('modalBtnBuy');
             if (estaAgotado) {
@@ -392,13 +559,12 @@ html {
                 btnBuy.className = 'btn btn-buy btn-disabled';
                 btnBuy.onclick = null;
             } else {
-                btnBuy.innerText = 'Comprar por WhatsApp';
+                btnBuy.innerText = 'Comprar Ahora';
                 btnBuy.className = 'btn btn-buy';
                 btnBuy.onclick = () => {
-                    window.location.href = `https://wa.me/5350110410?text=Hola, quiero comprar: ${encodeURIComponent(prod.Nombre)}`;
+                    window.location.href = `https://wa.me/5350110410?text=Hola, quiero comprar: ${encodeURIComponent(prod.Nombre)} (${precioMostrado})`;
                 };
             }
-
             document.getElementById('modalProducto').style.display = 'flex';
         }
 
@@ -408,29 +574,65 @@ html {
             }
         }
 
-        cargar();
-    </script>
- <hr>
-    <div class="footer">
-      <p style="text-align: center; padding: 50px; color: #00f2ff;">
-                        &copy; 2026 Hlg-Tech.
-                         Todos los derechos reservados
-                      </p>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
+        const inputBuscador = document.getElementById('buscador');
+        const sugerenciasBox = document.getElementById('sugerenciasBox');
 
-          </table>
-          <!--[if (gte mso 9)|(IE)]>
-              </td>
-            </tr>
-          </table>
-          <![endif]-->
-        </td>
-      </tr>
-    </table>
-  </center>
+        inputBuscador.addEventListener('input', function(e) {
+            const textoBusqueda = e.target.value.toLowerCase().trim();
+            document.querySelectorAll('.card').forEach(tarjeta => {
+                const nombreProducto = tarjeta.innerText.toLowerCase();
+                tarjeta.style.display = nombreProducto.includes(textoBusqueda) ? 'block' : 'none';
+            });
+
+            if (textoBusqueda === '') {
+                sugerenciasBox.style.display = 'none';
+                sugerenciasBox.innerHTML = '';
+                return;
+            }
+
+            const coincidences = todosLosProductos.filter(p => p.Nombre.toLowerCase().includes(textoBusqueda));
+            if (coincidences.length > 0) {
+                sugerenciasBox.style.display = 'block';
+                sugerenciasBox.innerHTML = coincidences.map(p => `
+                    <div class="sugerencia-item" onclick="seleccionarSugerencia('${p.Nombre.replace(/'/g, "\\'")}')">
+                        <img src="${p.Imagen_URL}" alt="${p.Nombre}">
+                        <div class="sugerencia-info">
+                            <h4>${p.Nombre}</h4>
+                            <span>${formatearPrecio(p.Precio)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                sugerenciasBox.style.display = 'block';
+                sugerenciasBox.innerHTML = `<div style="padding: 10px; text-align: center; color: #888; font-size: 0.8em;">Sin resultados</div>`;
+            }
+        });
+
+        function seleccionarSugerencia(nombreProducto) {
+            sugerenciasBox.style.display = 'none';
+            inputBuscador.value = '';
+            document.querySelectorAll('.card').forEach(t => t.style.display = 'block');
+            abrirDetalles(nombreProducto);
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!document.getElementById('customSelect').contains(e.target)) {
+                document.getElementById('customDropdown').classList.remove('open');
+            }
+            if (!document.querySelector('.nav-right').contains(e.target)) {
+                sugerenciasBox.style.display = 'none';
+            }
+        });
+
+        cargar(false);
+        setInterval(() => { cargar(true); }, 60000);
+    </script>
+
+    <hr style="border-color: rgba(255,255,255,0.1); margin-top: 40px;">
+    <footer>
+        <p style="text-align: center; padding: 15px; color: #00f2ff; font-size: 0.85em;">
+            &copy; 2026 Hlg-Tech. Todos los derechos reservados.
+        </p>
+    </footer>
 </body>
 </html>
