@@ -12,10 +12,9 @@
             color: white; 
             margin: 0; 
             overflow-x: hidden;
-            padding-bottom: 70px; /* Espacio para la barra inferior flotante en móviles */
+            padding-bottom: 70px;
         }
 
-        /* Barra de Navegación Superior con el mismo estilo de la barra inferior */
         .navbar-hlg {
             position: sticky;
             top: 0;
@@ -54,7 +53,53 @@
             flex: 1;
         }
 
-        /* Nueva Barra Inferior Flotante para Móviles */
+        .notification-banner {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #181828, #1f1f3a);
+            border: 1px solid #00f2ff;
+            box-shadow: 0 5px 20px rgba(0, 242, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 2500;
+            animation: fadeInDown 0.4s ease;
+            max-width: 90%;
+            box-sizing: border-box;
+        }
+        .notification-banner span {
+            font-size: 0.85em;
+            color: #fff;
+        }
+        .notification-banner button {
+            background: #00f2ff;
+            color: #0f0f1a;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        .order-alert-box {
+            background: rgba(0, 242, 255, 0.08);
+            border: 1px dashed #00f2ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 0.85em;
+        }
+
         .bottom-nav-bar {
             position: fixed;
             bottom: 0;
@@ -132,7 +177,6 @@
             border: 2px solid #0f0f1a;
         }
 
-        /* Paneles Laterales (Drawers) */
         .drawer {
             position: fixed;
             top: 0;
@@ -184,7 +228,6 @@
         }
         .drawer-overlay.open { display: block; }
 
-        /* Estilo Carpetas / Acordeón para el Panel de Usuario */
         .folder-group {
             margin-bottom: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -228,7 +271,6 @@
             display: block;
         }
 
-        /* Items del Carrito */
         .cart-item {
             display: flex;
             align-items: center;
@@ -274,7 +316,6 @@
             padding: 0 5px;
         }
 
-        /* Selector de Moneda, Inputs y Componentes de Selección Personalizados */
         .custom-select-wrapper { position: relative; user-select: none; }
         .custom-select-btn {
             background-color: #181828;
@@ -315,7 +356,6 @@
         }
         .custom-option:hover { background: rgba(0, 242, 255, 0.15); color: #00f2ff; }
 
-        /* Selectores Custom */
         .dropdown-box-custom {
             position: relative;
             width: 100%;
@@ -388,31 +428,6 @@
             box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
         }
 
-        .sugerencias-box {
-            display: none;
-            position: absolute;
-            right: 15px;
-            top: calc(100% + 8px);
-            width: 220px;
-            background: #181826;
-            border: 1px solid #00f2ff;
-            border-radius: 12px;
-            max-height: 280px;
-            overflow-y: auto;
-            z-index: 1300;
-        }
-        .sugerencia-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            cursor: pointer;
-        }
-        .sugerencia-item:hover { background: rgba(0, 242, 255, 0.1); }
-        .sugerencia-item img { width: 30px; height: 30px; object-fit: cover; border-radius: 6px; }
-
-        /* Hero Section */
         .hero { 
             min-height: 350px;
             display: flex; 
@@ -470,7 +485,6 @@
         .btn-ask { background: #4a4a6a; color: white; }
         .btn-disabled { background: #333 !important; color: #777 !important; cursor: not-allowed !important; }
 
-        /* Modales */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
@@ -508,17 +522,14 @@
         }
         .alert-btn { background-color: #00f2ff; color: #0f0f1a; border: none; padding: 10px 20px; font-weight: bold; border-radius: 20px; cursor: pointer; width: 100%; }
 
-        /* Tarjetas de Órdenes y Direcciones */
         .order-card {
             background: #1c1c2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; margin-bottom: 10px; font-size: 0.85em;
         }
         .order-status { font-weight: bold; padding: 2px 6px; border-radius: 6px; display: inline-block; font-size: 0.75em; }
         .status-espera { background: rgba(255,170,0,0.2); color: #ffaa00; }
         .status-procesando { background: rgba(0,242,255,0.2); color: #00f2ff; }
-        .status-camino { background: rgba(150,0,255,0.2); color: #d480ff; }
         .status-completado { background: rgba(37,211,102,0.2); color: #25D366; }
 
-        /* Loader global de operaciones */
         #globalLoaderOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 15, 26, 0.8); backdrop-filter: blur(4px);
@@ -535,7 +546,12 @@
 </head>
 <body>
 
-    <!-- Loader Global para operaciones lentas -->
+    <div id="updateNotificationBanner" class="notification-banner">
+        <svg style="width:18px;height:18px;stroke:#00f2ff;fill:none;stroke-width:2;" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <span id="updateBannerText">Hay cambios recientes en los productos.</span>
+        <button onclick="cargar(); ocultarBannerActualizacion();">Actualizar</button>
+    </div>
+
     <div id="globalLoaderOverlay">
         <div class="spinner-hlg"></div>
         <span id="globalLoaderText">Actualizando catálogo...</span>
@@ -549,7 +565,6 @@
         </div>
     </div>
 
-    <!-- Barra Superior: Mismo color y estilo que la barra inferior -->
     <header class="navbar-hlg">
         <div class="nav-left">
             <a onclick="restablecerTodo(); location.reload();" class="logo">HLG<span>-Tech</span></a>
@@ -564,26 +579,18 @@
                     <div class="custom-option" onclick="seleccionarMoneda('CUP', 'CUP')">CUP</div>
                 </div>
             </div>
-
             <input type="text" id="buscador" placeholder="Buscar..." autocomplete="off">
-            <div id="sugerenciasBox" class="sugerencias-box"></div>
         </div>
     </header>
 
-    <!-- Barra Inferior Flotante Móvil -->
     <nav class="bottom-nav-bar">
-        <!-- Carrito a la izquierda -->
         <button class="bottom-nav-btn" onclick="abrirDrawerCarrito()" title="Ver Carrito">
             <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
             <span id="cartBadge" class="cart-badge" style="display: none;">0</span>
         </button>
-
-        <!-- Botón Home / Refrescar en el centro -->
-        <button class="bottom-nav-btn home-center" onclick="restablecerTodo(); location.reload();" title="Actualizar Catálogo">
+        <button class="bottom-nav-btn home-center" onclick="cargar(); ocultarBannerActualizacion();" title="Actualizar Catálogo">
             <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
         </button>
-
-        <!-- Usuario a la derecha -->
         <button class="bottom-nav-btn" onclick="abrirDrawerUsuario()" title="Panel de Usuario">
             <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         </button>
@@ -591,7 +598,6 @@
 
     <div id="drawerOverlay" class="drawer-overlay" onclick="cerrarTodosLosDrawers()"></div>
 
-    <!-- Drawer Carrito de Compras & Checkout -->
     <div id="cartDrawer" class="drawer">
         <div class="drawer-header">
             <h3>Tu Carrito de Compras</h3>
@@ -609,7 +615,6 @@
         </div>
     </div>
 
-    <!-- Drawer Usuario / Perfil en formato Carpetas Verticales -->
     <div id="userDrawer" class="drawer">
         <div class="drawer-header">
             <h3 id="drawerTitulo">Mi Cuenta</h3>
@@ -617,17 +622,14 @@
         </div>
         <div class="drawer-body">
             
-            <!-- VISTA LOGIN SI NO ESTÁ AUTENTICADO -->
             <div id="vistaLoginUnico">
-                <div class="form-group"><label>Correo Electrónico (@gmail.com)</label><input type="email" id="loginCorreo" placeholder="tucorreo@gmail.com"></div>
+                <div class="form-group"><label>Correo Electrónico</label><input type="email" id="loginCorreo" placeholder="tucorreo@gmail.com"></div>
                 <div class="form-group"><label>Contraseña</label><input type="password" id="loginPassword" placeholder="Tu contraseña"></div>
                 <button onclick="iniciarSesionUsuario()" class="btn btn-buy" style="width: 100%; margin-top: 5px; padding: 10px;">Entrar</button>
             </div>
 
-            <!-- VISTA PANEL CON CARPETAS VERTICALES SI ESTÁ AUTENTICADO -->
             <div id="vistaPanelLogueado" style="display: none;">
                 
-                <!-- CARPETA 1: PERFIL -->
                 <div class="folder-group" id="folderPerfil">
                     <button class="folder-btn" onclick="toggleFolder('folderPerfil')">1. Perfil y Seguridad</button>
                     <div class="folder-content">
@@ -648,12 +650,10 @@
                             <input type="password" id="passNueva" placeholder="••••••••">
                         </div>
                         <button onclick="cambiarContrasenaUsuario()" class="btn btn-ask" style="width: 100%; padding: 8px; font-size: 0.85em; margin-bottom: 10px;">Actualizar Contraseña</button>
-
                         <button onclick="cerrarSesionUsuario()" class="btn" style="width: 100%; background: rgba(255, 77, 77, 0.2); color: #ff4d4d; border: 1px solid #ff4d4d; padding: 8px; font-size: 0.85em; margin-top:5px;">Cerrar Sesión</button>
                     </div>
                 </div>
 
-                <!-- CARPETA 2: DIRECCIONES -->
                 <div class="folder-group" id="folderDirecciones">
                     <button class="folder-btn" onclick="toggleFolder('folderDirecciones'); renderizarDirecciones();">2. Direcciones de Entrega</button>
                     <div class="folder-content">
@@ -662,7 +662,6 @@
                     </div>
                 </div>
 
-                <!-- CARPETA 3: ÓRDENES -->
                 <div class="folder-group" id="folderOrdenes">
                     <button class="folder-btn" onclick="toggleFolder('folderOrdenes'); cargarOrdenesUsuario();">3. Registro de Órdenes</button>
                     <div class="folder-content">
@@ -676,7 +675,6 @@
         </div>
     </div>
 
-    <!-- Modal Añadir Dirección -->
     <div id="modalDireccion" class="modal">
         <div class="modal-content">
             <span class="cerrar-modal" onclick="cerrarModalDireccion()">&times;</span>
@@ -685,7 +683,7 @@
             <div class="form-group">
                 <label>Provincia</label>
                 <div class="dropdown-box-custom" id="customProvinciaBox">
-                    <div class="dropdown-box-toggle" id="provinciaToggleBtn" onclick="toggleCustomBox('customProvinciaMenu')">Seleccione Provincia...</div>
+                    <div class="dropdown-box-toggle" id="provinciaToggleBtn" onclick="toggleCustomBox('customProvinciaMenu', event)">Seleccione Provincia...</div>
                     <div class="dropdown-box-menu" id="customProvinciaMenu"></div>
                 </div>
             </div>
@@ -693,41 +691,61 @@
             <div class="form-group">
                 <label>Municipio</label>
                 <div class="dropdown-box-custom" id="customMunicipioBox">
-                    <div class="dropdown-box-toggle" id="municipioToggleBtn" onclick="toggleCustomBox('customMunicipioMenu')">Seleccione Municipio...</div>
+                    <div class="dropdown-box-toggle" id="municipioToggleBtn" onclick="toggleCustomBox('customMunicipioMenu', event)">Seleccione Municipio...</div>
                     <div class="dropdown-box-menu" id="customMunicipioMenu"></div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Dirección Exacta</label>
-                <input type="text" id="dirExacta" placeholder="Calle, número, entre calles...">
+                <input type="text" id="dirExacta" placeholder="Calle, número...">
             </div>
             <button onclick="guardarDireccionUsuario()" class="btn btn-buy" style="width: 100%; padding: 10px; margin-top: 5px;">Guardar Dirección</button>
         </div>
     </div>
 
-    <!-- Modal Checkout (Procesar Pago) -->
     <div id="modalCheckout" class="modal">
         <div class="modal-content">
             <span class="cerrar-modal" onclick="cerrarModalCheckout()">&times;</span>
-            <h3 style="color: #00f2ff; margin-top: 0;">Finalizar Compra</h3>
+            <h3 style="color: #00f2ff; margin-top: 0;">Finalizar Compra / Reserva</h3>
             
             <div class="form-group">
                 <label>Seleccionar Dirección de Envío</label>
                 <div class="dropdown-box-custom" id="customCheckoutDirBox">
-                    <div class="dropdown-box-toggle" id="checkoutDirToggleBtn" onclick="toggleCustomBox('customCheckoutDirMenu')">Seleccione Dirección...</div>
+                    <div class="dropdown-box-toggle" id="checkoutDirToggleBtn" onclick="toggleCustomBox('customCheckoutDirMenu', event)">Seleccione Dirección...</div>
                     <div class="dropdown-box-menu" id="customCheckoutDirMenu"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo de Pedido</label>
+                <div class="dropdown-box-custom" id="customTipoPedidoBox">
+                    <div class="dropdown-box-toggle" id="tipoPedidoToggleBtn" onclick="toggleCustomBox('customTipoPedidoMenu', event)">Entrega Inmediata / Normal</div>
+                    <div class="dropdown-box-menu" id="customTipoPedidoMenu">
+                        <div class="dropdown-box-item" onclick="seleccionarTipoPedido('Entrega Inmediata')">Entrega Inmediata / Normal</div>
+                        <div class="dropdown-box-item" onclick="seleccionarTipoPedido('Reserva Programada')">Reservar para Fecha y Hora</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="seccionFechaReserva" style="display: none; background: #10101c; padding: 10px; border-radius: 10px; border: 1px solid rgba(0,242,255,0.2); margin-bottom: 14px;">
+                <div class="form-group" style="margin-bottom: 8px;">
+                    <label>Fecha de Reserva</label>
+                    <input type="date" id="inputFechaReserva" style="background: #181828;">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Hora Estimada</label>
+                    <input type="time" id="inputHoraReserva" style="background: #181828;">
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Método de Pago</label>
                 <div class="dropdown-box-custom" id="customPagoBox">
-                    <div class="dropdown-box-toggle" id="pagoToggleBtn" onclick="toggleCustomBox('customPagoMenu')">Transferencia Bancaria</div>
+                    <div class="dropdown-box-toggle" id="pagoToggleBtn" onclick="toggleCustomBox('customPagoMenu', event)">Transferencia Bancaria</div>
                     <div class="dropdown-box-menu" id="customPagoMenu">
                         <div class="dropdown-box-item" onclick="seleccionarMetodoPago('Transferencia Bancaria')">Transferencia Bancaria</div>
                         <div class="dropdown-box-item" onclick="seleccionarMetodoPago('Efectivo al Recibir')">Efectivo al Recibir</div>
-                        <div class="dropdown-box-item" onclick="seleccionarMetodoPago('Pasarela Externa')">Pasarela de Pago (Próximamente)</div>
                     </div>
                 </div>
             </div>
@@ -736,7 +754,7 @@
                 <p style="margin: 0; font-size: 0.85em; color: #ccc;">Importe Total a Pagar:</p>
                 <h3 id="checkoutImporteTotal" style="color: #00f2ff; margin: 5px 0 0 0;">$0.00</h3>
             </div>
-            <button onclick="enviarOrdenAlBackend()" class="btn btn-buy" style="width: 100%; padding: 10px;">Enviar Pedido para Autorización</button>
+            <button onclick="enviarOrdenAlBackend()" class="btn btn-buy" style="width: 100%; padding: 10px;">Enviar Pedido / Reserva</button>
         </div>
     </div>
 
@@ -763,9 +781,9 @@
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzeQkhMz_CCmlMGvkPBQ7BWwWJ3CjbxVa5UkOY296g5WLSatT8BJXCKsnCq9fGvncUG/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbw6_iYjmDIfmguBPIwnO9ed3wYPYxQEtBXKHCd75WOhKARpUOgMgp8wwqPPVVyQ-jDXxQ/exec';
         let todosLosProductos = [];
-        let tasaCambioCUP = 320;
+        let tasaCambioCUP = 650;
         let monedaActual = 'USD';
         let usuarioActual = null;
         let carrito = [];
@@ -777,6 +795,34 @@
         let municipioSeleccionadaValor = "";
         let direccionCheckoutSeleccionadaIndex = 0;
         let metodoPagoSeleccionado = "Transferencia Bancaria";
+        let tipoPedidoSeleccionado = "Entrega Inmediata";
+
+        let firmaCatalogoAnterior = "";
+
+        // Funciones para Notificaciones Nativas del Navegador (Gratis y sin límites)
+        function solicitarPermisoNotificaciones() {
+            if (window.Notification && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+        }
+
+        function dispararNotificacionNativa(titulo, cuerpo) {
+            if (window.Notification && Notification.permission === "granted") {
+                new Notification(titulo, {
+                    body: cuerpo,
+                    icon: "https://res.cloudinary.com/kla50st7/image/upload/v1785343940/Gemini_Generated_Image_9e7gng9e7gng9e7g_okv4ap.jpg"
+                });
+            }
+        }
+
+        function mostrarBannerActualizacion(mensaje = "Se han actualizado los productos del catálogo.") {
+            document.getElementById('updateBannerText').innerText = mensaje;
+            document.getElementById('updateNotificationBanner').style.display = 'flex';
+        }
+
+        function ocultarBannerActualizacion() {
+            document.getElementById('updateNotificationBanner').style.display = 'none';
+        }
 
         function mostrarLoaderGlobal(texto = "Actualizando catálogo...") {
             document.getElementById('globalLoaderText').innerText = texto;
@@ -791,14 +837,12 @@
             document.querySelectorAll('.dropdown-box-menu').forEach(m => m.classList.remove('open'));
         }
 
-        function toggleCustomBox(menuId) {
-            event.stopPropagation();
+        function toggleCustomBox(menuId, e) {
+            if (e) e.stopPropagation();
             const menu = document.getElementById(menuId);
             const isOpen = menu.classList.contains('open');
             cerrarTodosLosMenusDesplegablesCustom();
-            if (!isOpen) {
-                menu.classList.add('open');
-            }
+            if (!isOpen) menu.classList.add('open');
         }
 
         window.addEventListener('click', () => {
@@ -807,7 +851,7 @@
         });
 
         function inicializarProvinciasDireccion() {
-            const provinciasUnicas = [...new Set(listaUbicacionesTabulares.map(u => u.Provincia))].filter(Boolean);
+            const provinciasUnicas = [...new Set(listaUbicacionesTabulares.map(u => u.Provincia || u.provincia))].filter(Boolean);
             const menuProv = document.getElementById('customProvinciaMenu');
             
             provinciaSeleccionadaValor = "";
@@ -829,8 +873,8 @@
             document.getElementById('municipioToggleBtn').innerText = "Seleccione Municipio...";
 
             const municipios = listaUbicacionesTabulares
-                .filter(u => u.Provincia === provincia)
-                .map(u => u.Municipio)
+                .filter(u => (u.Provincia || u.provincia) === provincia)
+                .map(u => u.Municipio || u.municipio)
                 .filter(Boolean);
 
             const menuMuni = document.getElementById('customMunicipioMenu');
@@ -849,6 +893,21 @@
             document.getElementById('pagoToggleBtn').innerText = metodo;
         }
 
+        function seleccionarTipoPedido(tipo) {
+            tipoPedidoSeleccionado = tipo;
+            document.getElementById('tipoPedidoToggleBtn').innerText = tipo;
+            
+            const seccionReserva = document.getElementById('seccionFechaReserva');
+            if (tipo === 'Reserva Programada') {
+                seccionReserva.style.display = 'block';
+                const hoy = new Date().toISOString().split('T')[0];
+                document.getElementById('inputFechaReserva').min = hoy;
+                document.getElementById('inputFechaReserva').value = hoy;
+            } else {
+                seccionReserva.style.display = 'none';
+            }
+        }
+
         function mostrarAlerta(titulo, mensaje) {
             document.getElementById('alert-title').textContent = titulo;
             document.getElementById('alert-message').textContent = mensaje;
@@ -864,29 +923,61 @@
             try {
                 const res = await fetch(API_URL);
                 const data = await res.json();                
-                todosLosProductos = data.productos.filter(p => String(p.Mostrar).toUpperCase() === 'TRUE' || String(p.Mostrar) === '1');
-                tasaCambioCUP = parseFloat(data.tasa) || 320;
+                
+                todosLosProductos = (data.productos || []).filter(p => String(p.Mostrar).toUpperCase() === 'TRUE' || String(p.Mostrar) === '1');
+                tasaCambioCUP = data.tasa ? parseFloat(data.tasa) : 650;
                 listaUbicacionesTabulares = data.ubicaciones || [];
+                
+                firmaCatalogoAnterior = generarFirmaCatalogo(todosLosProductos, tasaCambioCUP);
                 
                 crearCategorias();
                 renderizar(todosLosProductos);
                 inicializarProvinciasDireccion();
                 loaderDiv.style.display = 'none';
+                ocultarBannerActualizacion();
             } catch (err) {
+                console.error("Error al procesar el catálogo:", err);
                 loaderDiv.innerHTML = `
-                    <p style="color: #ff4d4d; margin-bottom: 12px;">Error al cargar el catálogo de productos.</p>
+                    <p style="color: #ff4d4d; margin-bottom: 12px;">Error al procesar los datos del catálogo.</p>
                     <button onclick="cargar()" class="btn btn-buy" style="max-width: 200px; margin: 0 auto; padding: 8px 16px;">🔄 Recargar</button>
                 `;
             }
         }
 
+        function generarFirmaCatalogo(productos, tasa) {
+            const detalleProductos = productos.map(p => `${p.Nombre}_${p.Precio}_${p.Stock}`).join('|');
+            return `tasa:${tasa}|prod:${detalleProductos}`;
+        }
+
+        async function verificarActualizacionesCatalog() {
+            try {
+                const res = await fetch(API_URL + "?t=" + new Date().getTime());
+                const data = await res.json();
+                
+                const nuevosProductos = (data.productos || []).filter(p => String(p.Mostrar).toUpperCase() === 'TRUE' || String(p.Mostrar) === '1');
+                const nuevaTasa = data.tasa ? parseFloat(data.tasa) : 650;
+                
+                const firmaNueva = generarFirmaCatalogo(nuevosProductos, nuevaTasa);
+
+                if (!firmaCatalogoAnterior) {
+                    firmaCatalogoAnterior = firmaNueva;
+                    return;
+                }
+
+                if (firmaCatalogoAnterior !== firmaNueva) {
+                    mostrarBannerActualizacion("Se detectaron cambios en precios, productos o tasa.");
+                }
+            } catch (e) {
+                console.error("Error al verificar actualizaciones en segundo plano", e);
+            }
+        }
+        setInterval(verificarActualizacionesCatalog, 30000);
+
         function toggleFolder(folderId) {
             const folder = document.getElementById(folderId);
             const isOpen = folder.classList.contains('active');
             document.querySelectorAll('.folder-group').forEach(f => f.classList.remove('active'));
-            if (!isOpen) {
-                folder.classList.add('active');
-            }
+            if (!isOpen) folder.classList.add('active');
         }
 
         function agregarAlCarrito(nombre) {
@@ -965,13 +1056,15 @@
             }
             
             direccionCheckoutSeleccionadaIndex = 0;
-            document.getElementById('checkoutDirToggleBtn').innerText = `${direccionesGuardadas[0].provincia}, ${direccionesGuardadas[0].municipio} - ${direccionesGuardadas[0].exacta}`;
+            const d0 = direccionesGuardadas[0];
+            document.getElementById('checkoutDirToggleBtn').innerText = `${d0.provincia || d0.Provincia}, ${d0.municipio || d0.Municipio} - ${d0.exacta || d0.Direccion_Exacta}`;
             
             const menuDir = document.getElementById('customCheckoutDirMenu');
             menuDir.innerHTML = direccionesGuardadas.map((d, index) => `
-                <div class="dropdown-box-item" onclick="seleccionarDireccionCheckout(${index})">${d.provincia}, ${d.municipio} - ${d.exacta}</div>
+                <div class="dropdown-box-item" onclick="seleccionarDireccionCheckout(${index})">${d.provincia || d.Provincia}, ${d.municipio || d.Municipio} - ${d.exacta || d.Direccion_Exacta}</div>
             `).join('');
 
+            seleccionarTipoPedido('Entrega Inmediata');
             metodoPagoSeleccionado = "Transferencia Bancaria";
             document.getElementById('pagoToggleBtn').innerText = "Transferencia Bancaria";
 
@@ -983,25 +1076,39 @@
         function seleccionarDireccionCheckout(index) {
             direccionCheckoutSeleccionadaIndex = index;
             const d = direccionesGuardadas[index];
-            document.getElementById('checkoutDirToggleBtn').innerText = `${d.provincia}, ${d.municipio} - ${d.exacta}`;
+            document.getElementById('checkoutDirToggleBtn').innerText = `${d.provincia || d.Provincia}, ${d.municipio || d.Municipio} - ${d.exacta || d.Direccion_Exacta}`;
         }
 
         function cerrarModalCheckout() { document.getElementById('modalCheckout').style.display = 'none'; }
 
         async function enviarOrdenAlBackend() {
             const direccionElegida = direccionesGuardadas[direccionCheckoutSeleccionadaIndex];
-            const metodoPago = metodoPagoSeleccionado;
             const totalUSD = carrito.reduce((sum, i) => sum + (i.Precio * i.cantidad), 0);
+            const direccionTexto = `${direccionElegida.provincia || direccionElegida.Provincia}, ${direccionElegida.municipio || direccionElegida.Municipio} - ${direccionElegida.exacta || direccionElegida.Direccion_Exacta}`;
+
+            let tiempoEstimadoTexto = 'Inmediato / Normal';
+            if (tipoPedidoSeleccionado === 'Reserva Programada') {
+                const fechaRes = document.getElementById('inputFechaReserva').value;
+                const horaRes = document.getElementById('inputHoraReserva').value;
+                if (!fechaRes || !horaRes) {
+                    mostrarAlerta('Datos incompletos', 'Por favor selecciona la fecha y hora para tu reserva.');
+                    return;
+                }
+                tiempoEstimadoTexto = `Reserva para el ${fechaRes} a las ${horaRes}`;
+            }
 
             const nuevaOrden = {
                 accion: 'crear_orden',
                 correo: usuarioActual.correo,
+                nombreUsuario: usuarioActual.nombre,
+                telefono: usuarioActual.telefono,
                 productos: JSON.stringify(carrito),
                 total: totalUSD,
-                metodoPago: metodoPago,
-                direccion: `${direccionElegida.provincia}, ${direccionElegida.municipio} - ${direccionElegida.exacta}`,
-                estado: 'En Espera',
-                tiempoEstimado: 'Pendiente de confirmación',
+                costoTotal: totalUSD,
+                moneda: monedaActual,
+                metodoPago: metodoPagoSeleccionado,
+                direccion: direccionTexto,
+                estado: 'Pendiente',
                 hora: new Date().toLocaleString()
             };
 
@@ -1010,25 +1117,30 @@
                 const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(nuevaOrden) });
                 const data = await res.json();
                 
-                ordenesCliente.unshift({
-                    id: data.idOrden || Math.floor(Math.random() * 90000 + 10000),
-                    total: totalUSD,
-                    estado: 'En Espera',
-                    tiempoEstimado: 'Pendiente de confirmación',
-                    hora: new Date().toLocaleString()
-                });
+                if(data.success) {
+                    ordenesCliente.unshift({
+                        ID_Orden: data.idOrden,
+                        Total: totalUSD,
+                        Estado: 'Pendiente',
+                        Hora: new Date().toLocaleString(),
+                        Direccion: direccionTexto
+                    });
 
-                ocultarLoaderGlobal();
-                mostrarAlerta('¡Pedido Enviado!', 'Tu orden ha sido registrada con estado "En Espera". El gestor la revisará pronto.');
-                carrito = [];
-                actualizarContadorCarrito();
-                renderizarCarrito();
-                cerrarModalCheckout();
-                cerrarDrawerCarrito();
-                cargarOrdenesUsuario();
+                    ocultarLoaderGlobal();
+                    mostrarAlerta('¡Pedido Enviado!', 'Tu orden/reserva ha sido registrada exitosamente.');
+                    carrito = [];
+                    actualizarContadorCarrito();
+                    renderizarCarrito();
+                    cerrarModalCheckout();
+                    cerrarDrawerCarrito();
+                    cargarOrdenesUsuario();
+                } else {
+                    ocultarLoaderGlobal();
+                    mostrarAlerta('Error', data.message || 'No se pudo registrar la orden.');
+                }
             } catch (err) {
                 ocultarLoaderGlobal();
-                mostrarAlerta('Error', 'No se pudo enviar la orden al servidor.');
+                mostrarAlerta('Error', 'Error de comunicación con el servidor.');
             }
         }
 
@@ -1045,65 +1157,45 @@
             const exacta = document.getElementById('dirExacta').value.trim();
             
             if (!provincia || !municipio || !exacta) {
-                mostrarAlerta('Campos incompletos', 'Selecciona la provincia, el municipio e introduce la dirección exacta.');
-                return;
-            }
-
-            if (!usuarioActual) {
-                mostrarAlerta('Atención', 'Debes iniciar sesión para guardar una dirección.');
+                mostrarAlerta('Campos incompletos', 'Selecciona la provincia, municipio y dirección exacta.');
                 return;
             }
 
             const idDireccion = 'DIR-' + Date.now();
-            const paisDefecto = 'Cuba';
-
-            const nuevaDireccionData = {
+            const nuevaDirData = {
                 accion: 'guardar_direccion',
-                nombreUsuario: usuarioActual.nombre || 'Usuario',
+                nombreUsuario: usuarioActual.nombre,
                 correo: usuarioActual.correo,
                 idDireccion: idDireccion,
-                pais: paisDefecto,
+                pais: 'Cuba',
                 provincia: provincia,
                 municipio: municipio,
                 direccionExacta: exacta,
-                detalles: 'Registrado desde la web'
+                detalles: ''
             };
 
             mostrarLoaderGlobal("Guardando dirección...");
-
             try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(nuevaDireccionData)
-                });
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(nuevaDirData) });
                 const data = await res.json();
-                
                 ocultarLoaderGlobal();
 
-                direccionesGuardadas.push({
-                    id: idDireccion,
-                    pais: paisDefecto,
-                    provincia: provincia,
-                    municipio: municipio,
-                    exacta: exacta
-                });
-
-                renderizarDirecciones();
-                cerrarModalDireccion();
-                mostrarAlerta('Éxito', 'Dirección guardada correctamente.');
-
+                if(data.success) {
+                    direccionesGuardadas.push({
+                        id: idDireccion,
+                        provincia: provincia,
+                        municipio: municipio,
+                        exacta: exacta
+                    });
+                    renderizarDirecciones();
+                    cerrarModalDireccion();
+                    mostrarAlerta('Éxito', 'Dirección guardada correctamente.');
+                } else {
+                    mostrarAlerta('Aviso', data.message || 'No se pudo guardar.');
+                }
             } catch (err) {
                 ocultarLoaderGlobal();
-                direccionesGuardadas.push({
-                    id: idDireccion,
-                    pais: paisDefecto,
-                    provincia: provincia,
-                    municipio: municipio,
-                    exacta: exacta
-                });
-                renderizarDirecciones();
-                cerrarModalDireccion();
-                mostrarAlerta('Aviso', 'Dirección añadida localmente.');
+                mostrarAlerta('Error', 'Fallo al conectar con el servidor.');
             }
         }
 
@@ -1116,26 +1208,66 @@
             container.innerHTML = direccionesGuardadas.map((d, index) => `
                 <div style="background:#1c1c2e; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid rgba(0,242,255,0.2); font-size:0.85em;">
                     <p style="margin:0 0 4px 0; color:#00f2ff; font-weight:bold;">Dirección #${index + 1}</p>
-                    <p style="margin:0; color:#ccc;">${d.provincia}, ${d.municipio} - ${d.exacta}</p>
+                    <p style="margin:0; color:#ccc;">${d.provincia || d.Provincia}, ${d.municipio || d.Municipio} - ${d.exacta || d.Direccion_Exacta}</p>
                 </div>
             `).join('');
         }
 
         function cargarOrdenesUsuario() {
             const container = document.getElementById('listaOrdenesCliente');
-            if (ordenesCliente.length === 0) {
-                container.innerHTML = `<p style="color: #777; font-size: 0.85em; text-align: center;">No hay órdenes recientes.</p>`;
+            if (!container) return;
+
+            if (!ordenesCliente || ordenesCliente.length === 0) {
+                container.innerHTML = `<p style="color: #777; font-size: 0.85em; text-align: center;">No tienes órdenes registradas.</p>`;
                 return;
             }
-            container.innerHTML = ordenesCliente.map(o => `
-                <div class="order-card">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                        <span style="color:#00f2ff; font-weight:bold;">Orden #${o.id || '1'}</span>
-                        <span class="order-status status-${o.estado === 'En Espera' ? 'espera' : 'procesando'}">${o.estado}</span>
+
+            const ultimaOrden = ordenesCliente[0];
+            const idOrdenActual = ultimaOrden.ID_Orden || ultimaOrden.id || '1';
+            const estadoActual = ultimaOrden.Estado || ultimaOrden.estado || 'Pendiente';
+            
+            const claveStorage = `estado_previo_${idOrdenActual}`;
+            const estadoAnterior = localStorage.getItem(claveStorage);
+            
+            let htmlNotiEstado = '';
+
+            if (!estadoAnterior) {
+                localStorage.setItem(claveStorage, estadoActual);
+            }
+
+            if (estadoAnterior && estadoAnterior !== estadoActual) {
+                // Notificación interna visual
+                htmlNotiEstado = `
+                    <div class="order-alert-box" style="background: rgba(0, 242, 255, 0.15); border: 1px solid #00f2ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span style="font-size: 1.2em;">🔔</span>
+                            <strong style="color:#00f2ff; font-size: 0.95em;">¡Actualización en tu pedido!</strong>
+                        </div>
+                        <p style="margin: 0; color: #fff; font-size: 0.9em;">Tu orden #${idOrdenActual} ha cambiado a: <strong style="color: #00f2ff;">${estadoActual}</strong></p>
                     </div>
-                    <p style="margin:2px 0;"><strong>Total:</strong> ${formatearPrecio(o.total)}</p>
-                    <p style="margin:2px 0;"><strong>Entrega estimada:</strong> ${o.tiempoEstimado}</p>
-                    <p style="margin:2px 0; color:#888; font-size:0.8em;">Hora: ${o.hora}</p>
+                `;
+                // Notificación nativa fuera de la web (Sistema operativo / Navegador minimizado)
+                dispararNotificacionNativa("HLG-Tech - Actualización", `Tu pedido #${idOrdenActual} ahora está: ${estadoActual}`);
+                localStorage.setItem(claveStorage, estadoActual);
+            } else {
+                const colorEstado = estadoActual === 'Completado' ? '#25D366' : (estadoActual === 'Procesando' ? '#00f2ff' : '#ffaa00');
+                htmlNotiEstado = `
+                    <div class="order-alert-box">
+                        <strong style="color:#00f2ff;">Estado del Último Pedido:</strong> 
+                        <span style="color: ${colorEstado}; font-weight:bold;">${estadoActual}</span>
+                        <p style="margin: 4px 0 0 0; color: #ccc; font-size: 0.9em;">Tu orden #${idOrdenActual} está siendo gestionada.</p>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = htmlNotiEstado + ordenesCliente.map(o => `
+                <div class="order-card" style="background:#1c1c2e; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid rgba(0,242,255,0.2);">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                        <span style="color:#00f2ff; font-weight:bold;">Orden #${o.ID_Orden || o.id || '1'}</span>
+                        <span class="order-status" style="color: ${ (o.Estado || o.estado) === 'Completado' ? '#25D366' : '#ffaa00' }; font-weight:bold;">${o.Estado || o.estado || 'Pendiente'}</span>
+                    </div>
+                    <p style="margin:2px 0; color:#ccc;"><strong>Total:</strong> ${formatearPrecio(parseFloat(o.Total || o.total || 0))}</p>
+                    <p style="margin:2px 0; color:#888; font-size:0.8em;">Fecha: ${o.Hora || o.hora || ''}</p>
                 </div>
             `).join('');
         }
@@ -1151,7 +1283,7 @@
                 const res = await fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify({
-                        accion: 'login_usuario',
+                        accion: 'iniciar_sesion',
                         correo: correo,
                         password: pass
                     })
@@ -1159,44 +1291,39 @@
                 const data = await res.json();
                 ocultarLoaderGlobal();
 
-                usuarioActual = { 
-                    nombre: data.nombre || 'José Miguel', 
-                    correo: correo, 
-                    telefono: data.telefono || '50110410' 
-                };
+                if(data.success) {
+                    usuarioActual = data.usuario || { nombre: data.nombre, correo: correo, telefono: data.telefono };
+                    direccionesGuardadas = data.direcciones || [];
+                    ordenesCliente = data.ordenes || [];
 
-                if (data.direcciones && Array.isArray(data.direcciones)) {
-                    direccionesGuardadas = data.direcciones.map(d => ({
-                        id: d.id || '',
-                        pais: d.pais || 'Cuba',
-                        provincia: d.provincia,
-                        municipio: d.municipio,
-                        exacta: d.direccionExacta || d.exacta
-                    }));
+                    // Pedir permiso para notificaciones nativas al iniciar sesión de forma gratuita
+                    solicitarPermisoNotificaciones();
+
+                    if (ordenesCliente.length > 0) {
+                        const ultima = ordenesCliente[0];
+                        const idOrd = ultima.ID_Orden || ultima.id || '1';
+                        const estOrd = ultima.Estado || ultima.estado || 'Pendiente';
+                        const claveSt = `estado_previo_${idOrd}`;
+                        
+                        if (!localStorage.getItem(claveSt)) {
+                            localStorage.setItem(claveSt, estOrd);
+                        }
+                    }
+
+                    document.getElementById('pNombre').innerText = usuarioActual.nombre || usuarioActual.Nombre;
+                    document.getElementById('pCorreo').innerText = usuarioActual.correo || usuarioActual.Correo;
+                    document.getElementById('pTelefono').innerText = usuarioActual.telefono || usuarioActual.Telefono;
+                    
+                    document.getElementById('vistaLoginUnico').style.display = 'none';
+                    document.getElementById('vistaPanelLogueado').style.display = 'block';
+                    renderizarDirecciones();
+                    cargarOrdenesUsuario();
                 } else {
-                    direccionesGuardadas = []; 
+                    mostrarAlerta('Acceso Denegado', data.message || 'Credenciales incorrectas.');
                 }
-
-                document.getElementById('pNombre').innerText = usuarioActual.nombre;
-                document.getElementById('pCorreo').innerText = usuarioActual.correo;
-                document.getElementById('pTelefono').innerText = usuarioActual.telefono;
-                
-                document.getElementById('vistaLoginUnico').style.display = 'none';
-                document.getElementById('vistaPanelLogueado').style.display = 'block';
-                renderizarDirecciones();
-
             } catch (err) {
                 ocultarLoaderGlobal();
-                usuarioActual = { nombre: 'José Miguel', correo: correo, telefono: '50110410' };
-                direccionesGuardadas = [];
-                
-                document.getElementById('pNombre').innerText = usuarioActual.nombre;
-                document.getElementById('pCorreo').innerText = usuarioActual.correo;
-                document.getElementById('pTelefono').innerText = usuarioActual.telefono;
-                
-                document.getElementById('vistaLoginUnico').style.display = 'none';
-                document.getElementById('vistaPanelLogueado').style.display = 'block';
-                renderizarDirecciones();
+                mostrarAlerta('Error', 'No se pudo iniciar sesión.');
             }
         }
 
@@ -1204,7 +1331,7 @@
             const passActual = document.getElementById('passActual').value.trim();
             const passNueva = document.getElementById('passNueva').value.trim();
             if (!passActual || !passNueva) {
-                mostrarAlerta('Atención', 'Por favor introduce tu contraseña actual y la nueva.');
+                mostrarAlerta('Atención', 'Introduce tu contraseña actual y la nueva.');
                 return;
             }
             
@@ -1214,25 +1341,30 @@
                     method: 'POST',
                     body: JSON.stringify({
                         accion: 'cambiar_password',
-                        correo: usuarioActual.correo,
+                        correo: usuarioActual.correo || usuarioActual.Correo,
                         passActual: passActual,
                         passNueva: passNueva
                     })
                 });
                 const data = await res.json();
                 ocultarLoaderGlobal();
-                document.getElementById('passActual').value = '';
-                document.getElementById('passNueva').value = '';
-                mostrarAlerta('Éxito', 'Contraseña actualizada correctamente.');
+                if(data.success) {
+                    document.getElementById('passActual').value = '';
+                    document.getElementById('passNueva').value = '';
+                    mostrarAlerta('Éxito', 'Contraseña actualizada correctamente.');
+                } else {
+                    mostrarAlerta('Error', data.message || 'No se pudo actualizar.');
+                }
             } catch (err) {
                 ocultarLoaderGlobal();
-                mostrarAlerta('Aviso', 'Solicitud de cambio procesada.');
+                mostrarAlerta('Error', 'Fallo al cambiar contraseña.');
             }
         }
 
         function cerrarSesionUsuario() {
             usuarioActual = null;
             direccionesGuardadas = [];
+            ordenesCliente = [];
             document.getElementById('vistaLoginUnico').style.display = 'block';
             document.getElementById('vistaPanelLogueado').style.display = 'none';
             document.querySelectorAll('.folder-group').forEach(f => f.classList.remove('active'));
@@ -1241,12 +1373,20 @@
         function formatearPrecio(val) {
             return monedaActual === 'CUP' ? `${(val * tasaCambioCUP).toLocaleString('es-CU')} CUP` : `$${val.toFixed(2)} USD`;
         }
+        
         function seleccionarMoneda(val, label) {
             monedaActual = val;
             document.getElementById('monedaTextoBtn').innerText = label;
             document.getElementById('customDropdown').classList.remove('open');
+            
+            const categoriaActivaBtn = document.querySelector('.tab-btn.active');
+            let catActual = categoriaActivaBtn ? categoriaActivaBtn.innerText : 'Todos';
+            let listaAMostrar = catActual === 'Todos' ? todosLosProductos : todosLosProductos.filter(p => p.Categoria === catActual);
+            
+            renderizar(listaAMostrar);
             renderizarCarrito();
         }
+
         function toggleDropdown(e) { e.stopPropagation(); document.getElementById('customDropdown').classList.toggle('open'); }
         function abrirDrawerCarrito() { cerrarTodosLosDrawers(); document.getElementById('cartDrawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('open'); }
         function cerrarDrawerCarrito() { document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); }
