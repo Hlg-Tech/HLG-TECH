@@ -209,7 +209,6 @@
             stroke-linejoin: round;
         }
 
-              /* Estilo para que los enlaces de cambio de formulario actúen como botones */
         .btn-auth-switch {
             display: inline-block;
             margin-top: 8px;
@@ -257,7 +256,7 @@
             height: 100%;
             background: var(--drawer-bg);
             border-left: 1px solid rgba(0, 242, 255, 0.3);
-            z-index: 3500;
+            z-index: 9999;
             box-shadow: -5px 0 25px rgba(0,0,0,0.8);
             transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
@@ -295,7 +294,7 @@
             height: 100%;
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(3px);
-            z-index: 3400;
+            z-index: 9998;
             display: none;
         }
         .drawer-overlay.open { display: block; }
@@ -531,7 +530,6 @@
         .carrusel { display: flex; overflow-x: auto; gap: 15px; padding: 15px 20px; scrollbar-width: none; align-items: stretch; }
         .carrusel::-webkit-scrollbar { display: none; } 
 
-        /* CORRECCIÓN DE PROPORCIÓN EN LAS TARJETAS */
         .card { 
             flex: 0 0 210px;
             width: 210px;
@@ -631,74 +629,66 @@
         }
         @keyframes spinHlg { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Contenedor general del formulario */
-.form-group {
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: column;
-}
+        .form-group {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
 
-/* Etiquetas (Labels) */
-.form-group label {
-    font-size: 13px;
-    color: #a5b4fc;
-    margin-bottom: 6px;
-    font-weight: 500;
-}
+        .form-group label {
+            font-size: 13px;
+            color: #a5b4fc;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
 
-/* Estilo unificado para los Selects y Inputs de tipo fecha */
-.form-group select,
-.form-group input[type="date"] {
-    width: 100%;
-    padding: 11px 14px;
-    background-color: #121222; /* Fondo oscuro elegante */
-    border: 1px solid #2a2a40;  /* Borde sutil */
-    color: #ffffff;            /* Texto blanco */
-    border-radius: 8px;        /* Bordes redondeados */
-    font-size: 14px;
-    outline: none;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-    appearance: none;          /* Quita la flecha fea por defecto en algunos navegadores */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    /* Agregamos una flecha personalizada moderna usando SVG en formato data-uri */
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
-    padding-right: 40px;
-}
+        .form-group select,
+        .form-group input[type="date"] {
+            width: 100%;
+            padding: 11px 14px;
+            background-color: #121222;
+            border: 1px solid #2a2a40;
+            color: #ffffff;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
 
-/* El input de fecha no necesita la flecha de select, se la quitamos y ajustamos */
-.form-group input[type="date"] {
-    background-image: none;
-    padding-right: 14px;
-    color-scheme: dark; /* Fuerza a que el calendario desplegable del navegador sea oscuro */
-}
+        .form-group input[type="date"] {
+            background-image: none;
+            padding-right: 14px;
+            color-scheme: dark;
+        }
 
-/* Efecto Hover (al pasar el mouse) */
-.form-group select:hover,
-.form-group input[type="date"]:hover {
-    border-color: #00f2ff66;
-}
+        .form-group select:hover,
+        .form-group input[type="date"]:hover {
+            border-color: #00f2ff66;
+        }
 
-/* Efecto Focus (cuando el usuario hace clic para escribir/seleccionar) */
-.form-group select:focus,
-.form-group input[type="date"]:focus {
-    border-color: #00f2ff;
-    box-shadow: 0 0 8px rgba(0, 242, 255, 0.25);
-}
+        .form-group select:focus,
+        .form-group input[type="date"]:focus {
+            border-color: #00f2ff;
+            box-shadow: 0 0 8px rgba(0, 242, 255, 0.25);
+        }
 
-/* Estado deshabilitado (como cuando la provincia o municipio están bloqueados) */
-.form-group select:disabled,
-.form-group input:disabled {
-    background-color: #0b0b14;
-    color: #555577;
-    border-color: #1a1a2b;
-    cursor: not-allowed;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23444466' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-}
+        .form-group select:disabled,
+        .form-group input:disabled {
+            background-color: #0b0b14;
+            color: #555577;
+            border-color: #1a1a2b;
+            cursor: not-allowed;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23444466' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        }
     </style>
 </head>
 <body>
@@ -831,25 +821,25 @@
                 </div>
 
                <div class="form-group">
-    <label>País</label>
-    <select id="selectPais" class="form-control" onchange="cargarProvinciasSegunPais()">
-        <option value="">Selecciona un país...</option>
-    </select>
-</div>
+                    <label>País</label>
+                    <select id="selectPais" class="form-control" onchange="cargarProvinciasSegunPais()">
+                        <option value="">Selecciona un país...</option>
+                    </select>
+                </div>
 
-<div class="form-group">
-    <label>Provincia / Estado</label>
-    <select id="selectProvincia" class="form-control" onchange="cargarMunicipiosSegunProvincia()" disabled>
-        <option value="">Selecciona una provincia...</option>
-    </select>
-</div>
+                <div class="form-group">
+                    <label>Provincia / Estado</label>
+                    <select id="selectProvincia" class="form-control" onchange="cargarMunicipiosSegunProvincia()" disabled>
+                        <option value="">Selecciona una provincia...</option>
+                    </select>
+                </div>
 
-<div class="form-group">
-    <label>Municipio</label>
-    <select id="selectMunicipio" class="form-control" disabled>
-        <option value="">Selecciona un municipio...</option>
-    </select>
-</div>
+                <div class="form-group">
+                    <label>Municipio</label>
+                    <select id="selectMunicipio" class="form-control" disabled>
+                        <option value="">Selecciona un municipio...</option>
+                    </select>
+                </div>
 
                 <button type="button" class="btn btn-buy" style="width: 100%; margin-top: 5px; padding: 10px;" onclick="registrarNuevoUsuario()">Registrarse</button>
                 
@@ -888,7 +878,7 @@
                     <button class="folder-btn" onclick="toggleFolder('folderDirecciones'); renderizarDirecciones();">Direcciones de Entrega</button>
                     <div class="folder-content">
                         <div id="listaDireccionesCliente" style="margin-bottom: 12px;"></div>
-                        <button onclick="abrirModalNuevaDireccion()" class="btn btn-ask" style="width: 100%; padding: 8px; font-size: 0.85em;">Nueva Dirección</button>
+                        <button onclick="abrirFormularioDireccion()" class="btn btn-ask" style="width: 100%; padding: 8px; font-size: 0.85em;">Nueva Dirección</button>
                     </div>
                 </div>
 
@@ -1030,6 +1020,14 @@
 
         let firmaCatalogoAnterior = "";
 
+        // Función solicitada integrada correctamente para cerrar el cajón al instante de abrir el modal/formulario de dirección
+        function abrirFormularioDireccion() {
+            document.querySelector('.drawer').classList.remove('open');
+            document.querySelector('.drawer-overlay').classList.remove('open');
+
+            abrirModalNuevaDireccion();
+        }
+
         function toggleTema() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const nuevoTema = currentTheme === 'light' ? 'dark' : 'light';
@@ -1063,92 +1061,88 @@
             }
         }
 
-      async function inicializarUbicacionesFormulario() {
-    try {
-        const respuesta = await fetch(API_URL);
-        const resultado = await respuesta.json();
-        
-        // Verificamos si la API devuelve las ubicaciones correctamente
-        if (resultado.ubicaciones && Array.isArray(resultado.ubicaciones)) {
-            datosUbicacionesGlobal = resultado.ubicaciones;
-            poblarPaises(datosUbicacionesGlobal);
-        } else {
-            console.warn("No se encontraron ubicaciones en la respuesta de la API.");
+        async function inicializarUbicacionesFormulario() {
+            try {
+                const respuesta = await fetch(API_URL);
+                const resultado = await respuesta.json();
+                
+                if (resultado.ubicaciones && Array.isArray(resultado.ubicaciones)) {
+                    datosUbicacionesGlobal = resultado.ubicaciones;
+                    poblarPaises(datosUbicacionesGlobal);
+                } else {
+                    console.warn("No se encontraron ubicaciones en la respuesta de la API.");
+                }
+            } catch (error) {
+                console.error("Error al cargar las ubicaciones desde la API:", error);
+            }
         }
-    } catch (error) {
-        console.error("Error al cargar las ubicaciones desde la API:", error);
-    }
-}
 
-function poblarPaises(data) {
-    const selectPais = document.getElementById('selectPais');
-    if (!selectPais) return;
+        function poblarPaises(data) {
+            const selectPais = document.getElementById('selectPais');
+            if (!selectPais) return;
 
-    // Soportar tanto minúsculas como mayúsculas en las propiedades del JSON
-    const paisesUnicos = [...new Set(data.map(item => item.pais || item.Pais))].filter(Boolean);
-    
-    selectPais.innerHTML = '<option value="">Selecciona un país...</option>';
-    paisesUnicos.forEach(pais => {
-        selectPais.innerHTML += `<option value="${pais}">${pais}</option>`;
-    });
-}
+            const paisesUnicos = [...new Set(data.map(item => item.pais || item.Pais))].filter(Boolean);
+            
+            selectPais.innerHTML = '<option value="">Selecciona un país...</option>';
+            paisesUnicos.forEach(pais => {
+                selectPais.innerHTML += `<option value="${pais}">${pais}</option>`;
+            });
+        }
 
-function cargarProvinciasSegunPais() {
-    const paisSeleccionado = document.getElementById('selectPais').value;
-    const selectProvincia = document.getElementById('selectProvincia');
-    const selectMunicipio = document.getElementById('selectMunicipio');
-    
-    selectProvincia.innerHTML = '<option value="">Selecciona una provincia...</option>';
-    selectMunicipio.innerHTML = '<option value="">Selecciona un municipio...</option>';
-    selectMunicipio.disabled = true;
+        function cargarProvinciasSegunPais() {
+            const paisSeleccionado = document.getElementById('selectPais').value;
+            const selectProvincia = document.getElementById('selectProvincia');
+            const selectMunicipio = document.getElementById('selectMunicipio');
+            
+            selectProvincia.innerHTML = '<option value="">Selecciona una provincia...</option>';
+            selectMunicipio.innerHTML = '<option value="">Selecciona un municipio...</option>';
+            selectMunicipio.disabled = true;
 
-    if (!paisSeleccionado) {
-        selectProvincia.disabled = true;
-        return;
-    }
+            if (!paisSeleccionado) {
+                selectProvincia.disabled = true;
+                return;
+            }
 
-    const provinciasUnicas = [...new Set(
-        datosUbicacionesGlobal
-            .filter(item => (item.pais || item.Pais) === paisSeleccionado)
-            .map(item => item.provincia || item.Provincia)
-    )].filter(Boolean);
+            const provinciasUnicas = [...new Set(
+                datosUbicacionesGlobal
+                    .filter(item => (item.pais || item.Pais) === paisSeleccionado)
+                    .map(item => item.provincia || item.Provincia)
+            )].filter(Boolean);
 
-    provinciasUnicas.forEach(provincia => {
-        selectProvincia.innerHTML += `<option value="${provincia}">${provincia}</option>`;
-    });
-    selectProvincia.disabled = false;
-}
+            provinciasUnicas.forEach(provincia => {
+                selectProvincia.innerHTML += `<option value="${provincia}">${provincia}</option>`;
+            });
+            selectProvincia.disabled = false;
+        }
 
-function cargarMunicipiosSegunProvincia() {
-    const paisSeleccionado = document.getElementById('selectPais').value;
-    const provinciaSeleccionada = document.getElementById('selectProvincia').value;
-    const selectMunicipio = document.getElementById('selectMunicipio');
-    
-    selectMunicipio.innerHTML = '<option value="">Selecciona un municipio...</option>';
+        function cargarMunicipiosSegunProvincia() {
+            const paisSeleccionado = document.getElementById('selectPais').value;
+            const provinciaSeleccionada = document.getElementById('selectProvincia').value;
+            const selectMunicipio = document.getElementById('selectMunicipio');
+            
+            selectMunicipio.innerHTML = '<option value="">Selecciona un municipio...</option>';
 
-    if (!provinciaSeleccionada) {
-        selectMunicipio.disabled = true;
-        return;
-    }
+            if (!provinciaSeleccionada) {
+                selectMunicipio.disabled = true;
+                return;
+            }
 
-    const municipiosUnicos = [...new Set(
-        datosUbicacionesGlobal
-            .filter(item => ((item.pais || item.Pais) === paisSeleccionado) && ((item.provincia || item.Provincia) === provinciaSeleccionada))
-            .map(item => item.municipio || item.Municipio)
-    )].filter(Boolean);
+            const municipiosUnicos = [...new Set(
+                datosUbicacionesGlobal
+                    .filter(item => ((item.pais || item.Pais) === paisSeleccionado) && ((item.provincia || item.Provincia) === provinciaSeleccionada))
+                    .map(item => item.municipio || item.Municipio)
+            )].filter(Boolean);
 
-    municipiosUnicos.forEach(municipio => {
-        selectMunicipio.innerHTML += `<option value="${municipio}">${municipio}</option>`;
-    });
-    selectMunicipio.disabled = false;
-}
+            municipiosUnicos.forEach(municipio => {
+                selectMunicipio.innerHTML += `<option value="${municipio}">${municipio}</option>`;
+            });
+            selectMunicipio.disabled = false;
+        }
 
-// Asegurarnos de que se invoque al cargar la app principal o el DOM
-document.addEventListener("DOMContentLoaded", () => {
-    inicializarUbicacionesFormulario();
-});
+        document.addEventListener("DOMContentLoaded", () => {
+            inicializarUbicacionesFormulario();
+        });
 
-        // Función encargada de capturar los datos y enviarlos al backend para el registro
         async function registrarNuevoUsuario() {
             const datosRegistro = {
                 accion: "registrar_usuario",
@@ -1158,7 +1152,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 password: document.getElementById("regPassword").value.trim(),
                 sexo: document.getElementById("regSexo").value,
                 fechaNacimiento: document.getElementById("regFechaNacimiento").value,
-                // Actualizado con los IDs correctos de los nuevos select:
                 pais: document.getElementById("selectPais").value.trim(),
                 provincia: document.getElementById("selectProvincia").value.trim(),
                 municipio: document.getElementById("selectMunicipio").value.trim()
@@ -1175,8 +1168,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const respuesta = await fetch(API_URL, {
                     method: "POST",
                     headers: {
-                    "Content-Type": "text/plain;charset=utf-8" // Usar text/plain evita los pre-vuelos CORS estrictos en Google Apps Script
-                },
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
                     body: JSON.stringify(datosRegistro)
                 });
                 
@@ -1324,15 +1317,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 todosLosProductos = (data.productos || []).filter(p => String(p.Mostrar).toUpperCase() === 'TRUE' || String(p.Mostrar) === '1');
                 tasaCambioCUP = data.tasa ? parseFloat(data.tasa) : 650;
                 listaUbicacionesTabulares = data.ubicaciones || [];
-                datosUbicacionesGlobal = data.ubicaciones || []; // Sincronizamos ambas variables
+                datosUbicacionesGlobal = data.ubicaciones || [];
 
                 firmaCatalogoAnterior = generarFirmaCatalogo(todosLosProductos, tasaCambioCUP);
                 
                 crearCategorias();
                 renderizar(todosLosProductos);
                 if (datosUbicacionesGlobal.length > 0) {
-            poblarPaises(datosUbicacionesGlobal);
-        }
+                    poblarPaises(datosUbicacionesGlobal);
+                }
                 ocultarBannerActualizacion();
             } catch (err) {
                 console.error("Error al procesar el catálogo:", err);
@@ -1349,8 +1342,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         async function verificarActualizacionesCatalog() {
+            if (!navigator.onLine) return;
+
             try {
                 const res = await fetch(API_URL + "?t=" + new Date().getTime());
+                if (!res.ok) return;
+                
                 const data = await res.json();
                 
                 const nuevosProductos = (data.productos || []).filter(p => String(p.Mostrar).toUpperCase() === 'TRUE' || String(p.Mostrar) === '1');
@@ -1367,9 +1364,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     mostrarBannerActualizacion("Se detectaron cambios en precios, productos o tasa.");
                 }
             } catch (e) {
-                console.error("Error al verificar actualizaciones en segundo plano", e);
+                console.warn("Actualización en segundo plano pospuesta (problema temporal de red o CORS).");
             }
         }
+
         setInterval(verificarActualizacionesCatalog, 30000);
 
         function toggleFolder(folderId) {
