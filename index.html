@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,13 +6,74 @@
     <title>HLG-Tech</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-main: #0f0f1a;
+            --bg-nav: rgba(16, 16, 28, 0.95);
+            --text-main: #ffffff;
+            --text-muted: #ccc;
+            --card-bg: rgba(30, 30, 45, 0.75);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --drawer-bg: #141421;
+            --drawer-footer-bg: #10101c;
+            --modal-bg: #181826;
+            --input-bg: #10101c;
+            --input-color: #ffffff;
+            --folder-bg: #181826;
+            --folder-btn-bg: #1c1c2e;
+            --folder-content-bg: #141421;
+            --tab-bg: #1e1e2d;
+            --tab-border: #333;
+            --tab-color: white;
+            --btn-ask-bg: #4a4a6a;
+            --banner-bg: linear-gradient(135deg, #181828, #1f1f3a);
+            --banner-text: #fff;
+            --hero-bg-img: url('https://res.cloudinary.com/kla50st7/image/upload/v1785343940/Gemini_Generated_Image_9e7gng9e7gng9e7g_okv4ap.jpg');
+        }
+
+        [data-theme="light"] {
+            /* Fondo general un poco más estructurado para que los elementos resalten */
+            --bg-main: #ebf0f5;
+            --bg-nav: rgba(255, 255, 255, 0.98);
+            
+            /* Textos con mayor contraste (más oscuros y sólidos) */
+            --text-main: #0d1117;
+            --text-muted: #4b5563; 
+
+            /* Tarjetas y contenedores con mejor cuerpo y borde visible */
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --card-border: rgba(0, 0, 0, 0.15);
+            
+            --drawer-bg: #ffffff;
+            --drawer-footer-bg: #e2e8f0;
+            --modal-bg: #ffffff;
+            
+            /* Inputs y campos con tonos más sólidos y legibles */
+            --input-bg: #e2e8f0;
+            --input-color: #0d1117;
+            
+            --folder-bg: #ffffff;
+            --folder-btn-bg: #e8ecef;
+            --folder-content-bg: #f8fafc;
+            
+            /* Pestañas y botones secundarios con mayor definición */
+            --tab-bg: #cbd5e1;
+            --tab-border: #94a3b8;
+            --tab-color: #0d1117;
+            --btn-ask-bg: #94a3b8;
+            
+            --banner-bg: linear-gradient(135deg, #cbd5e1, #94a3b8);
+            --banner-text: #0d1117;
+            --hero-bg-img: url('https://res.cloudinary.com/kla50st7/image/upload/v1785938530/bg-ligththeme_dcwlgt.jpg');
+        }
+
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #0f0f1a; 
-            color: white; 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
             margin: 0; 
             overflow-x: hidden;
             padding-bottom: 70px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .navbar-hlg {
@@ -20,7 +81,7 @@
             top: 0;
             width: 100%;
             height: 60px;
-            background: rgba(16, 16, 28, 0.95);
+            background: var(--bg-nav);
             border-bottom: 1px solid rgba(0, 242, 255, 0.3);
             display: flex;
             justify-content: space-between;
@@ -35,14 +96,14 @@
         .nav-left .logo {
             font-size: 1.2em;
             font-weight: bold;
-            color: #ffffff;
+            color: var(--text-main);
             text-decoration: none;
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+            text-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
             cursor: pointer;
             white-space: nowrap;
         }
 
-        .nav-left .logo span { color: #00f2ff; }
+        .nav-left .logo span { color: #00ccff; }
 
         .nav-right {
             display: flex;
@@ -58,8 +119,8 @@
             top: 70px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(135deg, #181828, #1f1f3a);
-            border: 1px solid #00f2ff;
+            background: var(--banner-bg);
+            border: 1px solid #00ccff;
             box-shadow: 0 5px 20px rgba(0, 242, 255, 0.3);
             padding: 10px 20px;
             border-radius: 30px;
@@ -73,10 +134,10 @@
         }
         .notification-banner span {
             font-size: 0.85em;
-            color: #fff;
+            color: var(--banner-text);
         }
         .notification-banner button {
-            background: #00f2ff;
+            background: #00ccff;
             color: #0f0f1a;
             border: none;
             padding: 5px 12px;
@@ -93,7 +154,7 @@
 
         .order-alert-box {
             background: rgba(0, 242, 255, 0.08);
-            border: 1px dashed #00f2ff;
+            border: 1px dashed #00ccff;
             padding: 10px;
             border-radius: 8px;
             margin-bottom: 12px;
@@ -106,7 +167,7 @@
             left: 0;
             width: 100%;
             height: 60px;
-            background: rgba(16, 16, 28, 0.95);
+            background: var(--bg-nav);
             border-top: 1px solid rgba(0, 242, 255, 0.3);
             display: flex;
             justify-content: space-around;
@@ -118,8 +179,8 @@
         }
 
         .bottom-nav-btn {
-            background: #181828;
-            color: #00f2ff;
+            background: var(--folder-btn-bg);
+            color: #00ccff;
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             width: 42px;
@@ -135,7 +196,7 @@
         .bottom-nav-btn.home-center {
             width: 48px;
             height: 48px;
-            background: #00f2ff;
+            background: #00ccff;
             color: #0f0f1a;
             border: none;
             box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
@@ -145,7 +206,7 @@
         }
 
         .bottom-nav-btn:hover {
-            border-color: #00f2ff;
+            border-color: #00ccff;
             background: rgba(0, 242, 255, 0.15);
             box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
         }
@@ -174,7 +235,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #0f0f1a;
+            border: 2px solid var(--bg-main);
         }
 
         .drawer {
@@ -183,7 +244,7 @@
             right: -380px;
             width: 360px;
             height: 100%;
-            background: #141421;
+            background: var(--drawer-bg);
             border-left: 1px solid rgba(0, 242, 255, 0.3);
             z-index: 3500;
             box-shadow: -5px 0 25px rgba(0,0,0,0.8);
@@ -195,7 +256,7 @@
         .drawer.open { right: 0; }
         .drawer-header {
             padding: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(128,128,128,0.2);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -203,7 +264,7 @@
         .drawer-header h3 {
             margin: 0;
             font-size: 1.1em;
-            color: #00f2ff;
+            color: #00ccff;
         }
         .drawer-body {
             padding: 20px;
@@ -212,8 +273,8 @@
         }
         .drawer-footer {
             padding: 15px 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            background: #10101c;
+            border-top: 1px solid rgba(128,128,128,0.2);
+            background: var(--drawer-footer-bg);
         }
         .drawer-overlay {
             position: fixed;
@@ -230,16 +291,16 @@
 
         .folder-group {
             margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 10px;
             overflow: hidden;
-            background: #181826;
+            background: var(--folder-bg);
         }
         .folder-btn {
             width: 100%;
-            background: #1c1c2e;
+            background: var(--folder-btn-bg);
             border: none;
-            color: #00f2ff;
+            color: #00ccff;
             padding: 12px 15px;
             text-align: left;
             font-size: 0.9em;
@@ -264,8 +325,8 @@
         .folder-content {
             display: none;
             padding: 15px;
-            background: #141421;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: var(--folder-content-bg);
+            border-top: 1px solid rgba(128, 128, 128, 0.1);
         }
         .folder-group.active .folder-content {
             display: block;
@@ -275,11 +336,11 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            background: #1c1c2e;
+            background: var(--folder-btn-bg);
             padding: 10px;
             border-radius: 12px;
             margin-bottom: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(128,128,128,0.1);
         }
         .cart-item img {
             width: 50px;
@@ -288,8 +349,8 @@
             border-radius: 8px;
         }
         .cart-item-info { flex: 1; }
-        .cart-item-info h4 { margin: 0 0 4px 0; font-size: 0.85em; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
-        .cart-item-info span { font-size: 0.8em; color: #00f2ff; font-weight: bold; }
+        .cart-item-info h4 { margin: 0 0 4px 0; font-size: 0.85em; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+        .cart-item-info span { font-size: 0.8em; color: #00ccff; font-weight: bold; }
         .cart-item-controls {
             display: flex;
             align-items: center;
@@ -297,8 +358,8 @@
             margin-top: 5px;
         }
         .cart-item-controls button {
-            background: #2a2a40;
-            color: white;
+            background: var(--tab-bg);
+            color: var(--text-main);
             border: none;
             width: 22px;
             height: 22px;
@@ -318,9 +379,9 @@
 
         .custom-select-wrapper { position: relative; user-select: none; }
         .custom-select-btn {
-            background-color: #181828;
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background-color: var(--folder-btn-bg);
+            color: var(--text-main);
+            border: 1px solid rgba(128, 128, 128, 0.3);
             border-radius: 20px;
             padding: 7px 24px 7px 12px;
             font-size: 0.8em;
@@ -339,22 +400,22 @@
             position: absolute;
             right: 0;
             top: calc(100% + 6px);
-            background: #181826;
-            border: 1px solid #00f2ff;
+            background: var(--modal-bg);
+            border: 1px solid #00ccff;
             border-radius: 12px;
             overflow: hidden;
             z-index: 1200;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
             min-width: 90px;
         }
         .custom-dropdown.open { display: block; }
         .custom-option {
             padding: 8px 12px;
             font-size: 0.85em;
-            color: #fff;
+            color: var(--text-main);
             cursor: pointer;
         }
-        .custom-option:hover { background: rgba(0, 242, 255, 0.15); color: #00f2ff; }
+        .custom-option:hover { background: rgba(0, 242, 255, 0.15); color: #00ccff; }
 
         .dropdown-box-custom {
             position: relative;
@@ -364,10 +425,10 @@
         .dropdown-box-toggle {
             width: 100%;
             padding: 9px 12px;
-            background: #10101c;
-            border: 1px solid rgba(255,255,255,0.15);
+            background: var(--input-bg);
+            border: 1px solid rgba(128,128,128,0.3);
             border-radius: 10px;
-            color: #fff;
+            color: var(--input-color);
             font-size: 0.85em;
             box-sizing: border-box;
             cursor: pointer;
@@ -389,41 +450,41 @@
             top: calc(100% + 4px);
             left: 0;
             width: 100%;
-            background: #181826;
-            border: 1px solid #00f2ff;
+            background: var(--modal-bg);
+            border: 1px solid #00ccff;
             border-radius: 10px;
             max-height: 200px;
             overflow-y: auto;
             z-index: 3000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             box-sizing: border-box;
         }
         .dropdown-box-menu.open { display: block; }
         .dropdown-box-item {
             padding: 10px 12px;
             font-size: 0.85em;
-            color: #ddd;
+            color: var(--text-main);
             cursor: pointer;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(128,128,128,0.1);
         }
         .dropdown-box-item:hover {
             background: rgba(0, 242, 255, 0.15);
-            color: #00f2ff;
+            color: #00ccff;
         }
 
         .nav-right input#buscador {
             width: 110px;
             padding: 7px 10px;
-            background: #181828;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: var(--folder-btn-bg);
+            border: 1px solid rgba(128, 128, 128, 0.3);
             border-radius: 20px;
-            color: #fff;
+            color: var(--text-main);
             font-size: 0.8em;
             transition: all 0.3s ease;
         }
         .nav-right input#buscador:focus {
             outline: none;
-            border-color: #00f2ff;
+            border-color: #00ccff;
             width: 160px;
             box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
         }
@@ -436,25 +497,26 @@
             align-items: center; 
             text-align: center;
             background: linear-gradient(rgba(15, 15, 26, 0.75), rgba(15, 15, 26, 0.75)), 
-                        url(https://res.cloudinary.com/kla50st7/image/upload/v1785343940/Gemini_Generated_Image_9e7gng9e7gng9e7g_okv4ap.jpg); 
+                        var(--hero-bg-img); 
             background-size: cover;          
             background-position: center;
-            border-bottom: 3px solid #00f2ff; 
+            border-bottom: 3px solid #00ccff; 
             margin-bottom: 20px;
             padding: 20px;
+            transition: background 0.3s ease;
         }
         .hero h1 { font-size: 2.2em; margin: 0 0 10px 0; color: #ffffff; text-shadow: 0 0 15px rgba(0, 242, 255, 0.6); }
         .btn-hero {
-            background: #00f2ff; color: #0f0f1a; padding: 10px 25px; font-size: 0.95em; font-weight: bold;
+            background: #00ccff; color: #0f0f1a; padding: 10px 25px; font-size: 0.95em; font-weight: bold;
             border: none; border-radius: 30px; cursor: pointer; text-decoration: none;
         }
         html { scroll-behavior: smooth; }
 
         .tabs { display: flex; justify-content: center; gap: 8px; margin: 15px 10px; flex-wrap: wrap; }
-        .tab-btn { background: #1e1e2d; border: 1px solid #333; color: white; padding: 8px 16px; border-radius: 18px; cursor: pointer; font-size: 0.9em; }
-        .tab-btn.active { background: #00f2ff; color: black; font-weight: bold; }
+        .tab-btn { background: var(--tab-bg); border: 1px solid var(--tab-border); color: var(--tab-color); padding: 8px 16px; border-radius: 18px; cursor: pointer; font-size: 0.9em; }
+        .tab-btn.active { background: #00ccff; color: #0f0f1a; font-weight: bold; border-color: #00ccff; }
         .categoria-seccion { margin-bottom: 30px; overflow: hidden; }
-        .titulo-cat { padding-left: 20px; font-size: 1.3em; color: #00f2ff; margin-bottom: 10px; }
+        .titulo-cat { padding-left: 20px; font-size: 1.3em; color: #00ccff; margin-bottom: 10px; }
         .carrusel { display: flex; overflow-x: auto; gap: 15px; padding: 15px 20px; scrollbar-width: none; }
         .carrusel::-webkit-scrollbar { display: none; } 
 
@@ -462,50 +524,50 @@
             width: 220px; 
             min-width: 220px; 
             max-width: 220px; 
-            background: rgba(30, 30, 45, 0.75); 
+            background: var(--card-bg); 
             border-radius: 16px; 
             padding: 12px; 
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
             cursor: pointer; 
             position: relative; 
             transition: all 0.35s ease;
         }
         .card img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 12px; }
         .card h3 { font-size: 1em; margin: 8px 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card:hover { transform: translateY(-6px); border-color: #00f2ff; box-shadow: 0 0 20px rgba(0, 242, 255, 0.4); }
+        .card:hover { transform: translateY(-6px); border-color: #00ccff; box-shadow: 0 0 20px rgba(0, 242, 255, 0.4); }
         
         .badge-stock { display: inline-block; font-size: 0.75em; padding: 2px 6px; border-radius: 10px; margin-bottom: 6px; font-weight: bold; }
-        .stock-disponible { background: rgba(0, 242, 255, 0.15); color: #00f2ff; border: 1px solid #00f2ff; }
+        .stock-disponible { background: rgba(0, 242, 255, 0.15); color: #00f2ff; border: 1px solid #00ccff; }
         .stock-agotado { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid #ff4d4d; }
 
         .btn-group { display: flex; gap: 8px; margin-top: 8px; }
         .btn { flex: 1; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-weight: bold; font-size: 0.85em; text-align: center; }
-        .btn-buy { background: #00f2ff; color: #0f0f1a; } 
+        .btn-buy { background: #00ccff; color: #0f0f1a; } 
         .btn-buy:hover { box-shadow: 0 0 10px rgba(0, 242, 255, 0.6); }
-        .btn-ask { background: #4a4a6a; color: white; }
-        .btn-disabled { background: #333 !important; color: #777 !important; cursor: not-allowed !important; }
+        .btn-ask { background: var(--btn-ask-bg); color: var(--text-main); }
+        .btn-disabled { background: #888 !important; color: #ccc !important; cursor: not-allowed !important; }
 
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);
             justify-content: center; align-items: center; z-index: 2000; padding: 15px; box-sizing: border-box;
         }
         .modal-content {
-            background: #181826; border: 1px solid #00f2ff; border-radius: 18px; max-width: 450px;
+            background: var(--modal-bg); border: 1px solid #00ccff; border-radius: 18px; max-width: 450px;
             width: 100%; max-height: 85vh; overflow-y: auto; padding: 20px; position: relative;
         }
         .cerrar-modal { position: absolute; top: 12px; right: 15px; font-size: 24px; color: #aaa; cursor: pointer; }
         
         .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 0.8em; color: #00f2ff; margin-bottom: 4px; }
+        .form-group label { display: block; font-size: 0.8em; color: #00ccff; margin-bottom: 4px; }
         
         .form-group input {
             width: 100%; 
             padding: 9px 12px; 
-            background: #10101c; 
-            border: 1px solid rgba(255,255,255,0.15);
+            background: var(--input-bg); 
+            border: 1px solid rgba(128,128,128,0.3);
             border-radius: 10px; 
-            color: white; 
+            color: var(--input-color); 
             font-size: 0.85em; 
             box-sizing: border-box; 
             outline: none;
@@ -517,28 +579,28 @@
             z-index: 4000; backdrop-filter: blur(3px);
         }
         .custom-alert-box {
-            background: #181826; border: 1px solid #00f2ff; padding: 25px; border-radius: 16px;
+            background: var(--modal-bg); border: 1px solid #00ccff; padding: 25px; border-radius: 16px;
             width: 90%; max-width: 380px; text-align: center;
         }
-        .alert-btn { background-color: #00f2ff; color: #0f0f1a; border: none; padding: 10px 20px; font-weight: bold; border-radius: 20px; cursor: pointer; width: 100%; }
+        .alert-btn { background-color: #00ccff; color: #0f0f1a; border: none; padding: 10px 20px; font-weight: bold; border-radius: 20px; cursor: pointer; width: 100%; }
 
         .order-card {
-            background: #1c1c2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; margin-bottom: 10px; font-size: 0.85em;
+            background: var(--folder-btn-bg); border: 1px solid rgba(128,128,128,0.2); border-radius: 10px; padding: 12px; margin-bottom: 10px; font-size: 0.85em;
         }
         .order-status { font-weight: bold; padding: 2px 6px; border-radius: 6px; display: inline-block; font-size: 0.75em; }
         .status-espera { background: rgba(255,170,0,0.2); color: #ffaa00; }
-        .status-procesando { background: rgba(0,242,255,0.2); color: #00f2ff; }
+        .status-procesando { background: rgba(0,242,255,0.2); color: #00ccff; }
         .status-completado { background: rgba(37,211,102,0.2); color: #25D366; }
 
         #globalLoaderOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 15, 26, 0.8); backdrop-filter: blur(4px);
+            background: var(--bg-main); opacity: 0.95; backdrop-filter: blur(4px);
             z-index: 5000; display: none; justify-content: center; align-items: center;
-            flex-direction: column; gap: 15px; color: #00f2ff; font-weight: bold;
+            flex-direction: column; gap: 15px; color: #00ccff; font-weight: bold;
         }
         .spinner-hlg {
             width: 45px; height: 45px; border: 4px solid rgba(0,242,255,0.2);
-            border-top: 4px solid #00f2ff; border-radius: 50%;
+            border-top: 4px solid #00ccff; border-radius: 50%;
             animation: spinHlg 0.8s linear infinite;
         }
         @keyframes spinHlg { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -547,7 +609,7 @@
 <body>
 
     <div id="updateNotificationBanner" class="notification-banner">
-        <svg style="width:18px;height:18px;stroke:#00f2ff;fill:none;stroke-width:2;" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <svg style="width:18px;height:18px;stroke:#00ccff;fill:none;stroke-width:2;" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         <span id="updateBannerText">Hay cambios recientes en los productos.</span>
         <button onclick="cargar(); ocultarBannerActualizacion();">Actualizar</button>
     </div>
@@ -559,8 +621,8 @@
 
     <div id="custom-alert" class="custom-alert-overlay" style="display: none;">
         <div class="custom-alert-box" id="customAlertBox">
-            <h3 id="alert-title" style="color:#00f2ff; margin-top:0;">Aviso</h3>
-            <p id="alert-message" style="color:#ccc;">Mensaje...</p>
+            <h3 id="alert-title" style="color:#00ccff; margin-top:0;">Aviso</h3>
+            <p id="alert-message" style="color:var(--text-muted);">Mensaje...</p>
             <button onclick="closeCustomAlert()" class="alert-btn">Aceptar</button>
         </div>
     </div>
@@ -570,6 +632,11 @@
             <a onclick="restablecerTodo(); location.reload();" class="logo">HLG<span>-Tech</span></a>
         </div>
         <div class="nav-right">
+            <!-- Botón para Cambiar Tema Claro / Oscuro -->
+            <button class="bottom-nav-btn" onclick="toggleTema()" title="Cambiar Tema" style="width: 36px; height: 36px;">
+                <svg id="iconoTema" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+
             <div class="custom-select-wrapper" id="customSelect">
                 <div class="custom-select-btn" onclick="toggleDropdown(event)">
                     <span id="monedaTextoBtn">USD</span>
@@ -604,12 +671,12 @@
             <span class="cerrar-modal" style="position:static;" onclick="cerrarDrawerCarrito()">&times;</span>
         </div>
         <div class="drawer-body" id="cartItemsContainer">
-            <p style="text-align: center; color: #888; font-size: 0.9em; margin-top: 40px;">Tu carrito está vacío.</p>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9em; margin-top: 40px;">Tu carrito está vacío.</p>
         </div>
         <div class="drawer-footer" id="cartFooter" style="display: none;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95em;">
-                <span style="color: #ccc;">Total:</span>
-                <strong id="cartTotalText" style="color: #00f2ff;">$0.00</strong>
+                <span style="color: var(--text-muted);">Total:</span>
+                <strong id="cartTotalText" style="color: #00ccff;">$0.00</strong>
             </div>
             <button onclick="iniciarCheckout()" class="btn btn-buy" style="width: 100%; padding: 10px;">Completar Pedido</button>
         </div>
@@ -625,29 +692,29 @@
             <div id="vistaLoginUnico">
                 <div class="form-group"><label>Correo Electrónico</label><input type="email" id="loginCorreo" placeholder="tucorreo@gmail.com"></div>
                 <div class="form-group"><label>Contraseña</label><input type="password" id="loginPassword" placeholder="Tu contraseña"></div>
-                <button onclick="iniciarSesionUsuario()" class="btn btn-buy" style="width: 100%; margin-top: 5px; padding: 10px;">Entrar</button>
+                <button onclick="iniciarSesionUsuario()" class="btn btn-buy" style="width: 100%; margin-top: 5px; padding: 10px;">Iniciar Sesion</button>
             </div>
 
             <div id="vistaPanelLogueado" style="display: none;">
                 
                 <div class="folder-group" id="folderPerfil">
-                    <button class="folder-btn" onclick="toggleFolder('folderPerfil')">1. Perfil y Seguridad</button>
+                    <button class="folder-btn" onclick="toggleFolder('folderPerfil')">Perfil y Seguridad</button>
                     <div class="folder-content">
-                        <h4 style="color:#00f2ff; margin-top:0;">Datos Personales</h4>
-                        <p style="font-size:0.85em; color:#ccc;"><strong style="color:#00f2ff;">Nombre:</strong> <span id="pNombre"></span></p>
-                        <p style="font-size:0.85em; color:#ccc;"><strong style="color:#00f2ff;">Correo:</strong> <span id="pCorreo"></span></p>
-                        <p style="font-size:0.85em; color:#ccc;"><strong style="color:#00f2ff;">Teléfono:</strong> <span id="pTelefono"></span></p>
+                        <h4 style="color:#00ccff; margin-top:0;">Datos Personales</h4>
+                        <p style="font-size:0.85em; color:var(--text-muted);"><strong style="color:#00ccff;">Nombre:</strong> <span id="pNombre"></span></p>
+                        <p style="font-size:0.85em; color:var(--text-muted);"><strong style="color:#00ccff;">Correo:</strong> <span id="pCorreo"></span></p>
+                        <p style="font-size:0.85em; color:var(--text-muted);"><strong style="color:#00ccff;">Teléfono:</strong> <span id="pTelefono"></span></p>
                         
-                        <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 15px 0;">
+                        <hr style="border:0; border-top:1px solid rgba(128,128,128,0.2); margin: 15px 0;">
                         
-                        <h4 style="color:#00f2ff; margin-top:0; font-size:0.95em;">Cambiar Contraseña</h4>
+                        <h4 style="color:#00ccff; margin-top:0; font-size:0.95em;">Cambiar Contraseña</h4>
                         <div class="form-group">
                             <label>Contraseña Actual</label>
-                            <input type="password" id="passActual" placeholder="••••••••">
+                            <input type="password" id="passActual" placeholder="********">
                         </div>
                         <div class="form-group">
                             <label>Nueva Contraseña</label>
-                            <input type="password" id="passNueva" placeholder="••••••••">
+                            <input type="password" id="passNueva" placeholder="********">
                         </div>
                         <button onclick="cambiarContrasenaUsuario()" class="btn btn-ask" style="width: 100%; padding: 8px; font-size: 0.85em; margin-bottom: 10px;">Actualizar Contraseña</button>
                         <button onclick="cerrarSesionUsuario()" class="btn" style="width: 100%; background: rgba(255, 77, 77, 0.2); color: #ff4d4d; border: 1px solid #ff4d4d; padding: 8px; font-size: 0.85em; margin-top:5px;">Cerrar Sesión</button>
@@ -655,18 +722,18 @@
                 </div>
 
                 <div class="folder-group" id="folderDirecciones">
-                    <button class="folder-btn" onclick="toggleFolder('folderDirecciones'); renderizarDirecciones();">2. Direcciones de Entrega</button>
+                    <button class="folder-btn" onclick="toggleFolder('folderDirecciones'); renderizarDirecciones();">Direcciones de Entrega</button>
                     <div class="folder-content">
                         <div id="listaDireccionesCliente" style="margin-bottom: 12px;"></div>
-                        <button onclick="abrirModalNuevaDireccion()" class="btn btn-ask" style="width: 100%; padding: 8px; font-size: 0.85em;">+ Añadir Dirección Nueva</button>
+                        <button onclick="abrirModalNuevaDireccion()" class="btn btn-ask" style="width: 100%; padding: 8px; font-size: 0.85em;">Nueva Dirección</button>
                     </div>
                 </div>
 
                 <div class="folder-group" id="folderOrdenes">
-                    <button class="folder-btn" onclick="toggleFolder('folderOrdenes'); cargarOrdenesUsuario();">3. Registro de Órdenes</button>
+                    <button class="folder-btn" onclick="toggleFolder('folderOrdenes'); cargarOrdenesUsuario();">Registro de Órdenes</button>
                     <div class="folder-content">
                         <div id="listaOrdenesCliente">
-                            <p style="color: #777; font-size: 0.85em; text-align: center;">No tienes órdenes registradas.</p>
+                            <p style="color: var(--text-muted); font-size: 0.85em; text-align: center;">No tienes órdenes registradas.</p>
                         </div>
                     </div>
                 </div>
@@ -678,7 +745,7 @@
     <div id="modalDireccion" class="modal">
         <div class="modal-content">
             <span class="cerrar-modal" onclick="cerrarModalDireccion()">&times;</span>
-            <h3 style="color: #00f2ff; margin-top: 0; font-size: 1.1em;">Nueva Dirección</h3>
+            <h3 style="color: #00ccff; margin-top: 0; font-size: 1.1em;">Nueva Dirección</h3>
             
             <div class="form-group">
                 <label>Provincia</label>
@@ -698,7 +765,7 @@
 
             <div class="form-group">
                 <label>Dirección Exacta</label>
-                <input type="text" id="dirExacta" placeholder="Calle, número...">
+                <input type="text" id="dirExacta" placeholder="Calle, número... Punto de referencia...">
             </div>
             <button onclick="guardarDireccionUsuario()" class="btn btn-buy" style="width: 100%; padding: 10px; margin-top: 5px;">Guardar Dirección</button>
         </div>
@@ -707,7 +774,7 @@
     <div id="modalCheckout" class="modal">
         <div class="modal-content">
             <span class="cerrar-modal" onclick="cerrarModalCheckout()">&times;</span>
-            <h3 style="color: #00f2ff; margin-top: 0;">Finalizar Compra / Reserva</h3>
+            <h3 style="color: #00ccff; margin-top: 0;">Finalizar Compra / Reserva</h3>
             
             <div class="form-group">
                 <label>Seleccionar Dirección de Envío</label>
@@ -728,14 +795,14 @@
                 </div>
             </div>
 
-            <div id="seccionFechaReserva" style="display: none; background: #10101c; padding: 10px; border-radius: 10px; border: 1px solid rgba(0,242,255,0.2); margin-bottom: 14px;">
+            <div id="seccionFechaReserva" style="display: none; background: var(--input-bg); padding: 10px; border-radius: 10px; border: 1px solid rgba(0,242,255,0.2); margin-bottom: 14px;">
                 <div class="form-group" style="margin-bottom: 8px;">
                     <label>Fecha de Reserva</label>
-                    <input type="date" id="inputFechaReserva" style="background: #181828;">
+                    <input type="date" id="inputFechaReserva">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                     <label>Hora Estimada</label>
-                    <input type="time" id="inputHoraReserva" style="background: #181828;">
+                    <input type="time" id="inputHoraReserva">
                 </div>
             </div>
 
@@ -750,32 +817,32 @@
                 </div>
             </div>
 
-            <div style="margin: 15px 0; background: #10101c; padding: 10px; border-radius: 8px;">
-                <p style="margin: 0; font-size: 0.85em; color: #ccc;">Importe Total a Pagar:</p>
-                <h3 id="checkoutImporteTotal" style="color: #00f2ff; margin: 5px 0 0 0;">$0.00</h3>
+            <div style="margin: 15px 0; background: var(--input-bg); padding: 10px; border-radius: 8px;">
+                <p style="margin: 0; font-size: 0.85em; color: var(--text-muted);">Importe Total a Pagar:</p>
+                <h3 id="checkoutImporteTotal" style="color: #00ccff; margin: 5px 0 0 0;">$0.00</h3>
             </div>
             <button onclick="enviarOrdenAlBackend()" class="btn btn-buy" style="width: 100%; padding: 10px;">Enviar Pedido / Reserva</button>
         </div>
     </div>
 
     <header class="hero">
-        <p style="color: #00f2ff;">Hardware & Gaming Premium</p>
+        <p style="color: #00ccff;">Hardware & Gaming Premium</p>
         <h1>Maximiza tu Potencial</h1>
         <a href="#categoryTabs" class="btn-hero">Ver Catálogo</a>
     </header>
 
     <div class="tabs" id="categoryTabs"></div>
     <div id="app"></div>
-    <div id="loader" style="text-align: center; padding: 40px; color: #00f2ff;">Cargando catálogo...</div>
+    <div id="loader" style="text-align: center; padding: 40px; color: #00ccff;">Cargando catálogo...</div>
 
     <div id="modalProducto" class="modal" onclick="cerrarDetalles(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="cerrar-modal" onclick="cerrarDetalles()">&times;</span>
-            <img id="modalImg" style="width:100%; aspect-ratio:1/1; object-fit:contain; border-radius:12px; background:#10101c;" src="" alt="">
+            <img id="modalImg" style="width:100%; aspect-ratio:1/1; object-fit:contain; border-radius:12px; background:var(--input-bg);" src="" alt="">
             <h2 id="modalTitulo" style="margin: 10px 0 5px 0; font-size: 1.2em;"></h2>
-            <div id="modalPrecio" style="color:#00f2ff; font-weight:bold; font-size:1.1em;"></div>
+            <div id="modalPrecio" style="color:#00ccff; font-weight:bold; font-size:1.1em;"></div>
             <div id="modalStock" style="margin: 5px 0;"></div>
-            <p id="modalDesc" style="color:#ccc; font-size:0.9em;"></p>
+            <p id="modalDesc" style="color:var(--text-muted); font-size:0.9em;"></p>
             <button id="modalBtnBuy" class="btn btn-buy" style="width:100%; padding:10px; margin-top:10px;">Añadir al Carrito</button>
         </div>
     </div>
@@ -799,7 +866,28 @@
 
         let firmaCatalogoAnterior = "";
 
-        // Funciones para Notificaciones Nativas del Navegador (Gratis y sin límites)
+        // Funcionalidad para Cambiar de Tema (Claro / Oscuro)
+        function toggleTema() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const nuevoTema = currentTheme === 'light' ? 'dark' : 'light';
+            
+            if (nuevoTema === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Cargar preferencia guardada al iniciar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        });
+
         function solicitarPermisoNotificaciones() {
             if (window.Notification && Notification.permission !== "granted") {
                 Notification.requestPermission();
@@ -1014,7 +1102,7 @@
             const container = document.getElementById('cartItemsContainer');
             const footer = document.getElementById('cartFooter');
             if (carrito.length === 0) {
-                container.innerHTML = `<p style="text-align: center; color: #888; font-size: 0.9em; margin-top: 40px;">Tu carrito está vacío.</p>`;
+                container.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 0.9em; margin-top: 40px;">Tu carrito está vacío.</p>`;
                 footer.style.display = 'none';
                 return;
             }
@@ -1202,13 +1290,13 @@
         function renderizarDirecciones() {
             const container = document.getElementById('listaDireccionesCliente');
             if (direccionesGuardadas.length === 0) {
-                container.innerHTML = `<p style="color:#777; font-size:0.85em;">No tienes direcciones guardadas.</p>`;
+                container.innerHTML = `<p style="color:var(--text-muted); font-size:0.85em;">No tienes direcciones guardadas.</p>`;
                 return;
             }
             container.innerHTML = direccionesGuardadas.map((d, index) => `
-                <div style="background:#1c1c2e; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid rgba(0,242,255,0.2); font-size:0.85em;">
+                <div style="background:var(--folder-btn-bg); padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid rgba(0,242,255,0.2); font-size:0.85em;">
                     <p style="margin:0 0 4px 0; color:#00f2ff; font-weight:bold;">Dirección #${index + 1}</p>
-                    <p style="margin:0; color:#ccc;">${d.provincia || d.Provincia}, ${d.municipio || d.Municipio} - ${d.exacta || d.Direccion_Exacta}</p>
+                    <p style="margin:0; color:var(--text-muted);">${d.provincia || d.Provincia}, ${d.municipio || d.Municipio} - ${d.exacta || d.Direccion_Exacta}</p>
                 </div>
             `).join('');
         }
@@ -1218,7 +1306,7 @@
             if (!container) return;
 
             if (!ordenesCliente || ordenesCliente.length === 0) {
-                container.innerHTML = `<p style="color: #777; font-size: 0.85em; text-align: center;">No tienes órdenes registradas.</p>`;
+                container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85em; text-align: center;">No tienes órdenes registradas.</p>`;
                 return;
             }
 
@@ -1236,17 +1324,15 @@
             }
 
             if (estadoAnterior && estadoAnterior !== estadoActual) {
-                // Notificación interna visual
                 htmlNotiEstado = `
                     <div class="order-alert-box" style="background: rgba(0, 242, 255, 0.15); border: 1px solid #00f2ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                             <span style="font-size: 1.2em;">🔔</span>
                             <strong style="color:#00f2ff; font-size: 0.95em;">¡Actualización en tu pedido!</strong>
                         </div>
-                        <p style="margin: 0; color: #fff; font-size: 0.9em;">Tu orden #${idOrdenActual} ha cambiado a: <strong style="color: #00f2ff;">${estadoActual}</strong></p>
+                        <p style="margin: 0; color: var(--text-main); font-size: 0.9em;">Tu orden #${idOrdenActual} ha cambiado a: <strong style="color: #00f2ff;">${estadoActual}</strong></p>
                     </div>
                 `;
-                // Notificación nativa fuera de la web (Sistema operativo / Navegador minimizado)
                 dispararNotificacionNativa("HLG-Tech - Actualización", `Tu pedido #${idOrdenActual} ahora está: ${estadoActual}`);
                 localStorage.setItem(claveStorage, estadoActual);
             } else {
@@ -1255,19 +1341,19 @@
                     <div class="order-alert-box">
                         <strong style="color:#00f2ff;">Estado del Último Pedido:</strong> 
                         <span style="color: ${colorEstado}; font-weight:bold;">${estadoActual}</span>
-                        <p style="margin: 4px 0 0 0; color: #ccc; font-size: 0.9em;">Tu orden #${idOrdenActual} está siendo gestionada.</p>
+                        <p style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9em;">Tu orden #${idOrdenActual} está siendo gestionada.</p>
                     </div>
                 `;
             }
 
             container.innerHTML = htmlNotiEstado + ordenesCliente.map(o => `
-                <div class="order-card" style="background:#1c1c2e; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid rgba(0,242,255,0.2);">
+                <div class="order-card">
                     <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
                         <span style="color:#00f2ff; font-weight:bold;">Orden #${o.ID_Orden || o.id || '1'}</span>
                         <span class="order-status" style="color: ${ (o.Estado || o.estado) === 'Completado' ? '#25D366' : '#ffaa00' }; font-weight:bold;">${o.Estado || o.estado || 'Pendiente'}</span>
                     </div>
-                    <p style="margin:2px 0; color:#ccc;"><strong>Total:</strong> ${formatearPrecio(parseFloat(o.Total || o.total || 0))}</p>
-                    <p style="margin:2px 0; color:#888; font-size:0.8em;">Fecha: ${o.Hora || o.hora || ''}</p>
+                    <p style="margin:2px 0; color:var(--text-muted);"><strong>Total:</strong> ${formatearPrecio(parseFloat(o.Total || o.total || 0))}</p>
+                    <p style="margin:2px 0; color:var(--text-muted); font-size:0.8em;">Fecha: ${o.Hora || o.hora || ''}</p>
                 </div>
             `).join('');
         }
@@ -1296,7 +1382,6 @@
                     direccionesGuardadas = data.direcciones || [];
                     ordenesCliente = data.ordenes || [];
 
-                    // Pedir permiso para notificaciones nativas al iniciar sesión de forma gratuita
                     solicitarPermisoNotificaciones();
 
                     if (ordenesCliente.length > 0) {
@@ -1414,7 +1499,7 @@
                             <div class="card" onclick="abrirDetalles('${p.Nombre.replace(/'/g, "\\'")}')">
                                 <img src="${p.Imagen_URL}" alt="">
                                 <h3>${p.Nombre}</h3>
-                                <p style="color:#aaa; margin: 2px 0;">${formatearPrecio(p.Precio)}</p>
+                                <p style="color:var(--text-muted); margin: 2px 0;">${formatearPrecio(p.Precio)}</p>
                                 <span class="badge-stock ${stock <= 0 ? 'stock-agotado' : 'stock-disponible'}">${stock <= 0 ? 'Agotado' : 'Stock: '+stock}</span>
                                 <div class="btn-group" onclick="event.stopPropagation()">
                                     <button class="btn btn-buy ${stock<=0?'btn-disabled':''}" ${stock<=0?'disabled':''} onclick="agregarAlCarrito('${p.Nombre.replace(/'/g, "\\'")}')">Añadir</button>
