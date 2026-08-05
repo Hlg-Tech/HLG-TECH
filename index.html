@@ -1,4 +1,4 @@
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -31,36 +31,24 @@ DOCTYPE html>
         }
 
         [data-theme="light"] {
-            /* Fondo general un poco más estructurado para que los elementos resalten */
             --bg-main: #ebf0f5;
             --bg-nav: rgba(255, 255, 255, 0.98);
-            
-            /* Textos con mayor contraste (más oscuros y sólidos) */
             --text-main: #0d1117;
             --text-muted: #4b5563; 
-
-            /* Tarjetas y contenedores con mejor cuerpo y borde visible */
             --card-bg: rgba(255, 255, 255, 0.98);
             --card-border: rgba(0, 0, 0, 0.15);
-            
             --drawer-bg: #ffffff;
             --drawer-footer-bg: #e2e8f0;
             --modal-bg: #ffffff;
-            
-            /* Inputs y campos con tonos más sólidos y legibles */
             --input-bg: #e2e8f0;
             --input-color: #0d1117;
-            
             --folder-bg: #ffffff;
             --folder-btn-bg: #e8ecef;
             --folder-content-bg: #f8fafc;
-            
-            /* Pestañas y botones secundarios con mayor definición */
             --tab-bg: #cbd5e1;
             --tab-border: #94a3b8;
             --tab-color: #0d1117;
             --btn-ask-bg: #94a3b8;
-            
             --banner-bg: linear-gradient(135deg, #cbd5e1, #94a3b8);
             --banner-text: #0d1117;
             --hero-bg-img: url('https://res.cloudinary.com/kla50st7/image/upload/v1785938530/bg-ligththeme_dcwlgt.jpg');
@@ -219,6 +207,29 @@ DOCTYPE html>
             fill: none;
             stroke-linecap: round;
             stroke-linejoin: round;
+        }
+
+              /* Estilo para que los enlaces de cambio de formulario actúen como botones */
+        .btn-auth-switch {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 8px 16px;
+            background-color: var(--folder-btn-bg);
+            color: #00ccff !important;
+            border: 1px solid rgba(0, 242, 255, 0.4);
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-auth-switch:hover {
+            background-color: rgba(0, 242, 255, 0.15);
+            border-color: #00ccff;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+            transform: translateY(-1px);
         }
 
         .cart-badge {
@@ -517,13 +528,13 @@ DOCTYPE html>
         .tab-btn.active { background: #00ccff; color: #0f0f1a; font-weight: bold; border-color: #00ccff; }
         .categoria-seccion { margin-bottom: 30px; overflow: hidden; }
         .titulo-cat { padding-left: 20px; font-size: 1.3em; color: #00ccff; margin-bottom: 10px; }
-        .carrusel { display: flex; overflow-x: auto; gap: 15px; padding: 15px 20px; scrollbar-width: none; }
+        .carrusel { display: flex; overflow-x: auto; gap: 15px; padding: 15px 20px; scrollbar-width: none; align-items: stretch; }
         .carrusel::-webkit-scrollbar { display: none; } 
 
+        /* CORRECCIÓN DE PROPORCIÓN EN LAS TARJETAS */
         .card { 
-            width: 220px; 
-            min-width: 220px; 
-            max-width: 220px; 
+            flex: 0 0 210px;
+            width: 210px;
             background: var(--card-bg); 
             border-radius: 16px; 
             padding: 12px; 
@@ -531,16 +542,31 @@ DOCTYPE html>
             cursor: pointer; 
             position: relative; 
             transition: all 0.35s ease;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
         }
-        .card img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 12px; }
-        .card h3 { font-size: 1em; margin: 8px 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card img { 
+            width: 100%; 
+            height: 160px; 
+            object-fit: cover; 
+            border-radius: 12px; 
+            background: var(--input-bg);
+        }
+        .card h3 { 
+            font-size: 0.95em; 
+            margin: 8px 0 4px 0; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
         .card:hover { transform: translateY(-6px); border-color: #00ccff; box-shadow: 0 0 20px rgba(0, 242, 255, 0.4); }
         
         .badge-stock { display: inline-block; font-size: 0.75em; padding: 2px 6px; border-radius: 10px; margin-bottom: 6px; font-weight: bold; }
         .stock-disponible { background: rgba(0, 242, 255, 0.15); color: #00f2ff; border: 1px solid #00ccff; }
         .stock-agotado { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid #ff4d4d; }
 
-        .btn-group { display: flex; gap: 8px; margin-top: 8px; }
+        .btn-group { display: flex; gap: 8px; margin-top: auto; }
         .btn { flex: 1; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-weight: bold; font-size: 0.85em; text-align: center; }
         .btn-buy { background: #00ccff; color: #0f0f1a; } 
         .btn-buy:hover { box-shadow: 0 0 10px rgba(0, 242, 255, 0.6); }
@@ -604,6 +630,75 @@ DOCTYPE html>
             animation: spinHlg 0.8s linear infinite;
         }
         @keyframes spinHlg { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Contenedor general del formulario */
+.form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Etiquetas (Labels) */
+.form-group label {
+    font-size: 13px;
+    color: #a5b4fc;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+/* Estilo unificado para los Selects y Inputs de tipo fecha */
+.form-group select,
+.form-group input[type="date"] {
+    width: 100%;
+    padding: 11px 14px;
+    background-color: #121222; /* Fondo oscuro elegante */
+    border: 1px solid #2a2a40;  /* Borde sutil */
+    color: #ffffff;            /* Texto blanco */
+    border-radius: 8px;        /* Bordes redondeados */
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    appearance: none;          /* Quita la flecha fea por defecto en algunos navegadores */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    /* Agregamos una flecha personalizada moderna usando SVG en formato data-uri */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+/* El input de fecha no necesita la flecha de select, se la quitamos y ajustamos */
+.form-group input[type="date"] {
+    background-image: none;
+    padding-right: 14px;
+    color-scheme: dark; /* Fuerza a que el calendario desplegable del navegador sea oscuro */
+}
+
+/* Efecto Hover (al pasar el mouse) */
+.form-group select:hover,
+.form-group input[type="date"]:hover {
+    border-color: #00f2ff66;
+}
+
+/* Efecto Focus (cuando el usuario hace clic para escribir/seleccionar) */
+.form-group select:focus,
+.form-group input[type="date"]:focus {
+    border-color: #00f2ff;
+    box-shadow: 0 0 8px rgba(0, 242, 255, 0.25);
+}
+
+/* Estado deshabilitado (como cuando la provincia o municipio están bloqueados) */
+.form-group select:disabled,
+.form-group input:disabled {
+    background-color: #0b0b14;
+    color: #555577;
+    border-color: #1a1a2b;
+    cursor: not-allowed;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23444466' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
     </style>
 </head>
 <body>
@@ -632,7 +727,6 @@ DOCTYPE html>
             <a onclick="restablecerTodo(); location.reload();" class="logo">HLG<span>-Tech</span></a>
         </div>
         <div class="nav-right">
-            <!-- Botón para Cambiar Tema Claro / Oscuro -->
             <button class="bottom-nav-btn" onclick="toggleTema()" title="Cambiar Tema" style="width: 36px; height: 36px;">
                 <svg id="iconoTema" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             </button>
@@ -692,7 +786,76 @@ DOCTYPE html>
             <div id="vistaLoginUnico">
                 <div class="form-group"><label>Correo Electrónico</label><input type="email" id="loginCorreo" placeholder="tucorreo@gmail.com"></div>
                 <div class="form-group"><label>Contraseña</label><input type="password" id="loginPassword" placeholder="Tu contraseña"></div>
-                <button onclick="iniciarSesionUsuario()" class="btn btn-buy" style="width: 100%; margin-top: 5px; padding: 10px;">Iniciar Sesion</button>
+                <button onclick="iniciarSesionUsuario()" class="btn btn-buy" style="width: 100%; margin-top: 5px; padding: 10px;">Entrar</button>
+                <p class="auth-switch-text" style="text-align: center; margin-top: 15px; font-size: 0.85em; color: var(--text-muted);">
+        ¿No tienes una cuenta? <a onclick="alternarFormularioAuth('registro')" class="btn-auth-switch">Regístrate aquí</a>
+    </p>
+            </div>
+
+            <div id="contenedorRegistro" class="auth-form-container" style="display: none;">
+                <h3 style="color:#00f2ff; margin-top:0;">Crear Nueva Cuenta</h3>
+                
+                <div class="form-group">
+                    <label for="regNombre">Nombre completo</label>
+                    <input type="text" id="regNombre" placeholder="Tu nombre">
+                </div>
+
+                <div class="form-group">
+                    <label for="regCorreo">Correo electrónico</label>
+                    <input type="email" id="regCorreo" placeholder="correo@ejemplo.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="regTelefono">Teléfono</label>
+                    <input type="tel" id="regTelefono" placeholder="Número de teléfono">
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword">Contraseña</label>
+                    <input type="password" id="regPassword" placeholder="Contraseña segura">
+                </div>
+
+                <div class="form-group">
+                    <label for="regSexo">Sexo</label>
+                    <select id="regSexo">
+                        <option value="">Seleccionar...</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="regFechaNacimiento">Fecha de nacimiento</label>
+                    <input type="date" id="regFechaNacimiento">
+                </div>
+
+               <div class="form-group">
+    <label>País</label>
+    <select id="selectPais" class="form-control" onchange="cargarProvinciasSegunPais()">
+        <option value="">Selecciona un país...</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Provincia / Estado</label>
+    <select id="selectProvincia" class="form-control" onchange="cargarMunicipiosSegunProvincia()" disabled>
+        <option value="">Selecciona una provincia...</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Municipio</label>
+    <select id="selectMunicipio" class="form-control" disabled>
+        <option value="">Selecciona un municipio...</option>
+    </select>
+</div>
+
+                <button type="button" class="btn btn-buy" style="width: 100%; margin-top: 5px; padding: 10px;" onclick="registrarNuevoUsuario()">Registrarse</button>
+                
+                <p class="auth-switch-text" style="text-align: center; margin-top: 15px; font-size: 0.85em; color: var(--text-muted);">
+                 ¿Ya tienes una cuenta? <a onclick="alternarFormularioAuth('login')" class="btn-auth-switch">Inicia sesión aquí</a>
+                </p>
             </div>
 
             <div id="vistaPanelLogueado" style="display: none;">
@@ -848,7 +1011,7 @@ DOCTYPE html>
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbw6_iYjmDIfmguBPIwnO9ed3wYPYxQEtBXKHCd75WOhKARpUOgMgp8wwqPPVVyQ-jDXxQ/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyp1EHCzNNCs0JdOtomUhrKAhcQIoX1Bua6JxCbZhmlYD742eGl0PMCGHfezS84P9Itgg/exec';
         let todosLosProductos = [];
         let tasaCambioCUP = 650;
         let monedaActual = 'USD';
@@ -857,6 +1020,7 @@ DOCTYPE html>
         let direccionesGuardadas = [];
         let ordenesCliente = [];
         let listaUbicacionesTabulares = []; 
+        let datosUbicacionesGlobal = [];
 
         let provinciaSeleccionadaValor = "";
         let municipioSeleccionadaValor = "";
@@ -866,7 +1030,6 @@ DOCTYPE html>
 
         let firmaCatalogoAnterior = "";
 
-        // Funcionalidad para Cambiar de Tema (Claro / Oscuro)
         function toggleTema() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const nuevoTema = currentTheme === 'light' ? 'dark' : 'light';
@@ -880,13 +1043,159 @@ DOCTYPE html>
             }
         }
 
-        // Cargar preferencia guardada al iniciar la página
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
         });
+
+        function alternarFormularioAuth(modo) {
+            const vistaLogin = document.getElementById("vistaLoginUnico");
+            const vistaRegistro = document.getElementById("contenedorRegistro");
+            
+            if (modo === 'registro') {
+                vistaLogin.style.display = "none";
+                vistaRegistro.style.display = "block";
+            } else {
+                vistaRegistro.style.display = "none";
+                vistaLogin.style.display = "block";
+            }
+        }
+
+      async function inicializarUbicacionesFormulario() {
+    try {
+        const respuesta = await fetch(API_URL);
+        const resultado = await respuesta.json();
+        
+        // Verificamos si la API devuelve las ubicaciones correctamente
+        if (resultado.ubicaciones && Array.isArray(resultado.ubicaciones)) {
+            datosUbicacionesGlobal = resultado.ubicaciones;
+            poblarPaises(datosUbicacionesGlobal);
+        } else {
+            console.warn("No se encontraron ubicaciones en la respuesta de la API.");
+        }
+    } catch (error) {
+        console.error("Error al cargar las ubicaciones desde la API:", error);
+    }
+}
+
+function poblarPaises(data) {
+    const selectPais = document.getElementById('selectPais');
+    if (!selectPais) return;
+
+    // Soportar tanto minúsculas como mayúsculas en las propiedades del JSON
+    const paisesUnicos = [...new Set(data.map(item => item.pais || item.Pais))].filter(Boolean);
+    
+    selectPais.innerHTML = '<option value="">Selecciona un país...</option>';
+    paisesUnicos.forEach(pais => {
+        selectPais.innerHTML += `<option value="${pais}">${pais}</option>`;
+    });
+}
+
+function cargarProvinciasSegunPais() {
+    const paisSeleccionado = document.getElementById('selectPais').value;
+    const selectProvincia = document.getElementById('selectProvincia');
+    const selectMunicipio = document.getElementById('selectMunicipio');
+    
+    selectProvincia.innerHTML = '<option value="">Selecciona una provincia...</option>';
+    selectMunicipio.innerHTML = '<option value="">Selecciona un municipio...</option>';
+    selectMunicipio.disabled = true;
+
+    if (!paisSeleccionado) {
+        selectProvincia.disabled = true;
+        return;
+    }
+
+    const provinciasUnicas = [...new Set(
+        datosUbicacionesGlobal
+            .filter(item => (item.pais || item.Pais) === paisSeleccionado)
+            .map(item => item.provincia || item.Provincia)
+    )].filter(Boolean);
+
+    provinciasUnicas.forEach(provincia => {
+        selectProvincia.innerHTML += `<option value="${provincia}">${provincia}</option>`;
+    });
+    selectProvincia.disabled = false;
+}
+
+function cargarMunicipiosSegunProvincia() {
+    const paisSeleccionado = document.getElementById('selectPais').value;
+    const provinciaSeleccionada = document.getElementById('selectProvincia').value;
+    const selectMunicipio = document.getElementById('selectMunicipio');
+    
+    selectMunicipio.innerHTML = '<option value="">Selecciona un municipio...</option>';
+
+    if (!provinciaSeleccionada) {
+        selectMunicipio.disabled = true;
+        return;
+    }
+
+    const municipiosUnicos = [...new Set(
+        datosUbicacionesGlobal
+            .filter(item => ((item.pais || item.Pais) === paisSeleccionado) && ((item.provincia || item.Provincia) === provinciaSeleccionada))
+            .map(item => item.municipio || item.Municipio)
+    )].filter(Boolean);
+
+    municipiosUnicos.forEach(municipio => {
+        selectMunicipio.innerHTML += `<option value="${municipio}">${municipio}</option>`;
+    });
+    selectMunicipio.disabled = false;
+}
+
+// Asegurarnos de que se invoque al cargar la app principal o el DOM
+document.addEventListener("DOMContentLoaded", () => {
+    inicializarUbicacionesFormulario();
+});
+
+        // Función encargada de capturar los datos y enviarlos al backend para el registro
+        async function registrarNuevoUsuario() {
+            const datosRegistro = {
+                accion: "registrar_usuario",
+                nombre: document.getElementById("regNombre").value.trim(),
+                correo: document.getElementById("regCorreo").value.trim(),
+                telefono: document.getElementById("regTelefono").value.trim(),
+                password: document.getElementById("regPassword").value.trim(),
+                sexo: document.getElementById("regSexo").value,
+                fechaNacimiento: document.getElementById("regFechaNacimiento").value,
+                // Actualizado con los IDs correctos de los nuevos select:
+                pais: document.getElementById("selectPais").value.trim(),
+                provincia: document.getElementById("selectProvincia").value.trim(),
+                municipio: document.getElementById("selectMunicipio").value.trim()
+            };
+
+            if (!datosRegistro.nombre || !datosRegistro.correo || !datosRegistro.password) {
+                mostrarAlerta('Atención', 'Por favor, completa al menos los campos obligatorios (Nombre, Correo y Contraseña).');
+                return;
+            }
+
+            mostrarLoaderGlobal("Registrando nueva cuenta...");
+
+            try {
+                const respuesta = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                    "Content-Type": "text/plain;charset=utf-8" // Usar text/plain evita los pre-vuelos CORS estrictos en Google Apps Script
+                },
+                    body: JSON.stringify(datosRegistro)
+                });
+                
+                const resultado = await respuesta.json();
+                ocultarLoaderGlobal();
+
+                if (resultado.success) {
+                    mostrarAlerta('¡Éxito!', resultado.message || 'Cuenta creada correctamente. Ya puedes iniciar sesión.');
+                    alternarFormularioAuth('login');
+                } else {
+                    mostrarAlerta('Error', resultado.message || 'No se pudo completar el registro.');
+                }
+
+            } catch (error) {
+                ocultarLoaderGlobal();
+                console.error("Error en la conexión:", error);
+                mostrarAlerta('Error', 'Ocurrió un error al intentar conectar con el servidor.');
+            }
+        }
 
         function solicitarPermisoNotificaciones() {
             if (window.Notification && Notification.permission !== "granted") {
@@ -1015,13 +1324,15 @@ DOCTYPE html>
                 todosLosProductos = (data.productos || []).filter(p => String(p.Mostrar).toUpperCase() === 'TRUE' || String(p.Mostrar) === '1');
                 tasaCambioCUP = data.tasa ? parseFloat(data.tasa) : 650;
                 listaUbicacionesTabulares = data.ubicaciones || [];
-                
+                datosUbicacionesGlobal = data.ubicaciones || []; // Sincronizamos ambas variables
+
                 firmaCatalogoAnterior = generarFirmaCatalogo(todosLosProductos, tasaCambioCUP);
                 
                 crearCategorias();
                 renderizar(todosLosProductos);
-                inicializarProvinciasDireccion();
-                loaderDiv.style.display = 'none';
+                if (datosUbicacionesGlobal.length > 0) {
+            poblarPaises(datosUbicacionesGlobal);
+        }
                 ocultarBannerActualizacion();
             } catch (err) {
                 console.error("Error al procesar el catálogo:", err);
