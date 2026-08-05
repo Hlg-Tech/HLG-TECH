@@ -9,10 +9,23 @@
         :root {
             --bg-main: #0f0f1a;
             --bg-card: rgba(30, 30, 45, 0.75);
+            --bg-input: #10101c;
+            --bg-modal: #181828;
             --accent: #00f2ff;
             --text-main: #ffffff;
             --text-muted: #aaaaaa;
             --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f4f5f7;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --bg-input: #ffffff;
+            --bg-modal: #ffffff;
+            --accent: #007bff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: rgba(0, 0, 0, 0.15);
         }
 
         body {
@@ -21,406 +34,255 @@
             color: var(--text-main);
             margin: 0;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* --- PANTALLA DE ACCESO / LOGIN POR CORREO --- */
-        #authScreen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
-            background: rgba(15, 15, 26, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: center;
+        /* --- BOTONES GLOBALES --- */
+        button, .btn {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: var(--accent);
+            color: #0f0f1a;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s ease, transform 0.1s ease;
+            display: inline-flex;
             align-items: center;
-            z-index: 9999;
+            justify-content: center;
+            text-align: center;
+        }
+        [data-theme="light"] button, [data-theme="light"] .btn {
+            color: #ffffff;
+        }
+        button:hover, .btn:hover { opacity: 0.9; }
+        button:active, .btn:active { transform: scale(0.98); }
+
+        /* --- SELECTORES Y INPUTS DINÁMICOS --- */
+        input[type="text"], input[type="email"], input[type="number"], input[type="date"], select, textarea {
+            background-color: var(--bg-input) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-main) !important;
+            padding: 10px 12px !important;
+            border-radius: 8px !important;
+            outline: none !important;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        input::placeholder { color: var(--text-muted); opacity: 0.7; }
+        input:focus, select:focus { border-color: var(--accent) !important; box-shadow: 0 0 8px rgba(0, 242, 255, 0.2); }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+            padding-right: 30px !important;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3e%3C/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 14px;
+        }
+        select option { background: var(--bg-modal); color: var(--text-main); padding: 10px; }
+
+        /* --- PANTALLA DE ACCESO / LOGIN --- */
+        #authScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: var(--bg-main); backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
         }
         .auth-card {
-            background: #181828;
-            border: 1px solid var(--accent);
-            padding: 30px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 0 25px rgba(0, 242, 255, 0.3);
-            text-align: center;
-            box-sizing: border-box;
+            background: var(--bg-modal); border: 1px solid var(--accent); padding: 30px;
+            border-radius: 20px; width: 100%; max-width: 380px; text-align: center;
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.2); box-sizing: border-box;
         }
         .auth-card h2 { margin-top: 0; color: var(--accent); font-size: 1.5em; }
         .auth-card p { font-size: 0.85em; color: var(--text-muted); margin-bottom: 20px; }
-        .auth-card input {
-            width: 100%;
-            padding: 10px 15px;
-            background: #10101c;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 0.9em;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .auth-card input:focus { border-color: var(--accent); }
-        .auth-card button {
-            width: 100%;
-            padding: 10px;
-            background: var(--accent);
-            color: #0f0f1a;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.95em;
-            transition: box-shadow 0.3s;
-        }
-        .auth-card button:hover { box-shadow: 0 0 15px rgba(0, 242, 255, 0.6); }
+        .auth-card input { width: 100%; margin-bottom: 15px; }
+        .auth-card button { width: 100%; font-weight: bold; }
         #authError { color: #ff4d4d; font-size: 0.8em; margin-top: 10px; display: none; }
 
-        /* --- NAVBAR DEL PANEL --- */
-        .backoffice-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(20, 20, 30, 0.95);
-            border-bottom: 2px solid rgba(0, 242, 255, 0.3);
-            padding: 12px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
+        /* --- MODALES TEMÁTICOS PERSONALIZADOS --- */
+        .custom-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 4000;
+            justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
         }
-        .nav-left-group {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .custom-modal-box {
+            background: var(--bg-modal); border: 1px solid var(--accent); padding: 25px;
+            border-radius: 16px; width: 100%; max-width: 380px; text-align: center;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
         }
-        .menu-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--accent);
-            padding: 6px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: all 0.2s;
-        }
-        .menu-btn:hover {
-            border-color: var(--accent);
-            background: rgba(0, 242, 255, 0.1);
-        }
-        .logo {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #ffffff;
-            text-decoration: none;
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
-        }
-        .logo span { color: var(--accent); }
-        .user-badge {
-            font-size: 0.8em;
-            color: var(--text-muted);
-            background: #181828;
-            padding: 5px 12px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-        }
+        .custom-modal-box h3 { color: var(--accent); margin-top: 0; font-size: 1.2em; }
+        .custom-modal-box p { color: var(--text-main); font-size: 0.9em; margin-bottom: 20px; }
+        .custom-modal-box input { width: 100%; margin-bottom: 20px; }
+        .custom-modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .btn-modal-primary { background: var(--accent); color: #0f0f1a; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; flex: 1; }
+        [data-theme="light"] .btn-modal-primary { color: #fff; }
+        .btn-modal-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 8px; font-weight: bold; flex: 1; }
 
-        /* --- MENÚ LATERAL DESPLEGABLE (SIDEBAR) --- */
+        /* --- NAVBAR Y SIDEBAR --- */
+        .backoffice-nav {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-card); border-bottom: 2px solid var(--border-color);
+            padding: 12px 20px; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px);
+        }
+        .nav-left-group, .nav-right-group { display: flex; align-items: center; gap: 15px; }
+        .menu-btn {
+            background: transparent; border: 1px solid var(--border-color); color: var(--accent);
+            padding: 6px 10px; border-radius: 8px; font-size: 1.1em;
+        }
+        .logo { font-size: 1.2em; font-weight: bold; color: var(--text-main); text-decoration: none; }
+        .logo span { color: var(--accent); }
+        .user-badge { font-size: 0.8em; color: var(--text-muted); background: var(--bg-modal); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border-color); }
+
+        /* --- NOTIFICACIONES --- */
+        .notification-container { position: relative; display: inline-block; }
+        .notification-bell-btn {
+            background: var(--bg-modal); border: 1px solid var(--border-color); color: var(--accent);
+            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; position: relative; font-size: 1.1em; padding: 0;
+        }
+        .notification-badge {
+            position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: #fff;
+            font-size: 0.65em; font-weight: bold; padding: 2px 6px; border-radius: 10px; display: none;
+        }
+        .notification-dropdown {
+            display: none; position: absolute; right: 0; top: 45px; width: 320px;
+            background: var(--bg-modal); border: 1px solid var(--accent); border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2); z-index: 2000; overflow: hidden;
+        }
+        .notification-dropdown.show { display: block; }
+        .notification-header {
+            padding: 12px 15px; background: var(--bg-main); border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.85em; font-weight: bold; color: var(--accent);
+        }
+        .notification-list { max-height: 280px; overflow-y: auto; }
+        .notification-item {
+            padding: 12px 15px; border-bottom: 1px solid var(--border-color); cursor: pointer; font-size: 0.8em;
+        }
+        .notification-item:hover { background: rgba(0, 242, 255, 0.08); }
+        .notification-item strong { color: var(--text-main); display: block; margin-bottom: 2px; }
+        .notification-item span { color: var(--text-muted); }
+
+        /* --- SIDEBAR LATERAL --- */
         .sidebar {
-            position: fixed;
-            top: 0;
-            left: -260px;
-            width: 260px;
-            height: 100%;
-            background: #141420;
-            border-right: 1px solid var(--border-color);
-            z-index: 1100;
-            transition: left 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-            padding: 20px;
+            position: fixed; top: 0; left: -260px; width: 260px; height: 100%;
+            background: var(--bg-modal); border-right: 1px solid var(--border-color); z-index: 1100;
+            transition: left 0.3s ease; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box;
         }
         .sidebar.open { left: 0; }
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-        }
-        .close-sidebar {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5em;
-            cursor: pointer;
-        }
-        .close-sidebar:hover { color: var(--accent); }
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .close-sidebar { background: none; border: none; color: var(--text-muted); font-size: 1.5em; cursor: pointer; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
         .sidebar-menu li a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-main);
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 10px;
-            transition: background 0.2s, color 0.2s;
-            font-size: 0.9em;
-            cursor: pointer;
+            display: flex; align-items: center; gap: 10px; color: var(--text-main); text-decoration: none;
+            padding: 10px 15px; border-radius: 10px; transition: background 0.2s, color 0.2s; font-size: 0.9em; cursor: pointer;
         }
-        .sidebar-menu li a:hover {
-            background: rgba(0, 242, 255, 0.15);
-            color: var(--accent);
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1050;
-        }
+        .sidebar-menu li a:hover { background: rgba(0, 242, 255, 0.15); color: var(--accent); }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1050; }
         .sidebar-overlay.open { display: block; }
 
-        /* --- CONTENEDORES DE VISTAS --- */
         .view-section { display: none; }
         .view-section.active { display: block; }
 
-        /* --- CONTENIDO PRINCIPAL (HOME DASHBOARD) --- */
-        .main-container {
-            max-width: 1100px;
-            margin: 30px auto;
-            padding: 0 20px;
-            box-sizing: border-box;
-        }
-        .welcome-banner {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-sizing: border-box;
-        }
+        .main-container { max-width: 1100px; margin: 30px auto; padding: 0 20px; box-sizing: border-box; }
+        .welcome-banner { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; margin-bottom: 25px; }
         .welcome-banner h1 { margin: 0 0 8px 0; font-size: 1.6em; color: var(--accent); }
-        .welcome-banner p { margin: 0; color: var(--text-muted); font-size: 0.9em; }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-            cursor: pointer;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; cursor: pointer; transition: border-color 0.3s; }
         .stat-card:hover { border-color: var(--accent); }
         .stat-card h3 { margin: 0 0 10px 0; font-size: 0.85em; color: var(--text-muted); text-transform: uppercase; }
         .stat-card .value { font-size: 1.8em; font-weight: bold; color: var(--text-main); }
 
-        .actions-section h3 { font-size: 1.1em; margin-bottom: 15px; color: var(--text-main); }
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        .action-card {
-            background: #181828;
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            text-decoration: none;
-            color: var(--text-main);
-            transition: all 0.3s;
-        }
-        .action-card:hover {
-            border-color: var(--accent);
-            background: rgba(0, 242, 255, 0.05);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 242, 255, 0.15);
-        }
-        .action-card span { font-size: 1.8em; display: block; margin-bottom: 10px; }
-        .action-card h4 { margin: 0 0 5px 0; font-size: 0.95em; color: var(--accent); }
-        .action-card p { margin: 0; font-size: 0.75em; color: var(--text-muted); }
+        .financial-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .fin-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; }
+        .fin-card h4 { margin: 0 0 15px 0; color: var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+        .fin-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9em; color: var(--text-main); }
+        .fin-row span:last-child { font-weight: bold; }
 
-        /* --- FILTROS Y BARRA DE PRODUCTOS --- */
-        .products-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .filters-container {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 14px;
-            box-sizing: border-box;
-        }
-        .filters-container select, .filters-container input {
-            background: #181828;
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            border-radius: 8px;
-            color: #fff;
-            outline: none;
-            font-size: 0.85em;
-            flex: 1;
-            min-width: 140px;
-        }
-        .filters-container select:focus, .filters-container input:focus { border-color: var(--accent); }
+        .products-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; flex-wrap: wrap; }
+        .filters-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; align-items: center; }
+        .filters-container input, .filters-container select { flex: 1; min-width: 140px; }
 
-        /* --- TABLAS RESPONSIVAS --- */
-        .table-responsive {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            overflow-x: auto;
-            box-sizing: border-box;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.9em;
-        }
-        th, td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        th {
-            background: rgba(24, 24, 40, 0.9);
-            color: var(--accent);
-            font-weight: 600;
-        }
+        .table-responsive { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9em; color: var(--text-main); }
+        th, td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); }
+        th { background: var(--bg-modal); color: var(--accent); font-weight: 600; }
         tr:hover td { background: rgba(0, 242, 255, 0.03); }
-        .prod-thumb {
-            width: 40px; height: 40px;
-            border-radius: 8px;
-            object-fit: cover;
-            border: 1px solid var(--border-color);
-        }
-        .badge {
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.75em;
-            font-weight: bold;
-        }
+        .prod-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-color); }
+        
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75em; font-weight: bold; }
         .badge-pub { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
         .badge-unpub { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
+        .badge-stock { background: rgba(0, 242, 255, 0.15); color: var(--accent); }
+        .badge-nostock { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; }
+        .badge-estado { background: rgba(142, 68, 173, 0.15); color: #9b59b6; }
 
-        .btn-edit-row {
-            background: rgba(0, 242, 255, 0.15);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 5px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.75em;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-        .btn-edit-row:hover {
-            background: var(--accent);
-            color: #0f0f1a;
-        }
+        .btn-edit-row, .btn-action { background: rgba(0, 242, 255, 0.15); color: var(--accent); border: 1px solid var(--accent); padding: 5px 10px; border-radius: 6px; font-size: 0.75em; font-weight: bold; cursor: pointer; }
+        .btn-action:hover, .btn-edit-row:hover { background: var(--accent); color: #0f0f1a; }
 
-        /* Botón de Reintentar en Tablas */
-        .btn-retry {
-            background: rgba(0, 242, 255, 0.15);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 6px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85em;
-            font-weight: bold;
-            margin-top: 8px;
-            transition: all 0.2s;
-        }
-        .btn-retry:hover {
-            background: var(--accent);
-            color: #0f0f1a;
-        }
-
-        /* --- OVERLAY DE CARGA NEON --- */
         #neonLoaderOverlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 15, 26, 0.85);
-            backdrop-filter: blur(5px);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            gap: 20px;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 15, 26, 0.85); backdrop-filter: blur(5px); z-index: 3000;
+            justify-content: center; align-items: center; flex-direction: column; gap: 20px;
         }
-        .neon-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(0, 242, 255, 0.1);
-            border-top: 4px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        #neonLoaderText {
-            color: var(--accent);
-            font-size: 1.1em;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
-            letter-spacing: 0.5px;
-        }
+        .neon-spinner { width: 60px; height: 60px; border: 4px solid rgba(0, 242, 255, 0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #neonLoaderText { color: var(--accent); font-size: 1.1em; font-weight: bold; }
+
+        .order-detail-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; margin-bottom: 20px; }
+        .order-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .meta-box { background: var(--bg-modal); padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); }
+        .meta-box span { display: block; font-size: 0.75em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .meta-box strong { font-size: 1em; color: var(--text-main); }
     </style>
 </head>
 <body>
 
-    <!-- Overlay de Carga Neón -->
     <div id="neonLoaderOverlay">
         <div class="neon-spinner"></div>
         <div id="neonLoaderText">Procesando solicitud...</div>
     </div>
 
-    <!-- Pantalla de Validación de Correo Obligatorio -->
+    <!-- MODAL DE ALERTA PERSONALIZADO -->
+    <div id="customAlertModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <h3 id="customAlertTitle">Aviso</h3>
+            <p id="customAlertMessage">Mensaje del sistema</p>
+            <button class="btn-modal-primary" onclick="cerrarCustomAlert()">Aceptar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE PROMPT PERSONALIZADO -->
+    <div id="customPromptModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <h3 id="customPromptTitle">Editar</h3>
+            <p id="customPromptDesc">Introduce el nuevo valor:</p>
+            <input type="text" id="customPromptInput">
+            <div class="custom-modal-buttons">
+                <button class="btn-modal-secondary" onclick="cerrarCustomPrompt(false)">Cancelar</button>
+                <button class="btn-modal-primary" onclick="cerrarCustomPrompt(true)">Guardar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="authScreen">
         <div class="auth-card">
             <h2>Acceso Restringido</h2>
             <p>Introduce tu correo para entrar al Centro de Control.</p>
-            <input type="email" id="adminEmailInput" placeholder="tucorreo@dominio.com" autocomplete="email">
+            <input type="email" id="adminEmailInput" placeholder="tucorreo@dominio.com">
             <button onclick="verificarAcceso()">Ingresar al Sistema</button>
             <div id="authError">Correo no autorizado o error de conexión.</div>
         </div>
     </div>
 
-    <!-- Menú Lateral Desplegable (Sidebar) -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <nav class="sidebar" id="appSidebar">
         <div class="sidebar-header">
@@ -428,45 +290,62 @@
             <button class="close-sidebar" onclick="toggleSidebar()">&times;</button>
         </div>
         <ul class="sidebar-menu">
-            <li><a onclick="toggleSidebar(); cambiarVista('home')">Inicio</a></li>
+            <li><a onclick="toggleSidebar(); cambiarVista('home')">Inicio & Resumen</a></li>
             <li><a onclick="toggleSidebar(); cambiarVista('productos')">Gestionar Productos</a></li>
             <li><a onclick="toggleSidebar(); cambiarVista('categorias')">Gestionar Categorías</a></li>
+            <li><a onclick="toggleSidebar(); cambiarVista('usuarios')">Usuarios Registrados</a></li>
+            <li><a onclick="toggleSidebar(); cambiarVista('ordenes')">Pedidos / Órdenes</a></li>
             <li><a onclick="toggleSidebar(); abrirModalProducto('nuevo')">Nuevo Producto</a></li>
-            <li><a onclick="toggleSidebar(); abrirModalCategoria()">Nueva Categoría</a></li>
             <li><a onclick="abrirModalTasa()">Tasa de Cambio</a></li>
             <li><a onclick="cerrarSesion()" style="color: #ff4d4d;">Cerrar Sesión</a></li>
         </ul>
     </nav>
 
-    <!-- Barra Superior -->
     <header class="backoffice-nav">
         <div class="nav-left-group">
             <button class="menu-btn" onclick="toggleSidebar()">☰</button>
             <a href="#" onclick="cambiarVista('home')" class="logo">HLG<span>-Tech</span></a>
         </div>
-        <div id="userDisplay" class="user-badge">Admin</div>
+        <div class="nav-right-group">
+            <button class="notification-bell-btn" onclick="toggleTema()" id="themeToggleBtn" title="Cambiar Tema Claro/Oscuro">☀️</button>
+            <div class="notification-container">
+                <button class="notification-bell-btn" onclick="toggleNotificationDropdown()" title="Notificaciones de Órdenes">
+                    🔔
+                    <span id="notifBadge" class="notification-badge">0</span>
+                </button>
+                <div id="notifDropdown" class="notification-dropdown">
+                    <div class="notification-header">
+                        <span>Nuevas Órdenes</span>
+                        <span id="notifCountText" style="font-weight: normal; color: var(--text-muted);">0 pendientes</span>
+                    </div>
+                    <div id="notifList" class="notification-list">
+                        <div class="notification-item" style="text-align: center; color: var(--text-muted);">Sin órdenes nuevas</div>
+                    </div>
+                </div>
+            </div>
+            <div id="userDisplay" class="user-badge">Admin</div>
+        </div>
     </header>
 
     <!-- VISTA 1: HOME DASHBOARD -->
     <main id="view-home" class="view-section active main-container">
         <div class="welcome-banner">
             <h1>Panel de Control Principal</h1>
-            <p>Resumen general del catálogo.</p>
+            <p>Resumen de inventario, finanzas y operaciones.</p>
         </div>
 
-        <!-- Tarjetas de Estadísticas -->
         <div class="stats-grid">
             <div class="stat-card" onclick="cambiarVista('productos')">
                 <h3>Total Productos</h3>
                 <div class="value" id="statTotal">--</div>
             </div>
-            <div class="stat-card" onclick="cambiarVista('productos')">
-                <h3>En Stock</h3>
-                <div class="value" id="statStock" style="color: #00f2ff;">--</div>
+            <div class="stat-card" onclick="cambiarVista('usuarios')">
+                <h3>Usuarios Registrados</h3>
+                <div class="value" id="statUsuarios" style="color: var(--accent);">--</div>
             </div>
-            <div class="stat-card" onclick="cambiarVista('categorias')">
-                <h3>Categorías</h3>
-                <div class="value" id="statCategorias" style="color: #2ecc71;">--</div>
+            <div class="stat-card" onclick="cambiarVista('ordenes')">
+                <h3>Total Órdenes</h3>
+                <div class="value" id="statOrdenes" style="color: #2ecc71;">--</div>
             </div>
             <div class="stat-card" onclick="abrirModalTasa()">
                 <h3>Tasa Actual (CUP)</h3>
@@ -474,57 +353,58 @@
             </div>
         </div>
 
-        <!-- Accesos Directos -->
-        <div class="actions-section">
-            <h3>Acciones Rápidas</h3>
-            <div class="actions-grid">
-                <div class="action-card" onclick="cambiarVista('productos')">
-                    <h4>Productos</h4>
-                    <p>Filtrar y administrar catálogo</p>
-                </div>
-                <div class="action-card" onclick="cambiarVista('categorias')">
-                    <h4>Categorías</h4>
-                    <p>Ver listado y secciones</p>
-                </div>
-                <div class="action-card" onclick="abrirModalProducto('nuevo')">
-                    <h4>Nuevo Producto</h4>
-                    <p>Agregar ítem al catálogo</p>
-                </div>
-                <div class="action-card" onclick="sincronizarDatosRemotos()">
-                    <h4>Sincronizar</h4>
-                    <p>Recargar Datos</p>
-                </div>
+        <h3 style="color: var(--accent); margin-bottom: 15px;">Resumen Financiero de Órdenes</h3>
+        <div class="financial-summary-grid">
+            <div class="fin-card">
+                <h4>Hoy</h4>
+                <div class="fin-row"><span>Ventas:</span> <span id="hoyVenta" style="color: var(--accent);">$0.00</span></div>
+                <div class="fin-row"><span>Costo:</span> <span id="hoyCosto" style="color: #ff4d4d;">$0.00</span></div>
+                <div class="fin-row"><span>Ganancia:</span> <span id="hoyGanancia" style="color: #2ecc71;">$0.00</span></div>
+            </div>
+            <div class="fin-card">
+                <h4>Esta Semana</h4>
+                <div class="fin-row"><span>Ventas:</span> <span id="semVenta" style="color: var(--accent);">$0.00</span></div>
+                <div class="fin-row"><span>Costo:</span> <span id="semCosto" style="color: #ff4d4d;">$0.00</span></div>
+                <div class="fin-row"><span>Ganancia:</span> <span id="semGanancia" style="color: #2ecc71;">$0.00</span></div>
+            </div>
+            <div class="fin-card">
+                <h4>Este Mes</h4>
+                <div class="fin-row"><span>Ventas:</span> <span id="mesVenta" style="color: var(--accent);">$0.00</span></div>
+                <div class="fin-row"><span>Costo:</span> <span id="mesCosto" style="color: #ff4d4d;">$0.00</span></div>
+                <div class="fin-row"><span>Ganancia:</span> <span id="mesGanancia" style="color: #2ecc71;">$0.00</span></div>
             </div>
         </div>
     </main>
 
-    <!-- VISTA 2: LISTADO Y FILTRADO DE PRODUCTOS -->
+    <!-- VISTA 2: GESTIÓN DE PRODUCTOS -->
     <main id="view-productos" class="view-section main-container">
         <div class="products-header">
             <div>
                 <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Gestión de Productos</h1>
-                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Filtra, revisa o edita los artículos del inventario.</p>
+                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Precios de venta, costo, estados y filtros de inventario.</p>
             </div>
+            <button onclick="abrirModalProducto('nuevo')">+ Nuevo Producto</button>
         </div>
 
-        <!-- Contenedor de Filtros Avanzados -->
         <div class="filters-container">
             <input type="text" id="filtroTexto" placeholder="🔍 Buscar nombre o código..." oninput="aplicarFiltrosProductos()">
-            
             <select id="filtroCategoria" onchange="aplicarFiltrosProductos()">
-                <option value="todos">Todas las Categorías</option>
+                <option value="todos">📂 Todas las Categorías</option>
             </select>
-
-            <select id="filtroStock" onchange="aplicarFiltrosProductos()">
-                <option value="todos">Todos</option>
-                <option value="con_stock">Con Stock</option>
-                <option value="sin_stock">Sin Stock</option>
+            <select id="filtroEstado" onchange="aplicarFiltrosProductos()">
+                <option value="todos">🔹 Todos los Estados</option>
+                <option value="Disponible">Disponible</option>
+                <option value="Agotado">Agotado</option>
             </select>
-
             <select id="filtroPublicado" onchange="aplicarFiltrosProductos()">
-                <option value="todos">Todos</option>
-                <option value="si">Publicados</option>
-                <option value="no">No Publicados</option>
+                <option value="todos">👁️ Publicación (Todos)</option>
+                <option value="true">Publicados (Sí)</option>
+                <option value="false">Ocultos (No)</option>
+            </select>
+            <select id="filtroStock" onchange="aplicarFiltrosProductos()">
+                <option value="todos">📦 Stock (Todos)</option>
+                <option value="con_stock">Con Stock (> 0)</option>
+                <option value="sin_stock">Sin Stock (0)</option>
             </select>
         </div>
 
@@ -535,28 +415,63 @@
                         <th>Imagen</th>
                         <th>Código</th>
                         <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Precio (USD)</th>
+                        <th>Precio Venta</th>
+                        <th>Costo</th>
+                        <th>Ganancia</th>
                         <th>Stock</th>
+                        <th>Estado</th>
                         <th>Publicado</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody id="tablaProductosBody">
-                    <tr><td colspan="8" style="text-align:center; color:var(--text-muted);">Cargando productos...</td></tr>
+                    <tr><td colspan="10" style="text-align:center;">Cargando productos...</td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
-    <!-- VISTA 3: LISTADO DE CATEGORÍAS -->
+    <!-- VISTA 3: GESTIÓN DE CATEGORÍAS -->
     <main id="view-categorias" class="view-section main-container">
         <div class="products-header">
             <div>
-                <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Listado de Categorías</h1>
-                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Secciones activas y cantidad de productos asignados.</p>
+                <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Gestión de Categorías</h1>
+                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Crea, edita y corrige las categorías de tu plataforma.</p>
             </div>
-            <button onclick="abrirModalCategoria()" style="background:var(--accent); color:#0f0f1a; border:none; padding:10px 15px; border-radius:10px; font-weight:bold; cursor:pointer;">+ Nueva Categoría</button>
+        </div>
+
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; margin-bottom: 25px; display: flex; gap: 10px; max-width: 500px;">
+            <input type="text" id="nuevaCategoriaInput" placeholder="Nombre de la nueva categoría..." style="flex: 1;">
+            <button onclick="crearNuevaCategoriaSubmit()">Crear</button>
+        </div>
+
+        <div class="table-responsive" style="max-width: 700px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre de Categoría</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaCategoriasBody">
+                    <tr><td colspan="3" style="text-align:center;">Cargando categorías...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- VISTA 4: USUARIOS -->
+    <main id="view-usuarios" class="view-section main-container">
+        <div class="products-header">
+            <div>
+                <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Usuarios Registrados</h1>
+                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Listado y control de usuarios dados de alta en la plataforma.</p>
+            </div>
+        </div>
+
+        <div class="filters-container">
+            <input type="text" id="filtroBuscadorUsuarios" placeholder="🔍 Buscar por correo, nombre o teléfono..." oninput="filtrarUsuarios()">
         </div>
 
         <div class="table-responsive">
@@ -564,565 +479,201 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nombre de la Categoría</th>
-                        <th>Productos Totales en la Sección</th>
+                        <th>Nombre / Usuario</th>
+                        <th>Correo Electrónico</th>
+                        <th>Teléfono</th>
+                        <th>Fecha de Registro</th>
                     </tr>
                 </thead>
-                <tbody id="tablaCategoriasBody">
-                    <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cargando categorías...</td></tr>
+                <tbody id="tablaUsuariosBody">
+                    <tr><td colspan="5" style="text-align:center;">Cargando usuarios...</td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
-    <!-- Modal Flotante de Tasa de Cambio -->
-    <div id="tasaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; justify-content:center; align-items:center;">
-        <div style="background:#181828; border:1px solid #00f2ff; padding:25px; border-radius:16px; width:100%; max-width:320px; text-align:center; box-shadow: 0 0 20px rgba(0,242,255,0.2);">
-            <h3 style="color:#00f2ff; margin-top:0;">Actualizar Tasa de Cambio</h3>
-            <p style="font-size:0.85em; color:#aaa; margin-bottom:15px;">Introduce el nuevo valor del CUP por dólar:</p>
-            <input type="number" id="nuevaTasaInput" placeholder="Ej: 350" style="width:100%; padding:10px; background:#10101c; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-size:1.1em; text-align:center; box-sizing:border-box; margin-bottom:15px; outline:none;">
-            <div style="display:flex; gap:10px;">
-                <button onclick="guardarNuevaTasa()" style="flex:1; padding:10px; background:#00f2ff; color:#0f0f1a; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Guardar</button>
-                <button onclick="cerrarModalTasa()" style="flex:1; padding:10px; background:transparent; color:#aaa; border:1px solid rgba(255,255,255,0.1); border-radius:8px; cursor:pointer;">Cancelar</button>
+    <!-- VISTA 5: ÓRDENES -->
+    <main id="view-ordenes" class="view-section main-container">
+        <div class="products-header">
+            <div>
+                <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Monitoreo de Órdenes</h1>
+                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Haz clic en una orden para gestionarla en detalle.</p>
             </div>
         </div>
-    </div>
 
-    <!-- MODAL PARA CREAR / EDITAR PRODUCTO -->
-    <div id="productoModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center; overflow-y:auto; padding:20px; box-sizing:border-box;">
-        <div style="background:#181828; border:1px solid #00f2ff; padding:25px; border-radius:16px; width:100%; max-width:450px; box-shadow: 0 0 25px rgba(0,242,255,0.2); box-sizing:border-box; margin:auto;">
-            <h3 id="modalProductoTitulo" style="color:#00f2ff; margin-top:0; text-align:center;">Nuevo Producto</h3>
+        <div class="filters-container">
+            <input type="text" id="filtroOrdenTexto" placeholder="🔍 Buscar por ID de orden o cliente..." oninput="aplicarFiltrosOrdenes()">
             
-            <div style="margin-bottom:12px;">
-                <label style="font-size:0.8em; color:#aaa; display:block; margin-bottom:4px;">Código:</label>
-                <input type="text" id="prodCodigo" disabled style="width:100%; padding:9px; background:#10101c; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#00f2ff; font-weight:bold; box-sizing:border-box;" placeholder="Se generará al guardar">
+            <select id="filtroOrdenEstado" onchange="aplicarFiltrosOrdenes()">
+                <option selected>⏳ Aprobación pendiente</option>
+                <option value="Aprobada">✔️ Aprobadas</option>
+                <option value="Preparando">📦 Preparadas</option>
+                <option value="Enviando">🚚 Enviadas</option>
+                <option value="Completada">✅ Completadas</option>
+                <option value="Cancelada">❌ Canceladas</option>
+                <option value="TODAS">📋 Ver Todas</option>
+            </select>
+
+            <div style="display: flex; align-items: center; gap: 5px; flex: 1; min-width: 220px;">
+                <span style="font-size: 0.75em; color: var(--text-muted);">Desde:</span>
+                <input type="date" id="filtroOrdenDesde" onchange="aplicarFiltrosOrdenes()" style="flex:1;">
             </div>
 
-            <div style="margin-bottom:12px;">
-                <label style="font-size:0.8em; color:#aaa; display:block; margin-bottom:4px;">Nombre del Producto:</label>
-                <input type="text" id="prodNombre" placeholder="Ej: Samsung Galaxy..." style="width:100%; padding:9px; background:#10101c; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; box-sizing:border-box; outline:none;">
+            <div style="display: flex; align-items: center; gap: 5px; flex: 1; min-width: 220px;">
+                <span style="font-size: 0.75em; color: var(--text-muted);">Hasta:</span>
+                <input type="date" id="filtroOrdenHasta" onchange="aplicarFiltrosOrdenes()" style="flex:1;">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Orden</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Total (USD)</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaOrdenesBody">
+                    <tr><td colspan="6" style="text-align:center;">Cargando órdenes...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- VISTA 6: DETALLE ORDEN -->
+    <main id="view-detalle-orden" class="view-section main-container">
+        <div class="products-header no-print">
+            <div>
+                <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Gestión de Pedido</h1>
+                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Administra el estado y revisa los datos financieros de la orden.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-action" onclick="cambiarVista('ordenes')">← Volver al Registro</button>
+                <button onclick="window.print()" style="background: #2ecc71; color: #fff; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">📥 Imprimir PDF</button>
+            </div>
+        </div>
+
+        <div class="order-detail-card" id="printableOrderSection">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 id="detOrdenId" style="color: var(--accent); margin: 0;">Orden #--</h2>
+                <span id="detOrdenBadge" class="badge badge-estado" style="font-size: 0.9em; padding: 6px 12px;">Pendiente</span>
             </div>
 
-            <div style="display:flex; gap:10px; margin-bottom:12px;">
-                <div style="flex:1;">
-                    <label style="font-size:0.8em; color:#aaa; display:block; margin-bottom:4px;">Precio (USD):</label>
-                    <input type="number" id="prodPrecio" placeholder="0.00" style="width:100%; padding:9px; background:#10101c; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; box-sizing:border-box; outline:none;">
-                </div>
-                <div style="flex:1;">
-                    <label style="font-size:0.8em; color:#aaa; display:block; margin-bottom:4px;">Stock:</label>
-                    <input type="number" id="prodStock" value="5" style="width:100%; padding:9px; background:#10101c; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; box-sizing:border-box; outline:none;">
-                </div>
+            <div class="order-meta-grid">
+                <div class="meta-box"><span>Cliente / Correo</span><strong id="detCliente">--</strong></div>
+                <div class="meta-box"><span>Teléfono</span><strong id="detTelefono">--</strong></div>
+                <div class="meta-box"><span>Dirección de Entrega</span><strong id="detDireccion">--</strong></div>
+                <div class="meta-box"><span>Fecha y Hora</span><strong id="detFecha">--</strong></div>
             </div>
 
-            <div style="display:flex; gap:10px; margin-bottom:12px;">
+            <h3 style="color: var(--accent); font-size: 1.1em; margin-bottom: 10px;">Productos del Pedido</h3>
+            <div class="table-responsive" style="margin-bottom: 20px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unit.</th>
+                            <th>Subtotal Venta</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detTablaProductos"></tbody>
+                </table>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 20px; background: var(--bg-modal); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 25px;">
+                <div><span style="font-size: 0.8em; color: var(--text-muted);">Total Costo:</span> <strong id="detTotalCosto" style="color: #ff4d4d; display: block; font-size: 1.1em;">$0.00</strong></div>
+                <div><span style="font-size: 0.8em; color: var(--text-muted);">Total Venta:</span> <strong id="detTotalVenta" style="color: var(--accent); display: block; font-size: 1.1em;">$0.00</strong></div>
+                <div><span style="font-size: 0.8em; color: var(--text-muted);">Ganancia Estimada:</span> <strong id="detTotalGanancia" style="color: #2ecc71; display: block; font-size: 1.1em;">$0.00</strong></div>
+            </div>
+
+            <div class="no-print" style="background: var(--bg-modal); border: 1px solid var(--accent); border-radius: 12px; padding: 20px; text-align: center;">
+                <h4 style="color: var(--accent); margin-top: 0; margin-bottom: 15px;">Modificar Estado del Pedido</h4>
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="actualizarEstadoOrdenActual('Aprobada')" style="background: #00f2ff; color: #0f0f1a; font-weight: bold;">✔️ Aprobada</button>
+                    <button onclick="actualizarEstadoOrdenActual('Preparando la orden')" style="background: #3498db; color: #fff; font-weight: bold;">📦 Preparando</button>
+                    <button onclick="actualizarEstadoOrdenActual('Enviando pedido')" style="background: #e67e22; color: #fff; font-weight: bold;">🚚 Enviando</button>
+                    <button onclick="actualizarEstadoOrdenActual('Completada')" style="background: #2ecc71; color: #fff; font-weight: bold;">✅ Completar</button>
+                    <button onclick="actualizarEstadoOrdenActual('Cancelada')" style="background: #e74c3c; color: #fff; font-weight: bold;">❌ Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL PRODUCTO -->
+    <div id="productoModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; justify-content:center; align-items:center; padding:20px; box-sizing:border-box;">
+        <div style="background:var(--bg-modal); border:1px solid var(--accent); padding:25px; border-radius:16px; width:100%; max-width:450px; max-height: 90vh; overflow-y: auto;">
+            <h3 id="modalProductoTitulo" style="color:var(--accent); margin-top:0; text-align:center;">Nuevo Producto</h3>
+            
+            <div style="margin-bottom:10px;"><input type="text" id="prodCodigo" disabled style="width:100%;"></div>
+            <div style="margin-bottom:10px;"><input type="text" id="prodNombre" placeholder="Nombre del producto" style="width:100%;"></div>
+            
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <div style="flex:1;"><label style="font-size:0.75em; color:var(--text-muted);">Precio Venta ($)</label><input type="number" id="prodPrecio" placeholder="0.00" style="width:100%;"></div>
+                <div style="flex:1;"><label style="font-size:0.75em; color:var(--text-muted);">Precio Costo ($)</label><input type="number" id="prodCosto" placeholder="0.00" style="width:100%;"></div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <div style="flex:1;"><label style="font-size:0.75em; color:var(--text-muted);">Stock</label><input type="number" id="prodStock" value="5" style="width:100%;"></div>
+                <div style="flex:1;"><label style="font-size:0.75em; color:var(--text-muted);">Categoría</label><select id="prodCategoria" style="width:100%;"></select></div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
                 <div style="flex:1;">
-                    <label style="font-size:0.8em; color:#aaa; display:block; margin-bottom:4px;">Categoría:</label>
-                    <select id="prodCategoria" style="width:100%; padding:9px; background:#10101c; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; box-sizing:border-box; outline:none;"></select>
+                    <label style="font-size:0.75em; color:var(--text-muted);">Estado</label>
+                    <select id="prodEstado" style="width:100%;">
+                        <option value="Disponible">Disponible</option>
+                        <option value="Agotado">Agotado</option>
+                    </select>
                 </div>
                 <div style="flex:1;">
-                    <label style="font-size:0.8em; color:#aaa; display:block; margin-bottom:4px;">¿Mostrar en tienda?</label>
-                    <select id="prodMostrar" style="width:100%; padding:9px; background:#10101c; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; box-sizing:border-box; outline:none;">
+                    <label style="font-size:0.75em; color:var(--text-muted);">Publicado</label>
+                    <select id="prodMostrar" style="width:100%;">
                         <option value="true">Sí (Visible)</option>
                         <option value="false">No (Oculto)</option>
                     </select>
                 </div>
             </div>
 
-            <div style="margin-bottom:12px;">
-                <label style="font-size:0.8em; color:#aaa; display:block; margin-bottom:6px;">Imagen del Producto:</label>
-                <input type="file" id="prodFileImage" accept="image/*" style="display:none;" onchange="actualizarNombreArchivo(this)">
-                
-                <label for="prodFileImage" id="fileDropBox" style="display:flex; align-items:center; justify-content:space-between; width:100%; padding:10px 14px; background:#10101c; border:1px dashed var(--border-color); border-radius:10px; color:#fff; box-sizing:border-box; cursor:pointer; transition:all 0.3s;">
-                    <div style="display:flex; align-items:center; gap:10px; overflow:hidden;">
-                        <span style="font-size:1.2em;">📁</span>
-                        <span id="fileLabelText" style="font-size:0.85em; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Seleccionar imagen...</span>
-                    </div>
-                    <span style="background:rgba(0, 242, 255, 0.15); color:var(--accent); padding:4px 10px; border-radius:6px; font-size:0.75em; font-weight:bold; white-space:nowrap;">Explorar</span>
-                </label>
-                <small style="color:var(--text-muted); display:block; margin-top:4px; font-size:0.75em;">Si ya tiene imagen y no seleccionas otra, se mantendrá la actual.</small>
-            </div>
-
             <div style="margin-bottom:15px;">
-                <label style="font-size:0.8em; color:#aaa; display:block; margin-bottom:4px;">Descripción:</label>
-                <textarea id="prodDesc" rows="2" placeholder="Detalles del artículo..." style="width:100%; padding:9px; background:#10101c; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; box-sizing:border-box; outline:none; resize:none;"></textarea>
+                <label style="font-size:0.75em; color:var(--text-muted); display:block; margin-bottom:5px;">Imagen del Producto</label>
+                <input type="file" id="prodFile" accept="image/*" style="width:100%; margin-bottom:8px;" onchange="subirImagenACloudinary(this)">
+                <input type="text" id="prodImagenUrl" placeholder="https://res.cloudinary.com/..." style="width:100%;">
             </div>
 
             <div style="display:flex; gap:10px;">
-                <button onclick="guardarProductoSubmit()" style="flex:1; padding:10px; background:#00f2ff; color:#0f0f1a; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Guardar</button>
-                <button onclick="cerrarModalProducto()" style="flex:1; padding:10px; background:transparent; color:#aaa; border:1px solid rgba(255,255,255,0.1); border-radius:8px; cursor:pointer;">Cancelar</button>
+                <button onclick="guardarProductoSubmit()" style="flex:1; font-weight:bold;">Guardar</button>
+                <button onclick="cerrarModalProducto()" style="flex:1; background:transparent; color:var(--text-muted); border:1px solid var(--border-color);">Cancelar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL PARA CREAR NUEVA CATEGORÍA -->
-    <div id="categoriaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center; padding:20px; box-sizing:border-box;">
-        <div style="background:#181828; border:1px solid #00f2ff; padding:25px; border-radius:16px; width:100%; max-width:350px; box-shadow: 0 0 25px rgba(0,242,255,0.2); box-sizing:border-box; margin:auto; text-align:center;">
-            <h3 style="color:#00f2ff; margin-top:0;">Nueva Categoría</h3>
-            <p style="font-size:0.85em; color:#aaa; margin-bottom:15px;">Introduce el nombre de la nueva categoría:</p>
-            <input type="text" id="nuevaCategoriaInput" placeholder="Ej: Electrónica" style="width:100%; padding:10px; background:#10101c; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-size:1em; box-sizing:border-box; margin-bottom:15px; outline:none;">
-            <div style="display:flex; gap:10px;">
-                <button onclick="guardarNuevaCategoria()" style="flex:1; padding:10px; background:#00f2ff; color:#0f0f1a; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Crear</button>
-                <button onclick="cerrarModalCategoria()" style="flex:1; padding:10px; background:transparent; color:#aaa; border:1px solid rgba(255,255,255,0.1); border-radius:8px; cursor:pointer;">Cancelar</button>
-            </div>
+    <!-- MODAL TASA -->
+    <div id="tasaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; justify-content:center; align-items:center;">
+        <div style="background:var(--bg-modal); border:1px solid var(--accent); padding:25px; border-radius:16px; width:100%; max-width:320px; text-align:center;">
+            <h3 style="color:var(--accent); margin-top:0;">Actualizar Tasa</h3>
+            <input type="number" id="nuevaTasaInput" style="width:100%; margin-bottom:15px; text-align:center;">
+            <button onclick="guardarNuevaTasa()" style="padding:10px 20px; font-weight:bold; margin-right: 5px;">Guardar</button>
+            <button onclick="cerrarModalTasa()" style="padding:10px 20px; background:transparent; color:var(--text-muted); border:1px solid var(--border-color); border-radius: 8px;">Cancelar</button>
         </div>
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxOhdI2nEWulQzgKoqrOF77nTorJ5uQsi866J6gJ9QmyT91Ngy62b7Ux0onc_fbzUXv1A/exec';
-        
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyHFzinvuxvlKDS6k0eHQD66zpFzk5pclIzP6dcvArY593BwVAyNGqfHh0ro2Ug8YJThQ/exec';
+
         const CLOUDINARY_CLOUD_NAME = 'kla50st7';
         const CLOUDINARY_UPLOAD_PRESET = 'HLG TECH';
 
-        let cacheAdmins = [];
-        let globalDataCache = null;
-        let modoEdicion = 'nuevo';
-        let codigoEditandoActual = '';
-        let imagenActualUrl = '';
+        async function subirImagenACloudinary(inputElement) {
+            const file = inputElement.files[0];
+            if (!file) return;
 
-        function mostrarLoaderNeon(texto) {
-            document.getElementById('neonLoaderText').innerText = texto;
-            document.getElementById('neonLoaderOverlay').style.display = 'flex';
-        }
+            mostrarLoaderNeon("Subiendo imagen a Cloudinary...");
 
-        function ocultarLoaderNeon() {
-            document.getElementById('neonLoaderOverlay').style.display = 'none';
-        }
-
-        async function sincronizarDatosRemotos() {
-            mostrarLoaderNeon("Sincronizando datos...");
-            try {
-                const res = await fetch(API_URL);
-                const data = await res.json();
-                globalDataCache = data;
-                cacheAdmins = data.admins || [];
-                renderizarDashboard(data);
-                aplicarFiltrosProductos();
-                renderizarTablaCategorias();
-                ocultarLoaderNeon();
-            } catch (e) {
-                ocultarLoaderNeon();
-                alert("No se pudo sincronizar.");
-                // Si falla la sincronización manual estando en productos, mostramos el botón de reintentar
-                mostrarErrorTablaProductos();
-            }
-        }
-
-        async function verificarAcceso() {
-            const input = document.getElementById('adminEmailInput').value.trim().toLowerCase();
-            const errorDiv = document.getElementById('authError');
-            errorDiv.style.display = 'none';
-            mostrarLoaderNeon("Verificando credenciales...");
-
-            try {
-                const res = await fetch(API_URL);
-                const data = await res.json();
-                cacheAdmins = data.admins || [];
-                ocultarLoaderNeon();
-
-                if (cacheAdmins.includes(input)) {
-                    localStorage.setItem('hlg_admin_email', input);
-                    document.getElementById('authScreen').style.display = 'none';
-                    document.getElementById('userDisplay').innerText = input;
-                    renderizarDashboard(data);
-                } else {
-                    errorDiv.innerText = "Acceso Denegado";
-                    errorDiv.style.display = 'block';
-                }
-            } catch (e) {
-                ocultarLoaderNeon();
-                errorDiv.innerText = "Error de conexión.";
-                errorDiv.style.display = 'block';
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            const guardado = localStorage.getItem('hlg_admin_email');
-            if (guardado) {
-                try {
-                    const res = await fetch(API_URL);
-                    const data = await res.json();
-                    cacheAdmins = data.admins || [];
-
-                    if (cacheAdmins.includes(guardado)) {
-                        document.getElementById('authScreen').style.display = 'none';
-                        document.getElementById('userDisplay').innerText = guardado;
-                        renderizarDashboard(data);
-                        return;
-                    }
-                } catch (e) {
-                    console.error("No se pudo validar sesión offline", e);
-                    mostrarErrorTablaProductos();
-                }
-                localStorage.removeItem('hlg_admin_email');
-            }
-        });
-
-        function cerrarSesion() {
-            localStorage.removeItem('hlg_admin_email');
-            location.reload();
-        }
-
-        function toggleSidebar() {
-            document.getElementById('appSidebar').classList.toggle('open');
-            document.getElementById('sidebarOverlay').classList.toggle('open');
-        }
-
-        function cambiarVista(vistaId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            if (vistaId === 'home') {
-                document.getElementById('view-home').classList.add('active');
-            } else if (vistaId === 'productos') {
-                document.getElementById('view-productos').classList.add('active');
-                inicializarFiltrosProductos();
-                aplicarFiltrosProductos();
-            } else if (vistaId === 'categorias') {
-                document.getElementById('view-categorias').classList.add('active');
-                renderizarTablaCategorias();
-            }
-            window.scrollTo(0, 0);
-        }
-
-        function renderizarDashboard(data) {
-            globalDataCache = data;
-            const productos = data.productos || [];
-            const categorias = data.categorias || [];
-            const tasa = data.tasa || 650;
-
-            let total = productos.length;
-            let agotados = productos.filter(p => parseInt(p.Stock) <= 0).length;
-            let enStock = total - agotados;
-
-            document.getElementById('statTotal').innerText = total;
-            document.getElementById('statStock').innerText = enStock;
-            document.getElementById('statCategorias').innerText = categorias.length;
-            document.getElementById('statTasa').innerText = `${tasa} CUP`;
-        }
-
-        function inicializarFiltrosProductos() {
-            if (!globalDataCache) return;
-            const selectCat = document.getElementById('filtroCategoria');
-            const categorias = globalDataCache.categorias || [];
-            
-            selectCat.innerHTML = `<option value="todos">Todas las Categorías</option>`;
-            categorias.forEach(cat => {
-                const opt = document.createElement('option');
-                opt.value = cat;
-                opt.innerText = cat;
-                selectCat.appendChild(opt);
-            });
-        }
-
-        function mostrarErrorTablaProductos() {
-            const tbody = document.getElementById('tablaProductosBody');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8" style="text-align:center; padding: 25px;">
-                        <span style="color: #ff4d4d; display:block; margin-bottom:8px;">Error al cargar o sincronizar los productos.</span>
-                        <button class="btn-retry" onclick="sincronizarDatosRemotos()">Reintentar Carga</button>
-                    </td>
-                </tr>
-            `;
-        }
-
-        function aplicarFiltrosProductos() {
-            if (!globalDataCache || !globalDataCache.productos) {
-                mostrarErrorTablaProductos();
-                return;
-            }
-            const tbody = document.getElementById('tablaProductosBody');
-            tbody.innerHTML = "";
-
-            const texto = document.getElementById('filtroTexto').value.toLowerCase();
-            const catFiltro = document.getElementById('filtroCategoria').value;
-            const stockFiltro = document.getElementById('filtroStock').value;
-            const pubFiltro = document.getElementById('filtroPublicado').value;
-
-            const productos = globalDataCache.productos;
-
-            const filtrados = productos.filter(p => {
-                const nombre = String(p.Nombre || "").toLowerCase();
-                const codigo = String(p.Código || p.Codigo || "").toLowerCase();
-                const categoria = String(p.Categoria || "General");
-                const stock = parseInt(p.Stock || 0);
-                
-                const mostrarVal = p.Mostrar;
-                const estaPublicado = (mostrarVal === true || String(mostrarVal).toUpperCase() === "TRUE" || String(mostrarVal).toUpperCase() === "VERDADERO" || mostrarVal === 1);
-
-                if (texto && !nombre.includes(texto) && !codigo.includes(texto)) return false;
-                if (catFiltro !== "todos" && categoria !== catFiltro) return false;
-                if (stockFiltro === "con_stock" && stock <= 0) return false;
-                if (stockFiltro === "sin_stock" && stock > 0) return false;
-                if (pubFiltro === "si" && !estaPublicado) return false;
-                if (pubFiltro === "no" && estaPublicado) return false;
-
-                return true;
-            });
-
-            if (filtrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">No se encontraron productos con los filtros seleccionados.</td></tr>`;
-                return;
-            }
-
-            filtrados.forEach(p => {
-                const codigo = p.Código || p.Codigo || "S/C";
-                const nombre = p.Nombre || "Sin nombre";
-                const categoria = p.Categoria || "General";
-                const precio = parseFloat(p.Precio || 0).toFixed(2);
-                const stock = parseInt(p.Stock || 0);
-                const imagen = p.Imagen || p.Imagen_URL || "https://via.placeholder.com/40";
-
-                const mostrarVal = p.Mostrar;
-                const estaPublicado = (mostrarVal === true || String(mostrarVal).toUpperCase() === "TRUE" || String(mostrarVal).toUpperCase() === "VERDADERO" || mostrarVal === 1);
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><img src="${imagen}" class="prod-thumb" onerror="this.src='https://via.placeholder.com/40'"></td>
-                    <td style="color:var(--accent); font-weight:bold;">${codigo}</td>
-                    <td>${nombre}</td>
-                    <td>${categoria}</td>
-                    <td>$${precio}</td>
-                    <td>${stock}</td>
-                    <td><span class="badge ${estaPublicado ? 'badge-pub' : 'badge-unpub'}">${estaPublicado ? 'Publicado' : 'Oculto'}</span></td>
-                    <td><button class="btn-edit-row" onclick="abrirModalEditarProducto('${codigo}')">Editar</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderizarTablaCategorias() {
-            if (!globalDataCache) return;
-            const tbody = document.getElementById('tablaCategoriasBody');
-            tbody.innerHTML = "";
-
-            const categorias = globalDataCache.categorias || [];
-            const productos = globalDataCache.productos || [];
-
-            if (categorias.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">No hay categorías registradas.</td></tr>`;
-                return;
-            }
-
-            categorias.forEach((cat, index) => {
-                const cantidadProd = productos.filter(p => String(p.Categoria || "").trim() === String(cat).trim()).length;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="color:var(--text-muted);">${index + 1}</td>
-                    <td style="color:var(--accent); font-weight:bold;">${cat}</td>
-                    <td>${cantidadProd} producto(s)</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function abrirModalTasa() {
-            const tasaActualText = document.getElementById('statTasa').innerText;
-            const valorActual = parseInt(tasaActualText) || '';
-            document.getElementById('nuevaTasaInput').value = valorActual;
-            document.getElementById('tasaModal').style.display = 'flex';
-        }
-
-        function cerrarModalTasa() {
-            document.getElementById('tasaModal').style.display = 'none';
-        }
-
-        async function guardarNuevaTasa() {
-            const nuevaTasa = document.getElementById('nuevaTasaInput').value;
-            if (!nuevaTasa) {
-                alert("Por favor introduce un valor válido.");
-                return;
-            }
-            mostrarLoaderNeon("Actualizando tasa de cambio...");
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ tasa: Number(nuevaTasa) })
-                });
-                const resultado = await response.json();
-                ocultarLoaderNeon();
-
-                if (resultado.success) {
-                    if (globalDataCache) globalDataCache.tasa = Number(nuevaTasa);
-                    document.getElementById('statTasa').innerText = `${resultado.tasa} CUP`;
-                    cerrarModalTasa();
-                } else {
-                    alert("Error al guardar: " + resultado.message);
-                }
-            } catch (e) {
-                ocultarLoaderNeon();
-                console.error(e);
-                alert("Error de conexión al actualizar la tasa.");
-            }
-        }
-
-        function abrirModalCategoria() {
-            document.getElementById('nuevaCategoriaInput').value = "";
-            document.getElementById('categoriaModal').style.display = 'flex';
-        }
-
-        function cerrarModalCategoria() {
-            document.getElementById('categoriaModal').style.display = 'none';
-        }
-
-        async function guardarNuevaCategoria() {
-            const nombreCat = document.getElementById('nuevaCategoriaInput').value.trim();
-            if (!nombreCat) {
-                alert("Introduce un nombre para la categoría.");
-                return;
-            }
-            mostrarLoaderNeon("Creando categoría...");
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ accion: "crear_categoria", nombre: nombreCat })
-                });
-                const resultado = await response.json();
-                ocultarLoaderNeon();
-
-                if (resultado.success) {
-                    if (globalDataCache) {
-                        if (!globalDataCache.categorias) globalDataCache.categorias = [];
-                        if (!globalDataCache.categorias.includes(nombreCat)) {
-                            globalDataCache.categorias.push(nombreCat);
-                        }
-                    }
-                    cerrarModalCategoria();
-                    renderizarDashboard(globalDataCache);
-                    inicializarFiltrosProductos();
-                    renderizarTablaCategorias();
-                } else {
-                    alert("Error al crear la categoría: " + resultado.message);
-                }
-            } catch (e) {
-                ocultarLoaderNeon();
-                console.error(e);
-                alert("Error de conexión al crear la categoría.");
-            }
-        }
-
-        function actualizarNombreArchivo(input) {
-            const labelText = document.getElementById('fileLabelText');
-            const dropBox = document.getElementById('fileDropBox');
-            
-            if (input.files && input.files.length > 0) {
-                const nombreArchivo = input.files[0].name;
-                labelText.innerText = nombreArchivo;
-                labelText.style.color = "var(--accent)";
-                dropBox.style.borderColor = "var(--accent)";
-                dropBox.style.background = "rgba(0, 242, 255, 0.03)";
-            } else {
-                labelText.innerText = "Haz clic para seleccionar imagen...";
-                labelText.style.color = "var(--text-muted)";
-                dropBox.style.borderColor = "var(--border-color)";
-                dropBox.style.background = "#10101c";
-            }
-        }
-
-        function poblarSelectCategorias(categoriaSeleccionada = "") {
-            if (!globalDataCache) return;
-            const categoriasList = globalDataCache.categorias || [];
-            const selectCat = document.getElementById('prodCategoria');
-            selectCat.innerHTML = "";
-            
-            if (categoriasList.length > 0) {
-                categoriasList.forEach(cat => {
-                    const opt = document.createElement('option');
-                    opt.value = cat;
-                    opt.innerText = cat;
-                    if (cat === categoriaSeleccionada) opt.selected = true;
-                    selectCat.appendChild(opt);
-                });
-            } else {
-                const opt = document.createElement('option');
-                opt.value = "General";
-                opt.innerText = "General";
-                selectCat.appendChild(opt);
-            }
-        }
-
-        function abrirModalProducto(modo, productoData = null) {
-            modoEdicion = modo;
-            poblarSelectCategorias(productoData ? productoData.Categoria : "");
-
-            if (modo === 'nuevo') {
-                document.getElementById('modalProductoTitulo').innerText = "Nuevo Producto";
-                
-                const productos = globalDataCache ? (globalDataCache.productos || []) : [];
-                let maxNum = 0;
-                productos.forEach(p => {
-                    const codVal = p.Código || p.Codigo || "";
-                    const match = String(codVal).match(/(\d+)$/);
-                    if (match) {
-                        const num = parseInt(match[1], 10);
-                        if (num > maxNum) maxNum = num;
-                    }
-                });
-                const siguienteCodigo = "TH" + String(maxNum + 1).padStart(6, '0');
-                document.getElementById('prodCodigo').value = siguienteCodigo;
-                
-                document.getElementById('prodNombre').value = "";
-                document.getElementById('prodPrecio').value = "";
-                document.getElementById('prodStock').value = "5";
-                document.getElementById('prodMostrar').value = "true";
-                document.getElementById('prodFileImage').value = "";
-                document.getElementById('prodDesc').value = "";
-                imagenActualUrl = "";
-
-                document.getElementById('fileLabelText').innerText = "Haz clic para seleccionar imagen...";
-                document.getElementById('fileLabelText').style.color = "var(--text-muted)";
-                document.getElementById('fileDropBox').style.borderColor = "var(--border-color)";
-                document.getElementById('fileDropBox').style.background = "#10101c";
-            } else if (modo === 'editar' && productoData) {
-                document.getElementById('modalProductoTitulo').innerText = "Editar Producto";
-                codigoEditandoActual = productoData.Código || productoData.Codigo || "";
-                
-                document.getElementById('prodCodigo').value = codigoEditandoActual;
-                document.getElementById('prodNombre').value = productoData.Nombre || "";
-                document.getElementById('prodPrecio').value = productoData.Precio || "";
-                document.getElementById('prodStock').value = productoData.Stock !== undefined ? productoData.Stock : 5;
-                
-                const mostrarVal = productoData.Mostrar;
-                const estaPublicado = (mostrarVal === true || String(mostrarVal).toUpperCase() === "TRUE" || String(mostrarVal).toUpperCase() === "VERDADERO" || mostrarVal === 1);
-                document.getElementById('prodMostrar').value = estaPublicado ? "true" : "false";
-
-                document.getElementById('prodDesc').value = productoData.Descripcion || "";
-                
-                imagenActualUrl = productoData.Imagen || productoData.Imagen_URL || "";
-                document.getElementById('prodFileImage').value = "";
-
-                if (imagenActualUrl) {
-                    document.getElementById('fileLabelText').innerText = "Imagen actual cargada (haz clic para cambiarla)";
-                    document.getElementById('fileLabelText').style.color = "var(--accent)";
-                } else {
-                    document.getElementById('fileLabelText').innerText = "Haz clic para seleccionar imagen...";
-                    document.getElementById('fileLabelText').style.color = "var(--text-muted)";
-                }
-                document.getElementById('fileDropBox').style.borderColor = "var(--border-color)";
-                document.getElementById('fileDropBox').style.background = "#10101c";
-            }
-
-            document.getElementById('productoModal').style.display = 'flex';
-        }
-
-        function abrirModalEditarProducto(codigo) {
-            if (!globalDataCache || !globalDataCache.productos) return;
-            const producto = globalDataCache.productos.find(p => String(p.Código || p.Codigo || "").trim() === String(codigo).trim());
-            if (producto) {
-                abrirModalProducto('editar', producto);
-            } else {
-                alert("No se encontró el producto para editar.");
-            }
-        }
-
-        function cerrarModalProducto() {
-            document.getElementById('productoModal').style.display = 'none';
-        }
-
-        async function subirImagenACloudinary(fileInput) {
-            if (!fileInput || fileInput.files.length === 0) return "";
-            
-            const file = fileInput.files[0];
             const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
@@ -1132,98 +683,609 @@
                     method: 'POST',
                     body: formData
                 });
+
                 const data = await response.json();
+                ocultarLoaderNeon();
+
                 if (data.secure_url) {
-                    return data.secure_url;
+                    document.getElementById('prodImagenUrl').value = data.secure_url;
+                    mostrarAlerta("Éxito", "Imagen subida correctamente a Cloudinary.");
                 } else {
-                    console.error("Error al subir imagen:", data);
-                    return "";
+                    mostrarAlerta("Error", "No se pudo subir la imagen.");
                 }
-            } catch (err) {
-                console.error("Excepción en subida de Cloudinary:", err);
-                return "";
+            } catch (error) {
+                ocultarLoaderNeon();
+                mostrarAlerta("Error", "Ocurrió un error al conectar con Cloudinary.");
             }
         }
 
-        async function guardarProductoSubmit() {
-            const nombre = document.getElementById('prodNombre').value.trim();
-            const precio = document.getElementById('prodPrecio').value;
-            const stock = document.getElementById('prodStock').value;
-            const categoria = document.getElementById('prodCategoria').value;
-            const mostrarVal = document.getElementById('prodMostrar').value === "true";
-            const fileInput = document.getElementById('prodFileImage');
-            const descripcion = document.getElementById('prodDesc').value.trim();
-            const codigoAsignado = document.getElementById('prodCodigo').value.trim();
+        let globalDataCache = null;
+        let modoEdicion = 'nuevo';
+        let ordenActualId = null;
+        let promptCallback = null;
 
-            if (!nombre || !precio) {
-                alert("El nombre y el precio son obligatorios.");
-                return;
+        function mostrarAlerta(titulo, mensaje) {
+            document.getElementById('customAlertTitle').innerText = titulo;
+            document.getElementById('customAlertMessage').innerText = mensaje;
+            document.getElementById('customAlertModal').style.display = 'flex';
+        }
+        function cerrarCustomAlert() { document.getElementById('customAlertModal').style.display = 'none'; }
+
+        function abrirPromptPersonalizado(titulo, descripcion, valorInicial, callback) {
+            document.getElementById('customPromptTitle').innerText = titulo;
+            document.getElementById('customPromptDesc').innerText = descripcion;
+            const input = document.getElementById('customPromptInput');
+            input.value = valorInicial || '';
+            promptCallback = callback;
+            document.getElementById('customPromptModal').style.display = 'flex';
+            input.focus();
+        }
+        function cerrarCustomPrompt(confirmado) {
+            document.getElementById('customPromptModal').style.display = 'none';
+            if (promptCallback) {
+                const valor = document.getElementById('customPromptInput').value;
+                promptCallback(confirmado ? valor : null);
+                promptCallback = null;
             }
+        }
 
-            mostrarLoaderNeon("Subiendo imagen y guardando...");
+        function mostrarLoaderNeon(txt) {
+            document.getElementById('neonLoaderText').innerText = txt;
+            document.getElementById('neonLoaderOverlay').style.display = 'flex';
+        }
+        function ocultarLoaderNeon() { document.getElementById('neonLoaderOverlay').style.display = 'none'; }
 
-            let imagenUrl = imagenActualUrl;
-            if (fileInput.files && fileInput.files.length > 0) {
-                const urlSubida = await subirImagenACloudinary(fileInput);
-                if (urlSubida) {
-                    imagenUrl = urlSubida;
-                }
-            }
-
-            const itemData = {
-                "Código": codigoAsignado,
-                "Codigo": codigoAsignado,
-                "Nombre": nombre,
-                "Precio": Number(precio),
-                "Moneda": "USD",
-                "Descripcion": descripcion,
-                "Imagen": imagenUrl,
-                "Imagen_URL": imagenUrl,
-                "Estado": Number(stock) > 0 ? "Disponible" : "Agotado",
-                "Mostrar": mostrarVal,
-                "Stock": Number(stock),
-                "Categoria": categoria
-            };
-
-            let accionEndpoint = "crear_producto";
-            if (modoEdicion === 'editar') {
-                accionEndpoint = "editar_producto";
-            }
-
+        async function verificarAcceso() {
+            const input = document.getElementById('adminEmailInput').value.trim().toLowerCase();
+            mostrarLoaderNeon("Verificando...");
             try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ accion: accionEndpoint, producto: itemData })
-                });
-                const resultado = await response.json();
+                const res = await fetch(API_URL);
+                const data = await res.json();
                 ocultarLoaderNeon();
-
-                if (resultado.success) {
-                    cerrarModalProducto();
-                    
-                    if (globalDataCache && globalDataCache.productos) {
-                        if (modoEdicion === 'nuevo') {
-                            globalDataCache.productos.push(itemData);
-                        } else {
-                            const index = globalDataCache.productos.findIndex(p => String(p.Código || p.Codigo || "").trim() === String(codigoAsignado).trim());
-                            if (index !== -1) {
-                                globalDataCache.productos[index] = itemData;
-                            }
-                        }
-                    }
-
-                    renderizarDashboard(globalDataCache);
-                    aplicarFiltrosProductos();
-                    renderizarTablaCategorias();
+                if ((data.admins || []).includes(input)) {
+                    localStorage.setItem('hlg_admin_email', input);
+                    document.getElementById('authScreen').style.display = 'none';
+                    document.getElementById('userDisplay').innerText = input;
+                    procesarDatosGlobales(data);
+                    iniciarMonitoreoNotificaciones();
                 } else {
-                    alert("Error al guardar: " + (resultado.message || "Desconocido"));
+                    document.getElementById('authError').style.display = 'block';
                 }
             } catch (e) {
                 ocultarLoaderNeon();
-                console.error(e);
-                alert("Error de conexión al guardar el producto.");
+                document.getElementById('authError').style.display = 'block';
             }
         }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const guardado = localStorage.getItem('hlg_admin_email');
+            if (guardado) {
+                try {
+                    const res = await fetch(API_URL);
+                    const data = await res.json();
+                    if ((data.admins || []).includes(guardado)) {
+                        document.getElementById('authScreen').style.display = 'none';
+                        document.getElementById('userDisplay').innerText = guardado;
+                        procesarDatosGlobales(data);
+                        iniciarMonitoreoNotificaciones();
+                    }
+                } catch (e) { console.error(e); }
+            }
+        });
+
+        function cerrarSesion() { localStorage.removeItem('hlg_admin_email'); location.reload(); }
+        function toggleSidebar() { document.getElementById('appSidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('open'); }
+
+        function cambiarVista(vistaId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + vistaId).classList.add('active');
+            if (vistaId === 'productos') aplicarFiltrosProductos();
+            if (vistaId === 'categorias') renderizarTablaCategorias();
+            if (vistaId === 'usuarios') renderizarTablaUsuarios();
+            if (vistaId === 'ordenes') aplicarFiltrosOrdenes();
+            window.scrollTo(0, 0);
+        }
+
+        function procesarDatosGlobales(data) {
+            globalDataCache = data;
+            document.getElementById('statTotal').innerText = (data.productos || []).length;
+            document.getElementById('statUsuarios').innerText = (data.usuarios || []).length;
+            document.getElementById('statOrdenes').innerText = (data.ordenes || []).length;
+            document.getElementById('statTasa').innerText = `${data.tasa || 650} CUP`;
+            
+            calcularResumenFinanciero(data.ordenes || [], data.productos || []);
+            inicializarFiltrosProductos();
+            actualizarCampanitaNotificaciones(data.ordenes || []);
+        }
+
+        function toggleNotificationDropdown() {
+            document.getElementById('notifDropdown').classList.toggle('show');
+        }
+
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.notification-container')) {
+                const dropdown = document.getElementById('notifDropdown');
+                if (dropdown) dropdown.classList.remove('show');
+            }
+        });
+
+        function actualizarCampanitaNotificaciones(ordenes) {
+            const pendientes = ordenes.filter(o => {
+                const estado = String(o.Estado || '').toLowerCase();
+                return estado.includes('pendiente') || estado === '';
+            });
+
+            const badge = document.getElementById('notifBadge');
+            const countText = document.getElementById('notifCountText');
+            const listContainer = document.getElementById('notifList');
+
+            if (pendientes.length > 0) {
+                badge.innerText = pendientes.length;
+                badge.style.display = 'inline-block';
+                countText.innerText = `${pendientes.length} pendientes`;
+                
+                listContainer.innerHTML = '';
+                pendientes.forEach(o => {
+                    const item = document.createElement('div');
+                    item.className = 'notification-item';
+                    item.onclick = () => {
+                        toggleNotificationDropdown();
+                        abrirDetalleOrden(o.ID_Orden);
+                    };
+                    item.innerHTML = `
+                        <strong>Orden #${o.ID_Orden} - $${parseFloat(o.Total || 0).toFixed(2)}</strong>
+                        <span>${o.Correo || 'Cliente'} • ${o.Hora || 'Reciente'}</span>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } else {
+                badge.style.display = 'none';
+                countText.innerText = '0 pendientes';
+                listContainer.innerHTML = `<div class="notification-item" style="text-align: center; color: var(--text-muted); cursor: default;">Sin órdenes pendientes</div>`;
+            }
+        }
+
+        function iniciarMonitoreoNotificaciones() {
+            setInterval(async () => {
+                try {
+                    const res = await fetch(API_URL);
+                    const data = await res.json();
+                    if (data && data.ordenes) {
+                        globalDataCache = data;
+                        document.getElementById('statTotal').innerText = (data.productos || []).length;
+                        document.getElementById('statUsuarios').innerText = (data.usuarios || []).length;
+                        document.getElementById('statOrdenes').innerText = (data.ordenes || []).length;
+                        actualizarCampanitaNotificaciones(data.ordenes);
+                    }
+                } catch (e) { console.error(e); }
+            }, 30000);
+        }
+
+        function calcularResumenFinanciero(ordenes, productos) {
+            const ahora = new Date();
+            let hoyV = 0, hoyC = 0, semV = 0, semC = 0, mesV = 0, mesC = 0;
+
+            ordenes.forEach(o => {
+                if (o.Estado === 'Cancelada') return;
+                const fechaOrden = new Date(o.Hora || o.Fecha || Date.now());
+                const ventaTotal = parseFloat(o.Total || 0);
+                const costoTotal = parseFloat(o.CostoTotal || 0);
+
+                if (esMismoDia(fechaOrden, ahora)) { hoyV += ventaTotal; hoyC += costoTotal; }
+                if (esMismaSemana(fechaOrden, ahora)) { semV += ventaTotal; semC += costoTotal; }
+                if (esMismoMes(fechaOrden, ahora)) { mesV += ventaTotal; mesC += costoTotal; }
+            });
+
+            document.getElementById('hoyVenta').innerText = `$${hoyV.toFixed(2)}`;
+            document.getElementById('hoyCosto').innerText = `$${hoyC.toFixed(2)}`;
+            document.getElementById('hoyGanancia').innerText = `$${(hoyV - hoyC).toFixed(2)}`;
+
+            document.getElementById('semVenta').innerText = `$${semV.toFixed(2)}`;
+            document.getElementById('semCosto').innerText = `$${semC.toFixed(2)}`;
+            document.getElementById('semGanancia').innerText = `$${(semV - semC).toFixed(2)}`;
+
+            document.getElementById('mesVenta').innerText = `$${mesV.toFixed(2)}`;
+            document.getElementById('mesCosto').innerText = `$${mesC.toFixed(2)}`;
+            document.getElementById('mesGanancia').innerText = `$${(mesV - mesC).toFixed(2)}`;
+        }
+
+        function esMismoDia(d1, d2) { return d1.toDateString() === d2.toDateString(); }
+        function esMismoMes(d1, d2) { return d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear(); }
+        function esMismaSemana(d1, d2) {
+            const onejan = new Date(d1.getFullYear(), 0, 1);
+            const week1 = Math.ceil((((d1 - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+            const week2 = Math.ceil((((d2 - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+            return week1 === week2 && d1.getFullYear() === d2.getFullYear();
+        }
+
+        function renderizarTablaCategorias() {
+            if (!globalDataCache) return;
+            const tbody = document.getElementById('tablaCategoriasBody');
+            tbody.innerHTML = "";
+            (globalDataCache.categorias || []).forEach((cat, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--text-muted);">${index + 1}</td>
+                    <td style="color:var(--accent); font-weight:bold;">${cat}</td>
+                    <td><button class="btn-edit-row" onclick="editarCategoriaPrompt('${cat}')">Editar / Corregir</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function crearNuevaCategoriaSubmit() {
+            const inputNombre = document.getElementById('nuevaCategoriaInput').value.trim();
+            if (!inputNombre) { mostrarAlerta("Campo vacío", "Escribe un nombre para la categoría."); return; }
+            
+            mostrarLoaderNeon("Creando categoría...");
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ accion: 'crear_categoria', nombre: inputNombre }) });
+            const r = await res.json();
+            if (r.success) {
+                document.getElementById('nuevaCategoriaInput').value = "";
+                const resReload = await fetch(API_URL);
+                globalDataCache = await resReload.json();
+                ocultarLoaderNeon();
+                renderizarTablaCategorias();
+                inicializarFiltrosProductos();
+                mostrarAlerta("Éxito", "Categoría creada correctamente.");
+            } else {
+                ocultarLoaderNeon();
+                mostrarAlerta("Error", "No se pudo crear la categoría.");
+            }
+        }
+
+        function editarCategoriaPrompt(catAntigua) {
+            abrirPromptPersonalizado("Editar Categoría", "Corrige o edita el nombre de la categoría:", catAntigua, async (catNueva) => {
+                if (!catNueva || catNueva.trim() === "" || catNueva === catAntigua) return;
+
+                mostrarLoaderNeon("Actualizando categoría...");
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ accion: 'editar_categoria', antigua: catAntigua, nueva: catNueva.trim() }) });
+                const r = await res.json();
+                if (r.success) {
+                    const resReload = await fetch(API_URL);
+                    globalDataCache = await resReload.json();
+                    ocultarLoaderNeon();
+                    renderizarTablaCategorias();
+                    inicializarFiltrosProductos();
+                    mostrarAlerta("Éxito", "Categoría actualizada correctamente.");
+                } else {
+                    ocultarLoaderNeon();
+                    mostrarAlerta("Error", "No se pudo actualizar la categoría.");
+                }
+            });
+        }
+
+        function renderizarTablaUsuarios() {
+            if (!globalDataCache) return;
+            const tbody = document.getElementById('tablaUsuariosBody');
+            tbody.innerHTML = "";
+            (globalDataCache.usuarios || []).forEach((u, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--text-muted);">${index + 1}</td>
+                    <td style="color:var(--accent); font-weight:bold;">${u.Nombre || "Sin Nombre"}</td>
+                    <td>${u.Correo || ""}</td>
+                    <td>${u.Telefono || "N/A"}</td>
+                    <td>${u.FechaRegistro || "N/A"}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filtrarUsuarios() {
+            const texto = document.getElementById('filtroBuscadorUsuarios').value.toLowerCase();
+            document.querySelectorAll('#tablaUsuariosBody tr').forEach(r => {
+                r.style.display = r.innerText.toLowerCase().includes(texto) ? "" : "none";
+            });
+        }
+
+        function renderizarTablaOrdenes(ordenesMostrar) {
+            const tbody = document.getElementById('tablaOrdenesBody');
+            tbody.innerHTML = "";
+            if (ordenesMostrar.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay órdenes registradas.</td></tr>`;
+                return;
+            }
+            ordenesMostrar.forEach(o => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--accent); font-weight:bold;">${o.ID_Orden || "S/N"}</td>
+                    <td>${o.Hora || ""}</td>
+                    <td>${o.Correo || ""}</td>
+                    <td>$${parseFloat(o.Total || 0).toFixed(2)}</td>
+                    <td><span class="badge badge-estado">${o.Estado || "Pendiente"}</span></td>
+                    <td><button class="btn-action" onclick="abrirDetalleOrden('${o.ID_Orden}')">Gestionar Pedido</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function aplicarFiltrosOrdenes() {
+            if (!globalDataCache) return;
+            const listaOrdenes = globalDataCache.ordenes || [];
+            const textoBuscador = document.getElementById('filtroOrdenTexto').value.trim().toLowerCase();
+            const estadoSelect = document.getElementById('filtroOrdenEstado').value;
+            const fechaDesdeStr = document.getElementById('filtroOrdenDesde').value;
+            const fechaHastaStr = document.getElementById('filtroOrdenHasta').value;
+
+            const fechaDesde = fechaDesdeStr ? new Date(fechaDesdeStr + 'T00:00:00') : null;
+            const fechaHasta = fechaHastaStr ? new Date(fechaHastaStr + 'T23:59:59') : null;
+
+            const filtradas = listaOrdenes.filter(o => {
+                const idOrden = String(o.ID_Orden || '').toLowerCase();
+                const correoCliente = String(o.Correo || '').toLowerCase();
+                const nombreCliente = String(o.NombreUsuario || '').toLowerCase();
+
+                if (textoBuscador && !idOrden.includes(textoBuscador) && !correoCliente.includes(textoBuscador) && !nombreCliente.includes(textoBuscador)) return false;
+                if (estadoSelect !== 'TODAS' && !String(o.Estado || 'Pendiente').toLowerCase().includes(estadoSelect.toLowerCase())) return false;
+
+                if (o.Hora || o.Fecha) {
+                    const fechaOrden = new Date(o.Hora || o.Fecha);
+                    if (!isNaN(fechaOrden.getTime())) {
+                        if (fechaDesde && fechaOrden < fechaDesde) return false;
+                        if (fechaHasta && fechaOrden > fechaHasta) return false;
+                    }
+                }
+                return true;
+            });
+
+            renderizarTablaOrdenes(filtradas);
+        }
+
+        function abrirDetalleOrden(idOrden) {
+            const orden = (globalDataCache.ordenes || []).find(o => String(o.ID_Orden) === String(idOrden));
+            if (!orden) return;
+
+            ordenActualId = idOrden;
+            document.getElementById('detOrdenId').innerText = `Orden #${orden.ID_Orden}`;
+            document.getElementById('detOrdenBadge').innerText = orden.Estado || "Pendiente";
+            document.getElementById('detCliente').innerText = orden.NombreUsuario ? `${orden.NombreUsuario} (${orden.Correo})` : (orden.Correo || "N/A");
+            document.getElementById('detTelefono').innerText = orden.Telefono || "N/A";
+            document.getElementById('detDireccion').innerText = orden.Direccion || "N/A";
+            document.getElementById('detFecha').innerText = orden.Hora || "N/A";
+
+            const tbodyProd = document.getElementById('detTablaProductos');
+            tbodyProd.innerHTML = "";
+            let items = [];
+            try { items = typeof orden.Productos === 'string' ? JSON.parse(orden.Productos) : (orden.Productos || []); } catch (e) { items = []; }
+
+            items.forEach(item => {
+                const tr = document.createElement('tr');
+                const subtotal = (parseFloat(item.Precio) || 0) * (parseInt(item.Cantidad) || 1);
+                tr.innerHTML = `
+                    <td>${item.Nombre || item.Codigo}</td>
+                    <td>${item.Cantidad || 1}</td>
+                    <td>$${parseFloat(item.Precio || 0).toFixed(2)}</td>
+                    <td>$${subtotal.toFixed(2)}</td>
+                `;
+                tbodyProd.appendChild(tr);
+            });
+
+            document.getElementById('detTotalCosto').innerText = `$${parseFloat(orden.CostoTotal || 0).toFixed(2)}`;
+            document.getElementById('detTotalVenta').innerText = `$${parseFloat(orden.Total || 0).toFixed(2)}`;
+            document.getElementById('detTotalGanancia').innerText = `$${(parseFloat(orden.Total || 0) - parseFloat(orden.CostoTotal || 0)).toFixed(2)}`;
+
+            cambiarVista('detalle-orden');
+        }
+
+        async function actualizarEstadoOrdenActual(nuevoEstado) {
+            if (!ordenActualId) return;
+            mostrarLoaderNeon("Actualizando estado...");
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ accion: 'actualizar_estado_orden', id_orden: ordenActualId, estado: nuevoEstado })
+            });
+            const r = await res.json();
+            if (r.success) {
+                const resReload = await fetch(API_URL);
+                globalDataCache = await resReload.json();
+                ocultarLoaderNeon();
+                abrirDetalleOrden(ordenActualId);
+            } else {
+                ocultarLoaderNeon();
+                mostrarAlerta("Error", "No se pudo actualizar el estado.");
+            }
+        }
+
+        function inicializarFiltrosProductos() {
+            if (!globalDataCache) return;
+            const selectCat = document.getElementById('filtroCategoria');
+            selectCat.innerHTML = `<option value="todos">📂 Todas las Categorías</option>`;
+            (globalDataCache.categorias || []).forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat; opt.innerText = cat;
+                selectCat.appendChild(opt);
+            });
+        }
+
+        function aplicarFiltrosProductos() {
+            if (!globalDataCache || !globalDataCache.productos) return;
+            const tbody = document.getElementById('tablaProductosBody');
+            tbody.innerHTML = "";
+
+            const texto = document.getElementById('filtroTexto').value.toLowerCase();
+            const catFiltro = document.getElementById('filtroCategoria').value;
+            const estadoFiltro = document.getElementById('filtroEstado').value;
+            const publicadoFiltro = document.getElementById('filtroPublicado').value;
+            const stockFiltro = document.getElementById('filtroStock').value;
+
+            const filtrados = (globalDataCache.productos || []).filter(p => {
+                const nombre = String(p.Nombre || "").toLowerCase();
+                const codigo = String(p.Codigo || "").toLowerCase();
+                const categoria = String(p.Categoria || "General");
+                const estado = String(p.Estado || "Disponible");
+                const mostrar = p.Mostrar !== undefined ? String(p.Mostrar) : "true";
+                const stock = parseInt(p.Stock || 0);
+
+                if (texto && !nombre.includes(texto) && !codigo.includes(texto)) return false;
+                if (catFiltro !== "todos" && categoria !== catFiltro) return false;
+                if (estadoFiltro !== "todos" && estado !== estadoFiltro) return false;
+                if (publicadoFiltro !== "todos" && mostrar !== publicadoFiltro) return false;
+                if (stockFiltro === "con_stock" && stock <= 0) return false;
+                if (stockFiltro === "sin_stock" && stock > 0) return false;
+
+                return true;
+            });
+
+            if (filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;">No se encontraron productos.</td></tr>`;
+                return;
+            }
+
+            filtrados.forEach(p => {
+                const precioVenta = parseFloat(p.Precio || 0);
+                const precioCosto = parseFloat(p.Costo || 0);
+                const ganancia = precioVenta - precioCosto;
+                const stockVal = parseInt(p.Stock || 0);
+                const isPub = p.Mostrar !== false && p.Mostrar !== "false";
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><img src="${p.Imagen_URL || 'https://via.placeholder.com/40'}" class="prod-thumb"></td>
+                    <td style="color:var(--accent); font-weight:bold;">${p.Codigo}</td>
+                    <td>${p.Nombre}</td>
+                    <td>$${precioVenta.toFixed(2)}</td>
+                    <td style="color:#ff4d4d;">$${precioCosto.toFixed(2)}</td>
+                    <td style="color:#2ecc71; font-weight:bold;">$${ganancia.toFixed(2)}</td>
+                    <td>${stockVal}</td>
+                    <td><span class="badge ${p.Estado === 'Disponible' ? 'badge-stock' : 'badge-nostock'}">${p.Estado || 'Disponible'}</span></td>
+                    <td><span class="badge ${isPub ? 'badge-pub' : 'badge-unpub'}">${isPub ? 'Sí' : 'No'}</span></td>
+                    <td><button class="btn-edit-row" onclick="abrirModalEditarProducto('${p.Codigo}')">Editar</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function abrirModalTasa() { document.getElementById('tasaModal').style.display = 'flex'; }
+        function cerrarModalTasa() { document.getElementById('tasaModal').style.display = 'none'; }
+        
+        async function guardarNuevaTasa() {
+            const val = document.getElementById('nuevaTasaInput').value;
+            if (!val) return;
+            mostrarLoaderNeon("Guardando tasa...");
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ tasa: Number(val) }) });
+                const r = await res.json();
+                ocultarLoaderNeon();
+                if (r.success) {
+                    if (globalDataCache) globalDataCache.tasa = Number(val);
+                    document.getElementById('statTasa').innerText = `${val} CUP`;
+                    cerrarModalTasa();
+                    mostrarAlerta("Éxito", "Tasa actualizada correctamente.");
+                } else {
+                    mostrarAlerta("Error", "No se pudo actualizar la tasa.");
+                }
+            } catch (e) {
+                ocultarLoaderNeon();
+                mostrarAlerta("Error", "Error de conexión.");
+            }
+        }
+
+        function abrirModalProducto(modo, productoData = null) {
+            modoEdicion = modo;
+            const selectCat = document.getElementById('prodCategoria');
+            selectCat.innerHTML = "";
+            (globalDataCache.categorias || ["General"]).forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c; opt.innerText = c;
+                if (productoData && productoData.Categoria === c) opt.selected = true;
+                selectCat.appendChild(opt);
+            });
+
+            if (modo === 'nuevo') {
+                document.getElementById('modalProductoTitulo').innerText = "Nuevo Producto";
+                document.getElementById('prodCodigo').value = "(Automático)";
+                document.getElementById('prodNombre').value = "";
+                document.getElementById('prodPrecio').value = "";
+                document.getElementById('prodCosto').value = "";
+                document.getElementById('prodStock').value = "5";
+                document.getElementById('prodEstado').value = "Disponible";
+                document.getElementById('prodMostrar').value = "true";
+                document.getElementById('prodImagenUrl').value = "";
+                document.getElementById('prodFile').value = "";
+            } else if (modo === 'editar' && productoData) {
+                document.getElementById('modalProductoTitulo').innerText = "Editar Producto";
+                document.getElementById('prodCodigo').value = productoData.Codigo;
+                document.getElementById('prodNombre').value = productoData.Nombre || "";
+                document.getElementById('prodPrecio').value = productoData.Precio || "";
+                document.getElementById('prodCosto').value = productoData.Costo || "";
+                document.getElementById('prodStock').value = productoData.Stock || 5;
+                document.getElementById('prodEstado').value = productoData.Estado || "Disponible";
+                document.getElementById('prodMostrar').value = String(productoData.Mostrar !== undefined ? productoData.Mostrar : true);
+                document.getElementById('prodImagenUrl').value = productoData.Imagen_URL || "";
+                document.getElementById('prodFile').value = "";
+            }
+            document.getElementById('productoModal').style.display = 'flex';
+        }
+
+        function abrirModalEditarProducto(codigo) {
+            const p = (globalDataCache.productos || []).find(item => String(item.Codigo) === String(codigo));
+            if (p) abrirModalProducto('editar', p);
+        }
+
+        function cerrarModalProducto() { document.getElementById('productoModal').style.display = 'none'; }
+
+        async function guardarProductoSubmit() {
+            const itemData = {
+                "Codigo": document.getElementById('prodCodigo').value,
+                "Nombre": document.getElementById('prodNombre').value,
+                "Precio": parseFloat(document.getElementById('prodPrecio').value || 0),
+                "Costo": parseFloat(document.getElementById('prodCosto').value || 0),
+                "Stock": parseInt(document.getElementById('prodStock').value || 0),
+                "Categoria": document.getElementById('prodCategoria').value,
+                "Estado": document.getElementById('prodEstado').value,
+                "Mostrar": document.getElementById('prodMostrar').value === "true",
+                "Imagen_URL": document.getElementById('prodImagenUrl').value || ""
+            };
+
+            mostrarLoaderNeon("Guardando producto...");
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ accion: modoEdicion === 'nuevo' ? 'crear_producto' : 'editar_producto', producto: itemData })
+                });
+                const r = await res.json();
+                if (r.success) {
+                    const resReload = await fetch(API_URL);
+                    globalDataCache = await resReload.json();
+                    ocultarLoaderNeon();
+                    cerrarModalProducto();
+                    document.getElementById('statTotal').innerText = (globalDataCache.productos || []).length;
+                    calcularResumenFinanciero(globalDataCache.ordenes || [], globalDataCache.productos || []);
+                    aplicarFiltrosProductos();
+                    mostrarAlerta("Éxito", "Producto guardado correctamente.");
+                } else {
+                    ocultarLoaderNeon();
+                    mostrarAlerta("Error", "No se pudo guardar.");
+                }
+            } catch (e) {
+                ocultarLoaderNeon();
+                mostrarAlerta("Error", "Error de conexión.");
+            }
+        }
+
+        function toggleTema() {
+            const htmlEl = document.documentElement;
+            const btn = document.getElementById('themeToggleBtn');
+            if (htmlEl.getAttribute('data-theme') === 'light') {
+                htmlEl.removeAttribute('data-theme');
+                btn.innerText = '☀️';
+                localStorage.setItem('hlg_theme', 'dark');
+            } else {
+                htmlEl.setAttribute('data-theme', 'light');
+                btn.innerText = '🌙';
+                localStorage.setItem('hlg_theme', 'light');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('hlg_theme');
+            const btn = document.getElementById('themeToggleBtn');
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                if (btn) btn.innerText = '🌙';
+            }
+        });
     </script>
 </body>
 </html>
