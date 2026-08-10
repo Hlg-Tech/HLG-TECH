@@ -1,903 +1,626 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycby4x0nVPKJDzkI10xbT8yRa3TI6KFca7NVl7QrQ6QT709cW17DDITWdKn0U-ZfprK9idA/exec';
-        let todosLosProductos = [];
-        let tasaCambioCUP = 650;
-        let monedaActual = 'USD';
-        let usuarioActual = null;
-        let carrito = [];
-        let direccionesGuardadas = [];
-        let ordenesCliente = [];
-        let listaUbicacionesTabulares = []; 
-        let datosUbicacionesGlobal = [];
+const API_URL = 'https://script.google.com/macros/s/AKfycbxVr5nPd0y3alsnYKfnE-Nyscy8inDEdKxszF7vKEM_lD8zYCR9WWCFEnMhzT2ulmghWA/exec';
 
-        let provinciaSeleccionadaValor = "";
-        let municipioSeleccionadaValor = "";
-        let direccionCheckoutSeleccionadaIndex = 0;
-        let metodoPagoSeleccionado = "Transferencia Bancaria";
-        let tipoPedidoSeleccionado = "Entrega Inmediata";
+        const CLOUDINARY_CLOUD_NAME = 'kla50st7';
+        const CLOUDINARY_UPLOAD_PRESET = 'HLG TECH';
 
-        let firmaCatalogoAnterior = "";
+        async function subirImagenACloudinary(inputElement) {
+            const file = inputElement.files[0];
+            if (!file) return;
 
-        // Función centralizada para cerrar cualquier panel lateral y limpiar el fondo
-        function cerrarPanelLateral() {
-    // Seleccionamos todos los paneles y overlays por si existe más de uno en el DOM
-            document.querySelectorAll('.drawer').forEach(drawer => drawer.classList.remove('open'));
-            document.querySelectorAll('.drawer-overlay').forEach(overlay => overlay.classList.remove('open'));
-    
-    // Si usas alguna clase en el <body> para bloquear el scroll mientras el drawer está abierto, la quitamos
-            document.body.classList.remove('drawer-open', 'no-scroll');
+            mostrarLoaderNeon("Subiendo imagen a Cloudinary...");
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+            try {
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                ocultarLoaderNeon();
+
+                if (data.secure_url) {
+                    document.getElementById('prodImagenUrl').value = data.secure_url;
+                    mostrarAlerta("Éxito", "Imagen subida correctamente a Cloudinary.");
+                } else {
+                    mostrarAlerta("Error", "No se pudo subir la imagen.");
+                }
+            } catch (error) {
+                ocultarLoaderNeon();
+                mostrarAlerta("Error", "Ocurrió un error al conectar con Cloudinary.");
+            }
         }
 
-       // 1. Función para Abrir Nueva Dirección
-        function abrirFormularioDireccion() {
-                 cerrarPanelLateral(); // Cierra el cajón lateral inmediatamente
-    
-    // Pequeño retardo opcional (30ms) para permitir que la animación del drawer responda suavemente en el móvil
-            setTimeout(() => {
-            abrirModalNuevaDireccion();
-            }, 30);
+        let globalDataCache = null;
+        let modoEdicion = 'nuevo';
+        let ordenActualId = null;
+        let promptCallback = null;
+
+        function mostrarAlerta(titulo, mensaje) {
+            document.getElementById('customAlertTitle').innerText = titulo;
+            document.getElementById('customAlertMessage').innerText = mensaje;
+            document.getElementById('customAlertModal').style.display = 'flex';
+        }
+        function cerrarCustomAlert() { document.getElementById('customAlertModal').style.display = 'none'; }
+
+        function abrirPromptPersonalizado(titulo, descripcion, valorInicial, callback) {
+            document.getElementById('customPromptTitle').innerText = titulo;
+            document.getElementById('customPromptDesc').innerText = descripcion;
+            const input = document.getElementById('customPromptInput');
+            input.value = valorInicial || '';
+            promptCallback = callback;
+            document.getElementById('customPromptModal').style.display = 'flex';
+            input.focus();
+        }
+        function cerrarCustomPrompt(confirmado) {
+            document.getElementById('customPromptModal').style.display = 'none';
+            if (promptCallback) {
+                const valor = document.getElementById('customPromptInput').value;
+                promptCallback(confirmado ? valor : null);
+                promptCallback = null;
+            }
+        }
+
+        function mostrarLoaderNeon(txt) {
+            document.getElementById('neonLoaderText').innerText = txt;
+            document.getElementById('neonLoaderOverlay').style.display = 'flex';
+        }
+        function ocultarLoaderNeon() { document.getElementById('neonLoaderOverlay').style.display = 'none'; }
+
+        async function verificarAcceso() {
+            const input = document.getElementById('adminEmailInput').value.trim().toLowerCase();
+            mostrarLoaderNeon("Verificando...");
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                ocultarLoaderNeon();
+                if ((data.admins || []).includes(input)) {
+                    localStorage.setItem('hlg_admin_email', input);
+                    document.getElementById('authScreen').style.display = 'none';
+                    document.getElementById('userDisplay').innerText = input;
+                    procesarDatosGlobales(data);
+                    iniciarMonitoreoNotificaciones();
+                } else {
+                    document.getElementById('authError').style.display = 'block';
+                }
+            } catch (e) {
+                ocultarLoaderNeon();
+                document.getElementById('authError').style.display = 'block';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const guardado = localStorage.getItem('hlg_admin_email');
+            if (guardado) {
+                try {
+                    const res = await fetch(API_URL);
+                    const data = await res.json();
+                    if ((data.admins || []).includes(guardado)) {
+                        document.getElementById('authScreen').style.display = 'none';
+                        document.getElementById('userDisplay').innerText = guardado;
+                        procesarDatosGlobales(data);
+                        iniciarMonitoreoNotificaciones();
+                    }
+                } catch (e) { console.error(e); }
+            }
+        });
+
+        function cerrarSesion() { localStorage.removeItem('hlg_admin_email'); location.reload(); }
+        function toggleSidebar() { document.getElementById('appSidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('open'); }
+
+        function cambiarVista(vistaId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + vistaId).classList.add('active');
+            if (vistaId === 'productos') aplicarFiltrosProductos();
+            if (vistaId === 'categorias') renderizarTablaCategorias();
+            if (vistaId === 'usuarios') renderizarTablaUsuarios();
+            if (vistaId === 'ordenes') aplicarFiltrosOrdenes();
+            window.scrollTo(0, 0);
+        }
+
+        function procesarDatosGlobales(data) {
+            globalDataCache = data;
+            document.getElementById('statTotal').innerText = (data.productos || []).length;
+            document.getElementById('statUsuarios').innerText = (data.usuarios || []).length;
+            document.getElementById('statOrdenes').innerText = (data.ordenes || []).length;
+            document.getElementById('statTasa').innerText = `${data.tasa || 650} CUP`;
+            
+            calcularResumenFinanciero(data.ordenes || [], data.productos || []);
+            inicializarFiltrosProductos();
+            actualizarCampanitaNotificaciones(data.ordenes || []);
+        }
+
+        function toggleNotificationDropdown() {
+            document.getElementById('notifDropdown').classList.toggle('show');
+        }
+
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.notification-container')) {
+                const dropdown = document.getElementById('notifDropdown');
+                if (dropdown) dropdown.classList.remove('show');
+            }
+        });
+
+        function actualizarCampanitaNotificaciones(ordenes) {
+            const pendientes = ordenes.filter(o => {
+                const estado = String(o.Estado || '').toLowerCase();
+                return estado.includes('pendiente') || estado === '';
+            });
+
+            const badge = document.getElementById('notifBadge');
+            const countText = document.getElementById('notifCountText');
+            const listContainer = document.getElementById('notifList');
+
+            if (pendientes.length > 0) {
+                badge.innerText = pendientes.length;
+                badge.style.display = 'inline-block';
+                countText.innerText = `${pendientes.length} pendientes`;
+                
+                listContainer.innerHTML = '';
+                pendientes.forEach(o => {
+                    const item = document.createElement('div');
+                    item.className = 'notification-item';
+                    item.onclick = () => {
+                        toggleNotificationDropdown();
+                        abrirDetalleOrden(o.ID_Orden);
+                    };
+                    item.innerHTML = `
+                        <strong>Orden #${o.ID_Orden} - $${parseFloat(o.Total || 0).toFixed(2)}</strong>
+                        <span>${o.Correo || 'Cliente'} • ${o.Hora || 'Reciente'}</span>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } else {
+                badge.style.display = 'none';
+                countText.innerText = '0 pendientes';
+                listContainer.innerHTML = `<div class="notification-item" style="text-align: center; color: var(--text-muted); cursor: default;">Sin órdenes pendientes</div>`;
+            }
+        }
+
+        function iniciarMonitoreoNotificaciones() {
+            setInterval(async () => {
+                try {
+                    const res = await fetch(API_URL);
+                    const data = await res.json();
+                    if (data && data.ordenes) {
+                        globalDataCache = data;
+                        document.getElementById('statTotal').innerText = (data.productos || []).length;
+                        document.getElementById('statUsuarios').innerText = (data.usuarios || []).length;
+                        document.getElementById('statOrdenes').innerText = (data.ordenes || []).length;
+                        actualizarCampanitaNotificaciones(data.ordenes);
+                    }
+                } catch (e) { console.error(e); }
+            }, 30000);
+        }
+
+        function calcularResumenFinanciero(ordenes, productos) {
+            const ahora = new Date();
+            let hoyV = 0, hoyC = 0, semV = 0, semC = 0, mesV = 0, mesC = 0;
+
+            ordenes.forEach(o => {
+                if (o.Estado === 'Cancelada') return;
+                const fechaOrden = new Date(o.Hora || o.Fecha || Date.now());
+                const ventaTotal = parseFloat(o.Total || 0);
+                const costoTotal = parseFloat(o.CostoTotal || 0);
+
+                if (esMismoDia(fechaOrden, ahora)) { hoyV += ventaTotal; hoyC += costoTotal; }
+                if (esMismaSemana(fechaOrden, ahora)) { semV += ventaTotal; semC += costoTotal; }
+                if (esMismoMes(fechaOrden, ahora)) { mesV += ventaTotal; mesC += costoTotal; }
+            });
+
+            document.getElementById('hoyVenta').innerText = `$${hoyV.toFixed(2)}`;
+            document.getElementById('hoyCosto').innerText = `$${hoyC.toFixed(2)}`;
+            document.getElementById('hoyGanancia').innerText = `$${(hoyV - hoyC).toFixed(2)}`;
+
+            document.getElementById('semVenta').innerText = `$${semV.toFixed(2)}`;
+            document.getElementById('semCosto').innerText = `$${semC.toFixed(2)}`;
+            document.getElementById('semGanancia').innerText = `$${(semV - semC).toFixed(2)}`;
+
+            document.getElementById('mesVenta').innerText = `$${mesV.toFixed(2)}`;
+            document.getElementById('mesCosto').innerText = `$${mesC.toFixed(2)}`;
+            document.getElementById('mesGanancia').innerText = `$${(mesV - mesC).toFixed(2)}`;
+        }
+
+        function esMismoDia(d1, d2) { return d1.toDateString() === d2.toDateString(); }
+        function esMismoMes(d1, d2) { return d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear(); }
+        function esMismaSemana(d1, d2) {
+            const onejan = new Date(d1.getFullYear(), 0, 1);
+            const week1 = Math.ceil((((d1 - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+            const week2 = Math.ceil((((d2 - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+            return week1 === week2 && d1.getFullYear() === d2.getFullYear();
+        }
+
+        function renderizarTablaCategorias() {
+            if (!globalDataCache) return;
+            const tbody = document.getElementById('tablaCategoriasBody');
+            tbody.innerHTML = "";
+            (globalDataCache.categorias || []).forEach((cat, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--text-muted);">${index + 1}</td>
+                    <td style="color:var(--accent); font-weight:bold;">${cat}</td>
+                    <td><button class="btn-edit-row" onclick="editarCategoriaPrompt('${cat}')">Editar / Corregir</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function crearNuevaCategoriaSubmit() {
+            const inputNombre = document.getElementById('nuevaCategoriaInput').value.trim();
+            if (!inputNombre) { mostrarAlerta("Campo vacío", "Escribe un nombre para la categoría."); return; }
+            
+            mostrarLoaderNeon("Creando categoría...");
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ accion: 'crear_categoria', nombre: inputNombre }) });
+            const r = await res.json();
+            if (r.success) {
+                document.getElementById('nuevaCategoriaInput').value = "";
+                const resReload = await fetch(API_URL);
+                globalDataCache = await resReload.json();
+                ocultarLoaderNeon();
+                renderizarTablaCategorias();
+                inicializarFiltrosProductos();
+                mostrarAlerta("Éxito", "Categoría creada correctamente.");
+            } else {
+                ocultarLoaderNeon();
+                mostrarAlerta("Error", "No se pudo crear la categoría.");
+            }
+        }
+
+        function editarCategoriaPrompt(catAntigua) {
+            abrirPromptPersonalizado("Editar Categoría", "Corrige o edita el nombre de la categoría:", catAntigua, async (catNueva) => {
+                if (!catNueva || catNueva.trim() === "" || catNueva === catAntigua) return;
+
+                mostrarLoaderNeon("Actualizando categoría...");
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ accion: 'editar_categoria', antigua: catAntigua, nueva: catNueva.trim() }) });
+                const r = await res.json();
+                if (r.success) {
+                    const resReload = await fetch(API_URL);
+                    globalDataCache = await resReload.json();
+                    ocultarLoaderNeon();
+                    renderizarTablaCategorias();
+                    inicializarFiltrosProductos();
+                    mostrarAlerta("Éxito", "Categoría actualizada correctamente.");
+                } else {
+                    ocultarLoaderNeon();
+                    mostrarAlerta("Error", "No se pudo actualizar la categoría.");
+                }
+            });
+        }
+
+        function renderizarTablaUsuarios() {
+            if (!globalDataCache) return;
+            const tbody = document.getElementById('tablaUsuariosBody');
+            tbody.innerHTML = "";
+            (globalDataCache.usuarios || []).forEach((u, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--text-muted);">${index + 1}</td>
+                    <td style="color:var(--accent); font-weight:bold;">${u.Nombre || "Sin Nombre"}</td>
+                    <td>${u.Correo || ""}</td>
+                    <td>${u.Telefono || "N/A"}</td>
+                    <td>${u.FechaRegistro || "N/A"}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filtrarUsuarios() {
+            const texto = document.getElementById('filtroBuscadorUsuarios').value.toLowerCase();
+            document.querySelectorAll('#tablaUsuariosBody tr').forEach(r => {
+                r.style.display = r.innerText.toLowerCase().includes(texto) ? "" : "none";
+            });
+        }
+
+        function renderizarTablaOrdenes(ordenesMostrar) {
+            const tbody = document.getElementById('tablaOrdenesBody');
+            tbody.innerHTML = "";
+            if (ordenesMostrar.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay órdenes registradas.</td></tr>`;
+                return;
+            }
+            ordenesMostrar.forEach(o => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--accent); font-weight:bold;">${o.ID_Orden || "S/N"}</td>
+                    <td>${o.Hora || ""}</td>
+                    <td>${o.Correo || ""}</td>
+                    <td>$${parseFloat(o.Total || 0).toFixed(2)}</td>
+                    <td><span class="badge badge-estado">${o.Estado || "Pendiente"}</span></td>
+                    <td><button class="btn-action" onclick="abrirDetalleOrden('${o.ID_Orden}')">Gestionar Pedido</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function aplicarFiltrosOrdenes() {
+            if (!globalDataCache) return;
+            const listaOrdenes = globalDataCache.ordenes || [];
+            const textoBuscador = document.getElementById('filtroOrdenTexto').value.trim().toLowerCase();
+            const estadoSelect = document.getElementById('filtroOrdenEstado').value;
+            const fechaDesdeStr = document.getElementById('filtroOrdenDesde').value;
+            const fechaHastaStr = document.getElementById('filtroOrdenHasta').value;
+
+            const fechaDesde = fechaDesdeStr ? new Date(fechaDesdeStr + 'T00:00:00') : null;
+            const fechaHasta = fechaHastaStr ? new Date(fechaHastaStr + 'T23:59:59') : null;
+
+            const filtradas = listaOrdenes.filter(o => {
+                const idOrden = String(o.ID_Orden || '').toLowerCase();
+                const correoCliente = String(o.Correo || '').toLowerCase();
+                const nombreCliente = String(o.NombreUsuario || '').toLowerCase();
+
+                if (textoBuscador && !idOrden.includes(textoBuscador) && !correoCliente.includes(textoBuscador) && !nombreCliente.includes(textoBuscador)) return false;
+                if (estadoSelect !== 'TODAS' && !String(o.Estado || 'Pendiente').toLowerCase().includes(estadoSelect.toLowerCase())) return false;
+
+                if (o.Hora || o.Fecha) {
+                    const fechaOrden = new Date(o.Hora || o.Fecha);
+                    if (!isNaN(fechaOrden.getTime())) {
+                        if (fechaDesde && fechaOrden < fechaDesde) return false;
+                        if (fechaHasta && fechaOrden > fechaHasta) return false;
+                    }
+                }
+                return true;
+            });
+
+            renderizarTablaOrdenes(filtradas);
+        }
+
+        function abrirDetalleOrden(idOrden) {
+            const orden = (globalDataCache.ordenes || []).find(o => String(o.ID_Orden) === String(idOrden));
+            if (!orden) return;
+
+            ordenActualId = idOrden;
+            document.getElementById('detOrdenId').innerText = `Orden #${orden.ID_Orden}`;
+            document.getElementById('detOrdenBadge').innerText = orden.Estado || "Pendiente";
+            document.getElementById('detCliente').innerText = orden.NombreUsuario ? `${orden.NombreUsuario} (${orden.Correo})` : (orden.Correo || "N/A");
+            document.getElementById('detTelefono').innerText = orden.Telefono || "N/A";
+            document.getElementById('detDireccion').innerText = orden.Direccion || "N/A";
+            document.getElementById('detFecha').innerText = orden.Hora || "N/A";
+
+            const tbodyProd = document.getElementById('detTablaProductos');
+            tbodyProd.innerHTML = "";
+            let items = [];
+            try { items = typeof orden.Productos === 'string' ? JSON.parse(orden.Productos) : (orden.Productos || []); } catch (e) { items = []; }
+
+            items.forEach(item => {
+                const tr = document.createElement('tr');
+                const subtotal = (parseFloat(item.Precio) || 0) * (parseInt(item.Cantidad) || 1);
+                tr.innerHTML = `
+                    <td>${item.Nombre || item.Codigo}</td>
+                    <td>${item.Cantidad || 1}</td>
+                    <td>$${parseFloat(item.Precio || 0).toFixed(2)}</td>
+                    <td>$${subtotal.toFixed(2)}</td>
+                `;
+                tbodyProd.appendChild(tr);
+            });
+
+            document.getElementById('detTotalCosto').innerText = `$${parseFloat(orden.CostoTotal || 0).toFixed(2)}`;
+            document.getElementById('detTotalVenta').innerText = `$${parseFloat(orden.Total || 0).toFixed(2)}`;
+            document.getElementById('detTotalGanancia').innerText = `$${(parseFloat(orden.Total || 0) - parseFloat(orden.CostoTotal || 0)).toFixed(2)}`;
+
+            cambiarVista('detalle-orden');
+        }
+
+        async function actualizarEstadoOrdenActual(nuevoEstado) {
+            if (!ordenActualId) return;
+            mostrarLoaderNeon("Actualizando estado...");
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ accion: 'actualizar_estado_orden', id_orden: ordenActualId, estado: nuevoEstado })
+            });
+            const r = await res.json();
+            if (r.success) {
+                const resReload = await fetch(API_URL);
+                globalDataCache = await resReload.json();
+                ocultarLoaderNeon();
+                abrirDetalleOrden(ordenActualId);
+            } else {
+                ocultarLoaderNeon();
+                mostrarAlerta("Error", "No se pudo actualizar el estado.");
+            }
+        }
+
+        function inicializarFiltrosProductos() {
+            if (!globalDataCache) return;
+            const selectCat = document.getElementById('filtroCategoria');
+            selectCat.innerHTML = `<option value="todos">📂 Todas las Categorías</option>`;
+            (globalDataCache.categorias || []).forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat; opt.innerText = cat;
+                selectCat.appendChild(opt);
+            });
+        }
+
+        function aplicarFiltrosProductos() {
+            if (!globalDataCache || !globalDataCache.productos) return;
+            const tbody = document.getElementById('tablaProductosBody');
+            tbody.innerHTML = "";
+
+            const texto = document.getElementById('filtroTexto').value.toLowerCase();
+            const catFiltro = document.getElementById('filtroCategoria').value;
+            const estadoFiltro = document.getElementById('filtroEstado').value;
+            const publicadoFiltro = document.getElementById('filtroPublicado').value;
+            const stockFiltro = document.getElementById('filtroStock').value;
+
+            const filtrados = (globalDataCache.productos || []).filter(p => {
+                const nombre = String(p.Nombre || "").toLowerCase();
+                const codigo = String(p.Codigo || "").toLowerCase();
+                const categoria = String(p.Categoria || "General");
+                const estado = String(p.Estado || "Disponible");
+                const mostrar = p.Mostrar !== undefined ? String(p.Mostrar) : "true";
+                const stock = parseInt(p.Stock || 0);
+
+                if (texto && !nombre.includes(texto) && !codigo.includes(texto)) return false;
+                if (catFiltro !== "todos" && categoria !== catFiltro) return false;
+                if (estadoFiltro !== "todos" && estado !== estadoFiltro) return false;
+                if (publicadoFiltro !== "todos" && mostrar !== publicadoFiltro) return false;
+                if (stockFiltro === "con_stock" && stock <= 0) return false;
+                if (stockFiltro === "sin_stock" && stock > 0) return false;
+
+                return true;
+            });
+
+            if (filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;">No se encontraron productos.</td></tr>`;
+                return;
+            }
+
+            filtrados.forEach(p => {
+                const precioVenta = parseFloat(p.Precio || 0);
+                const precioCosto = parseFloat(p.Costo || 0);
+                const ganancia = precioVenta - precioCosto;
+                const stockVal = parseInt(p.Stock || 0);
+                const isPub = p.Mostrar !== false && p.Mostrar !== "false";
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><img src="${p.Imagen_URL || 'https://via.placeholder.com/40'}" class="prod-thumb"></td>
+                    <td style="color:var(--accent); font-weight:bold;">${p.Codigo}</td>
+                    <td>${p.Nombre}</td>
+                    <td>$${precioVenta.toFixed(2)}</td>
+                    <td style="color:#ff4d4d;">$${precioCosto.toFixed(2)}</td>
+                    <td style="color:#2ecc71; font-weight:bold;">$${ganancia.toFixed(2)}</td>
+                    <td>${stockVal}</td>
+                    <td><span class="badge ${p.Estado === 'Disponible' ? 'badge-stock' : 'badge-nostock'}">${p.Estado || 'Disponible'}</span></td>
+                    <td><span class="badge ${isPub ? 'badge-pub' : 'badge-unpub'}">${isPub ? 'Sí' : 'No'}</span></td>
+                    <td><button class="btn-edit-row" onclick="abrirModalEditarProducto('${p.Codigo}')">Editar</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function abrirModalTasa() { document.getElementById('tasaModal').style.display = 'flex'; }
+        function cerrarModalTasa() { document.getElementById('tasaModal').style.display = 'none'; }
+        
+        async function guardarNuevaTasa() {
+            const val = document.getElementById('nuevaTasaInput').value;
+            if (!val) return;
+            mostrarLoaderNeon("Guardando tasa...");
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ tasa: Number(val) }) });
+                const r = await res.json();
+                ocultarLoaderNeon();
+                if (r.success) {
+                    if (globalDataCache) globalDataCache.tasa = Number(val);
+                    document.getElementById('statTasa').innerText = `${val} CUP`;
+                    cerrarModalTasa();
+                    mostrarAlerta("Éxito", "Tasa actualizada correctamente.");
+                } else {
+                    mostrarAlerta("Error", "No se pudo actualizar la tasa.");
+                }
+            } catch (e) {
+                ocultarLoaderNeon();
+                mostrarAlerta("Error", "Error de conexión.");
+            }
+        }
+
+        function abrirModalProducto(modo, productoData = null) {
+            modoEdicion = modo;
+            const selectCat = document.getElementById('prodCategoria');
+            selectCat.innerHTML = "";
+            (globalDataCache.categorias || ["General"]).forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c; opt.innerText = c;
+                if (productoData && productoData.Categoria === c) opt.selected = true;
+                selectCat.appendChild(opt);
+            });
+
+            if (modo === 'nuevo') {
+                document.getElementById('modalProductoTitulo').innerText = "Nuevo Producto";
+                document.getElementById('prodCodigo').value = "(Automático)";
+                document.getElementById('prodNombre').value = "";
+                document.getElementById('prodPrecio').value = "";
+                document.getElementById('prodCosto').value = "";
+                document.getElementById('prodStock').value = "5";
+                document.getElementById('prodEstado').value = "Disponible";
+                document.getElementById('prodMostrar').value = "true";
+                document.getElementById('prodDescripcion').value = "";
+                document.getElementById('prodImagenUrl').value = "";
+                document.getElementById('prodFile').value = "";
+            } else if (modo === 'editar' && productoData) {
+                document.getElementById('modalProductoTitulo').innerText = "Editar Producto";
+                document.getElementById('prodCodigo').value = productoData.Codigo;
+                document.getElementById('prodNombre').value = productoData.Nombre || "";
+                document.getElementById('prodPrecio').value = productoData.Precio || "";
+                document.getElementById('prodCosto').value = productoData.Costo || "";
+                document.getElementById('prodStock').value = productoData.Stock || 5;
+                document.getElementById('prodEstado').value = productoData.Estado || "Disponible";
+                document.getElementById('prodMostrar').value = String(productoData.Mostrar !== undefined ? productoData.Mostrar : true);
+                document.getElementById('prodDescripcion').value = productoData.Descripcion || "";
+                document.getElementById('prodImagenUrl').value = productoData.Imagen_URL || "";
+                document.getElementById('prodFile').value = "";
+            }
+            document.getElementById('productoModal').style.display = 'flex';
+        }
+
+        function abrirModalEditarProducto(codigo) {
+            const p = (globalDataCache.productos || []).find(item => String(item.Codigo) === String(codigo));
+            if (p) abrirModalProducto('editar', p);
+        }
+
+        function cerrarModalProducto() { document.getElementById('productoModal').style.display = 'none'; }
+
+        async function guardarProductoSubmit() {
+            const itemData = {
+                "Codigo": document.getElementById('prodCodigo').value,
+                "Nombre": document.getElementById('prodNombre').value,
+                "Precio": parseFloat(document.getElementById('prodPrecio').value || 0),
+                "Costo": parseFloat(document.getElementById('prodCosto').value || 0),
+                "Descripcion": document.getElementById('prodDescripcion').value,
+                "Stock": parseInt(document.getElementById('prodStock').value || 0),
+                "Categoria": document.getElementById('prodCategoria').value,
+                "Estado": document.getElementById('prodEstado').value,
+                "Mostrar": document.getElementById('prodMostrar').value === "true",
+                "Imagen_URL": document.getElementById('prodImagenUrl').value || ""
+            };
+
+            mostrarLoaderNeon("Guardando producto...");
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ accion: modoEdicion === 'nuevo' ? 'crear_producto' : 'editar_producto', producto: itemData })
+                });
+                const r = await res.json();
+                if (r.success) {
+                    const resReload = await fetch(API_URL);
+                    globalDataCache = await resReload.json();
+                    ocultarLoaderNeon();
+                    cerrarModalProducto();
+                    document.getElementById('statTotal').innerText = (globalDataCache.productos || []).length;
+                    calcularResumenFinanciero(globalDataCache.ordenes || [], globalDataCache.productos || []);
+                    aplicarFiltrosProductos();
+                    mostrarAlerta("Éxito", "Producto guardado correctamente.");
+                } else {
+                    ocultarLoaderNeon();
+                    mostrarAlerta("Error", "No se pudo guardar.");
+                }
+            } catch (e) {
+                ocultarLoaderNeon();
+                mostrarAlerta("Error", "Error de conexión.");
+            }
         }
 
         function toggleTema() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const nuevoTema = currentTheme === 'light' ? 'dark' : 'light';
-            
-            if (nuevoTema === 'light') {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
+            const htmlEl = document.documentElement;
+            const btn = document.getElementById('themeToggleBtn');
+            if (htmlEl.getAttribute('data-theme') === 'light') {
+                htmlEl.removeAttribute('data-theme');
+                btn.innerText = '☀️';
+                localStorage.setItem('hlg_theme', 'dark');
             } else {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'dark');
+                htmlEl.setAttribute('data-theme', 'light');
+                btn.innerText = '🌙';
+                localStorage.setItem('hlg_theme', 'light');
             }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
+            const savedTheme = localStorage.getItem('hlg_theme');
+            const btn = document.getElementById('themeToggleBtn');
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
+                if (btn) btn.innerText = '🌙';
             }
         });
-
-        function alternarFormularioAuth(modo) {
-            const vistaLogin = document.getElementById("vistaLoginUnico");
-            const vistaRegistro = document.getElementById("contenedorRegistro");
-            
-            if (modo === 'registro') {
-                vistaLogin.style.display = "none";
-                vistaRegistro.style.display = "block";
-            } else {
-                vistaRegistro.style.display = "none";
-                vistaLogin.style.display = "block";
-            }
-        }
-
-        async function inicializarUbicacionesFormulario() {
-            try {
-                const respuesta = await fetch(API_URL);
-                const resultado = await respuesta.json();
-                
-                if (resultado.ubicaciones && Array.isArray(resultado.ubicaciones)) {
-                    datosUbicacionesGlobal = resultado.ubicaciones;
-                    poblarPaises(datosUbicacionesGlobal);
-                } else {
-                    console.warn("No se encontraron ubicaciones en la respuesta de la API.");
-                }
-            } catch (error) {
-                console.error("Error al cargar las ubicaciones desde la API:", error);
-            }
-        }
-
-        function poblarPaises(data) {
-            const selectPais = document.getElementById('selectPais');
-            if (!selectPais) return;
-
-            const paisesUnicos = [...new Set(data.map(item => item.pais || item.Pais))].filter(Boolean);
-            
-            selectPais.innerHTML = '<option value="">Selecciona un país...</option>';
-            paisesUnicos.forEach(pais => {
-                selectPais.innerHTML += `<option value="${pais}">${pais}</option>`;
-            });
-        }
-
-        function cargarProvinciasSegunPais() {
-            const paisSeleccionado = document.getElementById('selectPais').value;
-            const selectProvincia = document.getElementById('selectProvincia');
-            const selectMunicipio = document.getElementById('selectMunicipio');
-            
-            selectProvincia.innerHTML = '<option value="">Selecciona una provincia...</option>';
-            selectMunicipio.innerHTML = '<option value="">Selecciona un municipio...</option>';
-            selectMunicipio.disabled = true;
-
-            if (!paisSeleccionado) {
-                selectProvincia.disabled = true;
-                return;
-            }
-
-            const provinciasUnicas = [...new Set(
-                datosUbicacionesGlobal
-                    .filter(item => (item.pais || item.Pais) === paisSeleccionado)
-                    .map(item => item.provincia || item.Provincia)
-            )].filter(Boolean);
-
-            provinciasUnicas.forEach(provincia => {
-                selectProvincia.innerHTML += `<option value="${provincia}">${provincia}</option>`;
-            });
-            selectProvincia.disabled = false;
-        }
-
-        function cargarMunicipiosSegunProvincia() {
-            const paisSeleccionado = document.getElementById('selectPais').value;
-            const provinciaSeleccionada = document.getElementById('selectProvincia').value;
-            const selectMunicipio = document.getElementById('selectMunicipio');
-            
-            selectMunicipio.innerHTML = '<option value="">Selecciona un municipio...</option>';
-
-            if (!provinciaSeleccionada) {
-                selectMunicipio.disabled = true;
-                return;
-            }
-
-            const municipiosUnicos = [...new Set(
-                datosUbicacionesGlobal
-                    .filter(item => ((item.pais || item.Pais) === paisSeleccionado) && ((item.provincia || item.Provincia) === provinciaSeleccionada))
-                    .map(item => item.municipio || item.Municipio)
-            )].filter(Boolean);
-
-            municipiosUnicos.forEach(municipio => {
-                selectMunicipio.innerHTML += `<option value="${municipio}">${municipio}</option>`;
-            });
-            selectMunicipio.disabled = false;
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            inicializarUbicacionesFormulario();
-        });
-
-        async function registrarNuevoUsuario() {
-            const datosRegistro = {
-                accion: "registrar_usuario",
-                nombre: document.getElementById("regNombre").value.trim(),
-                correo: document.getElementById("regCorreo").value.trim(),
-                telefono: document.getElementById("regTelefono").value.trim(),
-                password: document.getElementById("regPassword").value.trim(),
-                sexo: document.getElementById("regSexo").value,
-                fechaNacimiento: document.getElementById("regFechaNacimiento").value,
-                pais: document.getElementById("selectPais").value.trim(),
-                provincia: document.getElementById("selectProvincia").value.trim(),
-                municipio: document.getElementById("selectMunicipio").value.trim()
-            };
-
-            if (!datosRegistro.nombre || !datosRegistro.correo || !datosRegistro.password) {
-                mostrarAlerta('Atención', 'Por favor, completa al menos los campos obligatorios (Nombre, Correo y Contraseña).');
-                return;
-            }
-
-            mostrarLoaderGlobal("Registrando nueva cuenta...");
-
-            try {
-                const respuesta = await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "text/plain;charset=utf-8"
-                    },
-                    body: JSON.stringify(datosRegistro)
-                });
-                
-                const resultado = await respuesta.json();
-                ocultarLoaderGlobal();
-
-                if (resultado.success) {
-                    mostrarAlerta('¡Éxito!', resultado.message || 'Cuenta creada correctamente. Ya puedes iniciar sesión.');
-                    alternarFormularioAuth('login');
-                } else {
-                    mostrarAlerta('Error', resultado.message || 'No se pudo completar el registro.');
-                }
-
-            } catch (error) {
-                ocultarLoaderGlobal();
-                console.error("Error en la conexión:", error);
-                mostrarAlerta('Error', 'Ocurrió un error al intentar conectar con el servidor.');
-            }
-        }
-
-        function solicitarPermisoNotificaciones() {
-            if (window.Notification && Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
-        }
-
-        function dispararNotificacionNativa(titulo, cuerpo) {
-            if (window.Notification && Notification.permission === "granted") {
-                new Notification(titulo, {
-                    body: cuerpo,
-                    icon: "https://res.cloudinary.com/kla50st7/image/upload/v1785343940/Gemini_Generated_Image_9e7gng9e7gng9e7g_okv4ap.jpg"
-                });
-            }
-        }
-
-        function mostrarBannerActualizacion(mensaje = "Se han actualizado los productos del catálogo.") {
-            document.getElementById('updateBannerText').innerText = mensaje;
-            document.getElementById('updateNotificationBanner').style.display = 'flex';
-        }
-
-        function ocultarBannerActualizacion() {
-            document.getElementById('updateNotificationBanner').style.display = 'none';
-        }
-
-        function mostrarLoaderGlobal(texto = "Actualizando catálogo...") {
-            document.getElementById('globalLoaderText').innerText = texto;
-            document.getElementById('globalLoaderOverlay').style.display = 'flex';
-        }
-
-        function ocultarLoaderGlobal() {
-            document.getElementById('globalLoaderOverlay').style.display = 'none';
-        }
-
-        function cerrarTodosLosMenusDesplegablesCustom() {
-            document.querySelectorAll('.dropdown-box-menu').forEach(m => m.classList.remove('open'));
-        }
-
-        function toggleCustomBox(menuId, e) {
-            if (e) e.stopPropagation();
-            const menu = document.getElementById(menuId);
-            const isOpen = menu.classList.contains('open');
-            cerrarTodosLosMenusDesplegablesCustom();
-            if (!isOpen) menu.classList.add('open');
-        }
-
-        window.addEventListener('click', () => {
-            cerrarTodosLosMenusDesplegablesCustom();
-            document.getElementById('customDropdown').classList.remove('open');
-        });
-
-        function inicializarProvinciasDireccion() {
-            const provinciasUnicas = [...new Set(listaUbicacionesTabulares.map(u => u.Provincia || u.provincia))].filter(Boolean);
-            const menuProv = document.getElementById('customProvinciaMenu');
-            
-            provinciaSeleccionadaValor = "";
-            municipioSeleccionadaValor = "";
-            document.getElementById('provinciaToggleBtn').innerText = "Seleccione Provincia...";
-            document.getElementById('municipioToggleBtn').innerText = "Seleccione Municipio...";
-            
-            menuProv.innerHTML = provinciasUnicas.map(p => `
-                <div class="dropdown-box-item" onclick="seleccionarProvinciaDireccion('${p.replace(/'/g, "\\'")}')">${p}</div>
-            `).join('');
-            
-            document.getElementById('customMunicipioMenu').innerHTML = '<div class="dropdown-box-item" style="color:#777; cursor:default;">Seleccione Provincia primero</div>';
-        }
-
-        function seleccionarProvinciaDireccion(provincia) {
-            provinciaSeleccionadaValor = provincia;
-            municipioSeleccionadaValor = "";
-            document.getElementById('provinciaToggleBtn').innerText = provincia;
-            document.getElementById('municipioToggleBtn').innerText = "Seleccione Municipio...";
-
-            const municipios = listaUbicacionesTabulares
-                .filter(u => (u.Provincia || u.provincia) === provincia)
-                .map(u => u.Municipio || u.municipio)
-                .filter(Boolean);
-
-            const menuMuni = document.getElementById('customMunicipioMenu');
-            menuMuni.innerHTML = municipios.map(m => `
-                <div class="dropdown-box-item" onclick="seleccionarMunicipioDireccion('${m.replace(/'/g, "\\'")}')">${m}</div>
-            `).join('');
-        }
-
-        function seleccionarMunicipioDireccion(municipio) {
-            municipioSeleccionadaValor = municipio;
-            document.getElementById('municipioToggleBtn').innerText = municipio;
-        }
-
-        function seleccionarMetodoPago(metodo) {
-            metodoPagoSeleccionado = metodo;
-            document.getElementById('pagoToggleBtn').innerText = metodo;
-        }
-
-        function seleccionarTipoPedido(tipo) {
-            tipoPedidoSeleccionado = tipo;
-            document.getElementById('tipoPedidoToggleBtn').innerText = tipo;
-            
-            const seccionReserva = document.getElementById('seccionFechaReserva');
-            if (tipo === 'Reserva Programada') {
-                seccionReserva.style.display = 'block';
-                const hoy = new Date().toISOString().split('T')[0];
-                document.getElementById('inputFechaReserva').min = hoy;
-                document.getElementById('inputFechaReserva').value = hoy;
-            } else {
-                seccionReserva.style.display = 'none';
-            }
-        }
-
-        function mostrarAlerta(titulo, mensaje) {
-            document.getElementById('alert-title').textContent = titulo;
-            document.getElementById('alert-message').textContent = mensaje;
-            document.getElementById('custom-alert').style.display = 'flex';
-        }
-        function closeCustomAlert() { document.getElementById('custom-alert').style.display = 'none'; }
-
-        async function cargar() {
-            const loaderDiv = document.getElementById('loader');
-            loaderDiv.style.display = 'block';
-            loaderDiv.innerHTML = `<div class="spinner-hlg" style="margin: 0 auto 10px auto;"></div><p style="color: #00f2ff;">Cargando catálogo...</p>`;
-
-            try {
-                const res = await fetch(API_URL);
-                const data = await res.json();                
-                
-                todosLosProductos = (data.productos || []).filter(p => String(p.Mostrar).toUpperCase() === 'TRUE' || String(p.Mostrar) === '1');
-                tasaCambioCUP = data.tasa ? parseFloat(data.tasa) : 650;
-                listaUbicacionesTabulares = data.ubicaciones || [];
-                datosUbicacionesGlobal = data.ubicaciones || [];
-
-                firmaCatalogoAnterior = generarFirmaCatalogo(todosLosProductos, tasaCambioCUP);
-                
-                crearCategorias();
-                renderizar(todosLosProductos);
-                if (datosUbicacionesGlobal.length > 0) {
-                    poblarPaises(datosUbicacionesGlobal);
-                }
-                ocultarBannerActualizacion();
-            } catch (err) {
-                console.error("Error al procesar el catálogo:", err);
-                loaderDiv.innerHTML = `
-                    <p style="color: #ff4d4d; margin-bottom: 12px;">Error al procesar los datos del catálogo.</p>
-                    <button onclick="cargar()" class="btn btn-buy" style="max-width: 200px; margin: 0 auto; padding: 8px 16px;">🔄 Recargar</button>
-                `;
-            }
-        }
-
-        function generarFirmaCatalogo(productos, tasa) {
-            const detalleProductos = productos.map(p => `${p.Nombre}_${p.Precio}_${p.Stock}`).join('|');
-            return `tasa:${tasa}|prod:${detalleProductos}`;
-        }
-
-        async function verificarActualizacionesCatalog() {
-            if (!navigator.onLine) return;
-
-            try {
-                const res = await fetch(API_URL + "?t=" + new Date().getTime());
-                if (!res.ok) return;
-                
-                const data = await res.json();
-                
-                const nuevosProductos = (data.productos || []).filter(p => String(p.Mostrar).toUpperCase() === 'TRUE' || String(p.Mostrar) === '1');
-                const nuevaTasa = data.tasa ? parseFloat(data.tasa) : 650;
-                
-                const firmaNueva = generarFirmaCatalogo(nuevosProductos, nuevaTasa);
-
-                if (!firmaCatalogoAnterior) {
-                    firmaCatalogoAnterior = firmaNueva;
-                    return;
-                }
-
-                if (firmaCatalogoAnterior !== firmaNueva) {
-                    mostrarBannerActualizacion("Se detectaron cambios en precios, productos o tasa.");
-                }
-            } catch (e) {
-                console.warn("Actualización en segundo plano pospuesta (problema temporal de red o CORS).");
-            }
-        }
-
-        setInterval(verificarActualizacionesCatalog, 30000);
-
-        function toggleFolder(folderId) {
-            const folder = document.getElementById(folderId);
-            const isOpen = folder.classList.contains('active');
-            document.querySelectorAll('.folder-group').forEach(f => f.classList.remove('active'));
-            if (!isOpen) folder.classList.add('active');
-        }
-
-        function agregarAlCarrito(nombre) {
-            const prod = todosLosProductos.find(p => p.Nombre === nombre);
-            if (!prod || parseInt(prod.Stock) <= 0) return;
-            const item = carrito.find(i => i.Nombre === nombre);
-            if (item) {
-                if (item.cantidad < parseInt(prod.Stock)) item.cantidad++;
-            } else {
-                carrito.push({ Nombre: prod.Nombre, Precio: parseFloat(prod.Precio), Imagen_URL: prod.Imagen_URL, cantidad: 1, stockMax: parseInt(prod.Stock) });
-            }
-            actualizarContadorCarrito();
-            renderizarCarrito();
-            cerrarDetalles();
-        }
-
-        function cambiarCantidadItem(nombre, delta) {
-            const item = carrito.find(i => i.Nombre === nombre);
-            if (!item) return;
-            item.cantidad += delta;
-            if (item.cantidad <= 0) carrito = carrito.filter(i => i.Nombre !== nombre);
-            actualizarContadorCarrito();
-            renderizarCarrito();
-        }
-
-        function actualizarContadorCarrito() {
-            const badge = document.getElementById('cartBadge');
-            const total = carrito.reduce((sum, i) => sum + i.cantidad, 0);
-            badge.style.display = total > 0 ? 'flex' : 'none';
-            badge.innerText = total;
-        }
-
-        function renderizarCarrito() {
-            const container = document.getElementById('cartItemsContainer');
-            const footer = document.getElementById('cartFooter');
-            if (carrito.length === 0) {
-                container.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 0.9em; margin-top: 40px;">Tu carrito está vacío.</p>`;
-                footer.style.display = 'none';
-                return;
-            }
-            footer.style.display = 'block';
-            let totalUSD = 0;
-            container.innerHTML = carrito.map(item => {
-                totalUSD += item.Precio * item.cantidad;
-                return `
-                <div class="cart-item">
-                    <img src="${item.Imagen_URL}" alt="">
-                    <div class="cart-item-info">
-                        <h4>${item.Nombre}</h4>
-                        <span>${formatearPrecio(item.Precio)}</span>
-                        <div class="cart-item-controls">
-                            <button onclick="cambiarCantidadItem('${item.Nombre.replace(/'/g, "\\'")}', -1)">-</button>
-                            <span style="font-size:0.85em; font-weight:bold;">${item.cantidad}</span>
-                            <button onclick="cambiarCantidadItem('${item.Nombre.replace(/'/g, "\\'")}', 1)">+</button>
-                        </div>
-                    </div>
-                    <button class="btn-eliminar-item" onclick="carrito = carrito.filter(i => i.Nombre !== '${item.Nombre}'); actualizarContadorCarrito(); renderizarCarrito();">&times;</button>
-                </div>`;
-            }).join('');
-            document.getElementById('cartTotalText').innerText = formatearPrecio(totalUSD);
-        }
-
-        function iniciarCheckout() {
-                cerrarDrawerCarrito();
-            if (!usuarioActual) {
-                mostrarAlerta('Atención', 'Debes iniciar sesión para completar tu pedido.');
-                abrirDrawerUsuario();
-                return;
-            }
-            if (direccionesGuardadas.length === 0) {
-                mostrarAlerta('Dirección Requerida', 'Por favor, añade al menos una dirección de entrega en tu perfil antes de continuar.');
-                cerrarDrawerCarrito();
-                abrirDrawerUsuario();
-                toggleFolder('folderDirecciones');
-                return;
-            }
-            
-            direccionCheckoutSeleccionadaIndex = 0;
-            const d0 = direccionesGuardadas[0];
-            document.getElementById('checkoutDirToggleBtn').innerText = `${d0.provincia || d0.Provincia}, ${d0.municipio || d0.Municipio} - ${d0.exacta || d0.Direccion_Exacta}`;
-            
-            const menuDir = document.getElementById('customCheckoutDirMenu');
-            menuDir.innerHTML = direccionesGuardadas.map((d, index) => `
-                <div class="dropdown-box-item" onclick="seleccionarDireccionCheckout(${index})">${d.provincia || d.Provincia}, ${d.municipio || d.Municipio} - ${d.exacta || d.Direccion_Exacta}</div>
-            `).join('');
-
-            seleccionarTipoPedido('Entrega Inmediata');
-            metodoPagoSeleccionado = "Transferencia Bancaria";
-            document.getElementById('pagoToggleBtn').innerText = "Transferencia Bancaria";
-
-            let totalUSD = carrito.reduce((sum, i) => sum + (i.Precio * i.cantidad), 0);
-            document.getElementById('checkoutImporteTotal').innerText = formatearPrecio(totalUSD);
-            document.getElementById('modalCheckout').style.display = 'flex';
-        }
-
-        function seleccionarDireccionCheckout(index) {
-            direccionCheckoutSeleccionadaIndex = index;
-            const d = direccionesGuardadas[index];
-            document.getElementById('checkoutDirToggleBtn').innerText = `${d.provincia || d.Provincia}, ${d.municipio || d.Municipio} - ${d.exacta || d.Direccion_Exacta}`;
-        }
-
-        function cerrarModalCheckout() { document.getElementById('modalCheckout').style.display = 'none'; }
-
-        async function enviarOrdenAlBackend() {
-            const direccionElegida = direccionesGuardadas[direccionCheckoutSeleccionadaIndex];
-            const totalUSD = carrito.reduce((sum, i) => sum + (i.Precio * i.cantidad), 0);
-            const direccionTexto = `${direccionElegida.provincia || direccionElegida.Provincia}, ${direccionElegida.municipio || direccionElegida.Municipio} - ${direccionElegida.exacta || direccionElegida.Direccion_Exacta}`;
-
-            let tiempoEstimadoTexto = 'Inmediato / Normal';
-            if (tipoPedidoSeleccionado === 'Reserva Programada') {
-                const fechaRes = document.getElementById('inputFechaReserva').value;
-                const horaRes = document.getElementById('inputHoraReserva').value;
-                if (!fechaRes || !horaRes) {
-                    mostrarAlerta('Datos incompletos', 'Por favor selecciona la fecha y hora para tu reserva.');
-                    return;
-                }
-                tiempoEstimadoTexto = `Reserva para el ${fechaRes} a las ${horaRes}`;
-            }
-
-            const nuevaOrden = {
-                accion: 'crear_orden',
-                correo: usuarioActual.correo,
-                nombreUsuario: usuarioActual.nombre,
-                telefono: usuarioActual.telefono,
-                productos: JSON.stringify(carrito),
-                total: totalUSD,
-                costoTotal: totalUSD,
-                moneda: monedaActual,
-                metodoPago: metodoPagoSeleccionado,
-                direccion: direccionTexto,
-                estado: 'Pendiente',
-                hora: new Date().toLocaleString()
-            };
-
-            mostrarLoaderGlobal("Procesando y completando compra...");
-            try {
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(nuevaOrden) });
-                const data = await res.json();
-                
-                if(data.success) {
-                    ordenesCliente.unshift({
-                        ID_Orden: data.idOrden,
-                        Total: totalUSD,
-                        Estado: 'Pendiente',
-                        Hora: new Date().toLocaleString(),
-                        Direccion: direccionTexto
-                    });
-
-                    ocultarLoaderGlobal();
-                    mostrarAlerta('¡Pedido Enviado!', 'Tu orden/reserva ha sido registrada exitosamente.');
-                    carrito = [];
-                    actualizarContadorCarrito();
-                    renderizarCarrito();
-                    cerrarModalCheckout();
-                    cerrarDrawerCarrito();
-                    cargarOrdenesUsuario();
-                } else {
-                    ocultarLoaderGlobal();
-                    mostrarAlerta('Error', data.message || 'No se pudo registrar la orden.');
-                }
-            } catch (err) {
-                ocultarLoaderGlobal();
-                mostrarAlerta('Error', 'Error de comunicación con el servidor.');
-            }
-        }
-
-        function abrirModalNuevaDireccion() { 
-            inicializarProvinciasDireccion();
-            document.getElementById('dirExacta').value = "";
-            document.getElementById('modalDireccion').style.display = 'flex'; 
-        }
-        function cerrarModalDireccion() { document.getElementById('modalDireccion').style.display = 'none'; }
-
-        async function guardarDireccionUsuario() {
-            const provincia = provinciaSeleccionadaValor;
-            const municipio = municipioSeleccionadaValor;
-            const exacta = document.getElementById('dirExacta').value.trim();
-            
-            if (!provincia || !municipio || !exacta) {
-                mostrarAlerta('Campos incompletos', 'Selecciona la provincia, municipio y dirección exacta.');
-                return;
-            }
-
-            const idDireccion = 'DIR-' + Date.now();
-            const nuevaDirData = {
-                accion: 'guardar_direccion',
-                nombreUsuario: usuarioActual.nombre,
-                correo: usuarioActual.correo,
-                idDireccion: idDireccion,
-                pais: 'Cuba',
-                provincia: provincia,
-                municipio: municipio,
-                direccionExacta: exacta,
-                detalles: ''
-            };
-
-            mostrarLoaderGlobal("Guardando dirección...");
-            try {
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(nuevaDirData) });
-                const data = await res.json();
-                ocultarLoaderGlobal();
-
-                if(data.success) {
-                    direccionesGuardadas.push({
-                        id: idDireccion,
-                        provincia: provincia,
-                        municipio: municipio,
-                        exacta: exacta
-                    });
-                    renderizarDirecciones();
-                    cerrarModalDireccion();
-                    mostrarAlerta('Éxito', 'Dirección guardada correctamente.');
-                } else {
-                    mostrarAlerta('Aviso', data.message || 'No se pudo guardar.');
-                }
-            } catch (err) {
-                ocultarLoaderGlobal();
-                mostrarAlerta('Error', 'Fallo al conectar con el servidor.');
-            }
-        }
-
-        function renderizarDirecciones() {
-            const container = document.getElementById('listaDireccionesCliente');
-            if (direccionesGuardadas.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-muted); font-size:0.85em;">No tienes direcciones guardadas.</p>`;
-                return;
-            }
-            container.innerHTML = direccionesGuardadas.map((d, index) => `
-                <div style="background:var(--folder-btn-bg); padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid rgba(0,242,255,0.2); font-size:0.85em;">
-                    <p style="margin:0 0 4px 0; color:#00f2ff; font-weight:bold;">Dirección #${index + 1}</p>
-                    <p style="margin:0; color:var(--text-muted);">${d.provincia || d.Provincia}, ${d.municipio || d.Municipio} - ${d.exacta || d.Direccion_Exacta}</p>
-                </div>
-            `).join('');
-        }
-
-        function cargarOrdenesUsuario() {
-            const container = document.getElementById('listaOrdenesCliente');
-            if (!container) return;
-
-            if (!ordenesCliente || ordenesCliente.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85em; text-align: center;">No tienes órdenes registradas.</p>`;
-                return;
-            }
-
-            const ultimaOrden = ordenesCliente[0];
-            const idOrdenActual = ultimaOrden.ID_Orden || ultimaOrden.id || '1';
-            const estadoActual = ultimaOrden.Estado || ultimaOrden.estado || 'Pendiente';
-            
-            const claveStorage = `estado_previo_${idOrdenActual}`;
-            const estadoAnterior = localStorage.getItem(claveStorage);
-            
-            let htmlNotiEstado = '';
-
-            if (!estadoAnterior) {
-                localStorage.setItem(claveStorage, estadoActual);
-            }
-
-            if (estadoAnterior && estadoAnterior !== estadoActual) {
-                htmlNotiEstado = `
-                    <div class="order-alert-box" style="background: rgba(0, 242, 255, 0.15); border: 1px solid #00f2ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                            <span style="font-size: 1.2em;">🔔</span>
-                            <strong style="color:#00f2ff; font-size: 0.95em;">¡Actualización en tu pedido!</strong>
-                        </div>
-                        <p style="margin: 0; color: var(--text-main); font-size: 0.9em;">Tu orden #${idOrdenActual} ha cambiado a: <strong style="color: #00f2ff;">${estadoActual}</strong></p>
-                    </div>
-                `;
-                dispararNotificacionNativa("HLG-Tech - Actualización", `Tu pedido #${idOrdenActual} ahora está: ${estadoActual}`);
-                localStorage.setItem(claveStorage, estadoActual);
-            } else {
-                const colorEstado = estadoActual === 'Completado' ? '#25D366' : (estadoActual === 'Procesando' ? '#00f2ff' : '#ffaa00');
-                htmlNotiEstado = `
-                    <div class="order-alert-box">
-                        <strong style="color:#00f2ff;">Estado del Último Pedido:</strong> 
-                        <span style="color: ${colorEstado}; font-weight:bold;">${estadoActual}</span>
-                        <p style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9em;">Tu orden #${idOrdenActual} está siendo gestionada.</p>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = htmlNotiEstado + ordenesCliente.map(o => `
-                <div class="order-card">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                        <span style="color:#00f2ff; font-weight:bold;">Orden #${o.ID_Orden || o.id || '1'}</span>
-                        <span class="order-status" style="color: ${ (o.Estado || o.estado) === 'Completado' ? '#25D366' : '#ffaa00' }; font-weight:bold;">${o.Estado || o.estado || 'Pendiente'}</span>
-                    </div>
-                    <p style="margin:2px 0; color:var(--text-muted);"><strong>Total:</strong> ${formatearPrecio(parseFloat(o.Total || o.total || 0))}</p>
-                    <p style="margin:2px 0; color:var(--text-muted); font-size:0.8em;">Fecha: ${o.Hora || o.hora || ''}</p>
-                </div>
-            `).join('');
-        }
-
-        async function iniciarSesionUsuario() {
-            cerrarDrawerUsuario();
-            const correo = document.getElementById('loginCorreo').value.trim();
-            const pass = document.getElementById('loginPassword').value.trim();
-            if (!correo || !pass) return;
-            
-            mostrarLoaderGlobal("Iniciando sesión...");
-
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        accion: 'iniciar_sesion',
-                        correo: correo,
-                        password: pass
-                    })
-                });
-                const data = await res.json();
-                ocultarLoaderGlobal();
-
-                if(data.success) {
-                    usuarioActual = data.usuario || { nombre: data.nombre, correo: correo, telefono: data.telefono };
-                    direccionesGuardadas = data.direcciones || [];
-                    ordenesCliente = data.ordenes || [];
-
-                    solicitarPermisoNotificaciones();
-
-                    if (ordenesCliente.length > 0) {
-                        const ultima = ordenesCliente[0];
-                        const idOrd = ultima.ID_Orden || ultima.id || '1';
-                        const estOrd = ultima.Estado || ultima.estado || 'Pendiente';
-                        const claveSt = `estado_previo_${idOrd}`;
-                        
-                        if (!localStorage.getItem(claveSt)) {
-                            localStorage.setItem(claveSt, estOrd);
-                        }
-                    }
-
-                    document.getElementById('pNombre').innerText = usuarioActual.nombre || usuarioActual.Nombre;
-                    document.getElementById('pCorreo').innerText = usuarioActual.correo || usuarioActual.Correo;
-                    document.getElementById('pTelefono').innerText = usuarioActual.telefono || usuarioActual.Telefono;
-                    
-                    document.getElementById('vistaLoginUnico').style.display = 'none';
-                    document.getElementById('vistaPanelLogueado').style.display = 'block';
-                    renderizarDirecciones();
-                    cargarOrdenesUsuario();
-                } else {
-                    mostrarAlerta('Acceso Denegado', data.message || 'Credenciales incorrectas.');
-                }
-            } catch (err) {
-                ocultarLoaderGlobal();
-                mostrarAlerta('Error', 'No se pudo iniciar sesión.');
-            }
-        }
-
-        async function cambiarContrasenaUsuario() {
-            const passActual = document.getElementById('passActual').value.trim();
-            const passNueva = document.getElementById('passNueva').value.trim();
-            if (!passActual || !passNueva) {
-                mostrarAlerta('Atención', 'Introduce tu contraseña actual y la nueva.');
-                return;
-            }
-            
-            mostrarLoaderGlobal("Actualizando contraseña...");
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        accion: 'cambiar_password',
-                        correo: usuarioActual.correo || usuarioActual.Correo,
-                        passActual: passActual,
-                        passNueva: passNueva
-                    })
-                });
-                const data = await res.json();
-                ocultarLoaderGlobal();
-                if(data.success) {
-                    document.getElementById('passActual').value = '';
-                    document.getElementById('passNueva').value = '';
-                    mostrarAlerta('Éxito', 'Contraseña actualizada correctamente.');
-                } else {
-                    mostrarAlerta('Error', data.message || 'No se pudo actualizar.');
-                }
-            } catch (err) {
-                ocultarLoaderGlobal();
-                mostrarAlerta('Error', 'Fallo al cambiar contraseña.');
-            }
-        }
-
-        function cerrarSesionUsuario() {
-            usuarioActual = null;
-            direccionesGuardadas = [];
-            ordenesCliente = [];
-            document.getElementById('vistaLoginUnico').style.display = 'block';
-            document.getElementById('vistaPanelLogueado').style.display = 'none';
-            document.querySelectorAll('.folder-group').forEach(f => f.classList.remove('active'));
-        }
-
-        function formatearPrecio(val) {
-            return monedaActual === 'CUP' ? `${(val * tasaCambioCUP).toLocaleString('es-CU')} CUP` : `$${val.toFixed(2)} USD`;
-        }
-        
-        function seleccionarMoneda(val, label) {
-            monedaActual = val;
-            document.getElementById('monedaTextoBtn').innerText = label;
-            document.getElementById('customDropdown').classList.remove('open');
-            
-            const categoriaActivaBtn = document.querySelector('.tab-btn.active');
-            let catActual = categoriaActivaBtn ? categoriaActivaBtn.innerText : 'Todos';
-            let listaAMostrar = catActual === 'Todos' ? todosLosProductos : todosLosProductos.filter(p => p.Categoria === catActual);
-            
-            renderizar(listaAMostrar);
-            renderizarCarrito();
-        }
-
-        function toggleDropdown(e) { e.stopPropagation(); document.getElementById('customDropdown').classList.toggle('open'); }
-        function abrirDrawerCarrito() { cerrarTodosLosDrawers(); document.getElementById('cartDrawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('open'); }
-        function cerrarDrawerCarrito() { document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); }
-        function abrirDrawerUsuario() { cerrarTodosLosDrawers(); document.getElementById('userDrawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('open'); }
-        function cerrarDrawerUsuario() { document.getElementById('userDrawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); }
-        function cerrarTodosLosDrawers() { cerrarDrawerCarrito(); cerrarDrawerUsuario(); }
-
-        function crearCategorias() {
-            const cats = ['Todos', ...new Set(todosLosProductos.map(p => p.Categoria))];
-            document.getElementById('categoryTabs').innerHTML = cats.map(c => `<button class="tab-btn ${c==='Todos'?'active':''}" onclick="filtrarCat('${c}', this)">${c}</button>`).join('');
-        }
-        function filtrarCat(cat, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderizar(cat === 'Todos' ? todosLosProductos : todosLosProductos.filter(p => p.Categoria === cat));
-        }
-        function renderizar(lista) {
-            document.getElementById('app').innerHTML = [...new Set(lista.map(p => p.Categoria))].map(cat => `
-                <div class="categoria-seccion">
-                    <h2 class="titulo-cat">${cat}</h2>
-                    <div class="carrusel">
-                        ${lista.filter(p => p.Categoria === cat).map(p => {
-                            const stock = parseInt(p.Stock) || 0;
-                            return `
-                            <div class="card" onclick="abrirDetalles('${p.Nombre.replace(/'/g, "\\'")}')">
-                                <img src="${p.Imagen_URL}" alt="">
-                                <h3>${p.Nombre}</h3>
-                                <p style="color:var(--text-muted); margin: 2px 0;">${formatearPrecio(p.Precio)}</p>
-                                <span class="badge-stock ${stock <= 0 ? 'stock-agotado' : 'stock-disponible'}">${stock <= 0 ? 'Agotado' : 'Stock: '+stock}</span>
-                                <div class="btn-group" onclick="event.stopPropagation()">
-                                    <button class="btn btn-buy ${stock<=0?'btn-disabled':''}" ${stock<=0?'disabled':''} onclick="agregarAlCarrito('${p.Nombre.replace(/'/g, "\\'")}')">Añadir</button>
-                                </div>
-                            </div>`;
-                        }).join('')}
-                    </div>
-                </div>
-            `).join('');
-        }
-        function abrirDetalles(nombre) {
-            const p = todosLosProductos.find(item => item.Nombre === nombre);
-            if (!p) return;
-            document.getElementById('modalImg').src = p.Imagen_URL;
-            document.getElementById('modalTitulo').innerText = p.Nombre;
-            document.getElementById('modalPrecio').innerText = formatearPrecio(p.Precio);
-            document.getElementById('modalStock').innerHTML = `<span class="badge-stock stock-disponible">Stock: ${p.Stock}</span>`;
-            document.getElementById('modalDesc').innerText = p.Descripcion || 'Sin descripción.';
-            document.getElementById('modalProducto').style.display = 'flex';
-        }
-        function cerrarDetalles(e) { if (!e || e.target.id === 'modalProducto') document.getElementById('modalProducto').style.display = 'none'; }
-        function restablecerTodo() { renderizar(todosLosProductos); }
-
-        // Función para verificar si puede calificar al abrir los detalles del producto
-        // Función para verificar si el usuario logueado puede calificar el producto abierto
-        function verificarEstadoCalificacion() {
-        const formCalif = document.getElementById('formCalificacion');
-        const avisoLogin = document.getElementById('avisoLoginCalificar');
-    
-    // Verificamos si existe usuarioActual en sesión
-    if (window.usuarioActual && window.usuarioActual.correo) {
-        if(formCalif) formCalif.style.display = 'block';
-        if(avisoLogin) avisoLogin.style.display = 'none';
-    } else {
-        if(formCalif) formCalif.style.display = 'none';
-        if(avisoLogin) avisoLogin.style.display = 'block';
-    }
-}
-
-// Función para enviar la calificación al Apps Script
-    async function enviarCalificacion(puntuacion) {
-    if (!window.usuarioActual || !window.usuarioActual.correo) {
-        mostrarAlerta('Acceso Denegado', 'Debes iniciar sesión para realizar esta operación.');
-        return;
-    }
-
-    // Aquí puedes capturar el ID o Nombre del producto actual que se está viendo en el modal
-    const tituloProducto = document.getElementById('modalTitulo').innerText;
-
-    const datosCalificacion = {
-        accion: 'calificar_producto',
-        correo: window.usuarioActual.correo,
-        producto: tituloProducto,
-        puntuacion: puntuacion
-    };
-
-    mostrarLoaderGlobal("Enviando calificación...");
-
-    try {
-        const respuesta = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify(datosCalificacion)
-        });
-        
-        const resultado = await respuesta.json();
-        ocultarLoaderGlobal();
-
-        if (resultado.success) {
-            mostrarAlerta('¡Éxito!', resultado.message || `¡Gracias por calificar con ${puntuacion} estrellas!`);
-            // Opcional: Actualizar datos locales del producto o cerrar detalles
-        } else {
-            mostrarAlerta('Error', resultado.message || 'No se pudo registrar la calificación.');
-        }
-
-    } catch (error) {
-        ocultarLoaderGlobal();
-        console.error("Error al enviar calificación:", error);
-        mostrarAlerta('Error', 'Ocurrió un error al intentar conectar con el servidor.');
-    }
-}
-        cargar();
