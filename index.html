@@ -3,344 +3,435 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HLG-Tech</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <title>Panel de Control - HLG-Tech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        
+    </style>
 </head>
 <body>
 
-    <div id="updateNotificationBanner" class="notification-banner">
-        <svg style="width:18px;height:18px;stroke:#00ccff;fill:none;stroke-width:2;" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-        <span id="updateBannerText">Hay cambios recientes en los productos.</span>
-        <button onclick="cargar(); ocultarBannerActualizacion();">Actualizar</button>
+    <div id="neonLoaderOverlay">
+        <div class="neon-spinner"></div>
+        <div id="neonLoaderText">Procesando solicitud...</div>
     </div>
 
-    <div id="globalLoaderOverlay">
-        <div class="spinner-hlg"></div>
-        <span id="globalLoaderText">Actualizando catálogo...</span>
-    </div>
-
-    <div id="custom-alert" class="custom-alert-overlay" style="display: none;">
-        <div class="custom-alert-box" id="customAlertBox">
-            <h3 id="alert-title" style="color:#00ccff; margin-top:0;">Aviso</h3>
-            <p id="alert-message" style="color:var(--text-muted);">Mensaje...</p>
-            <button onclick="closeCustomAlert()" class="alert-btn">Aceptar</button>
+    <!-- MODAL DE ALERTA PERSONALIZADO -->
+    <div id="customAlertModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <h3 id="customAlertTitle">Aviso</h3>
+            <p id="customAlertMessage">Mensaje del sistema</p>
+            <button class="btn-modal-primary" onclick="cerrarCustomAlert()">Aceptar</button>
         </div>
     </div>
 
-    <header class="navbar-hlg">
-        <div class="nav-left">
-            <a onclick="restablecerTodo(); location.reload();" class="logo">HLG<span>-Tech</span></a>
-        </div>
-        <div class="nav-right">
-            <button class="bottom-nav-btn" onclick="toggleTema()" title="Cambiar Tema" style="width: 36px; height: 36px;">
-                <svg id="iconoTema" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            </button>
-
-            <div class="custom-select-wrapper" id="customSelect">
-                <div class="custom-select-btn" onclick="toggleDropdown(event)">
-                    <span id="monedaTextoBtn">USD</span>
-                </div>
-                <div class="custom-dropdown" id="customDropdown">
-                    <div class="custom-option" onclick="seleccionarMoneda('USD', 'USD')">USD</div>
-                    <div class="custom-option" onclick="seleccionarMoneda('CUP', 'CUP')">CUP</div>
-                </div>
+    <!-- MODAL DE PROMPT PERSONALIZADO -->
+    <div id="customPromptModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <h3 id="customPromptTitle">Editar</h3>
+            <p id="customPromptDesc">Introduce el nuevo valor:</p>
+            <input type="text" id="customPromptInput">
+            <div class="custom-modal-buttons">
+                <button class="btn-modal-secondary" onclick="cerrarCustomPrompt(false)">Cancelar</button>
+                <button class="btn-modal-primary" onclick="cerrarCustomPrompt(true)">Guardar</button>
             </div>
-            <input type="text" id="buscador" placeholder="Buscar..." autocomplete="off">
         </div>
-    </header>
+    </div>
 
-    <nav class="bottom-nav-bar">
-        <button class="bottom-nav-btn" onclick="abrirDrawerCarrito()" title="Ver Carrito">
-            <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-            <span id="cartBadge" class="cart-badge" style="display: none;">0</span>
-        </button>
-        <button class="bottom-nav-btn home-center" onclick="cargar(); ocultarBannerActualizacion();" title="Actualizar Catálogo">
-            <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
-        </button>
-        <button class="bottom-nav-btn" onclick="abrirDrawerUsuario()" title="Panel de Usuario">
-            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        </button>
+    <div id="authScreen">
+        <div class="auth-card">
+            <h2>Acceso Restringido</h2>
+            <p>Introduce tu correo para entrar al Centro de Control.</p>
+            <input type="email" id="adminEmailInput" placeholder="tucorreo@dominio.com">
+            <button onclick="verificarAcceso()">Ingresar al Sistema</button>
+            <div id="authError">Correo no autorizado o error de conexión.</div>
+        </div>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <nav class="sidebar" id="appSidebar">
+        <div class="sidebar-header">
+            <span class="logo">HLG<span>-Panel</span></span>
+            <button class="close-sidebar" onclick="toggleSidebar()">&times;</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a onclick="toggleSidebar(); cambiarVista('home')">Inicio & Resumen</a></li>
+            <li><a onclick="toggleSidebar(); cambiarVista('productos')">Gestionar Productos</a></li>
+            <li><a onclick="toggleSidebar(); cambiarVista('categorias')">Gestionar Categorías</a></li>
+            <li><a onclick="toggleSidebar(); cambiarVista('usuarios')">Usuarios Registrados</a></li>
+            <li><a onclick="toggleSidebar(); cambiarVista('ordenes')">Pedidos / Órdenes</a></li>
+            <li><a onclick="toggleSidebar(); abrirModalProducto('nuevo')">Nuevo Producto</a></li>
+            <li><a onclick="abrirModalTasa()">Tasa de Cambio</a></li>
+            <li><a onclick="cerrarSesion()" style="color: #ff4d4d;">Cerrar Sesión</a></li>
+        </ul>
     </nav>
 
-    <div id="drawerOverlay" class="drawer-overlay" onclick="cerrarTodosLosDrawers()"></div>
-
-    <div id="cartDrawer" class="drawer">
-        <div class="drawer-header">
-            <h3>Tu Carrito de Compras</h3>
-            <span class="cerrar-modal" style="position:static;" onclick="cerrarDrawerCarrito()">&times;</span>
+    <header class="backoffice-nav">
+        <div class="nav-left-group">
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            <a href="#" onclick="cambiarVista('home')" class="logo">HLG<span>-Tech</span></a>
         </div>
-        <div class="drawer-body" id="cartItemsContainer">
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.9em; margin-top: 40px;">Tu carrito está vacío.</p>
-        </div>
-        <div class="drawer-footer" id="cartFooter" style="display: none;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95em;">
-                <span style="color: var(--text-muted);">Total:</span>
-                <strong id="cartTotalText" style="color: #00ccff;">$0.00</strong>
-            </div>
-            <button onclick="iniciarCheckout()" class="btn btn-buy" style="width: 100%; padding: 10px;">Completar Pedido</button>
-        </div>
-    </div>
-
-    <div id="userDrawer" class="drawer">
-        <div class="drawer-header">
-            <h3 id="drawerTitulo">Mi Cuenta</h3>
-            <span class="cerrar-modal" style="position:static;" onclick="cerrarDrawerUsuario()">&times;</span>
-        </div>
-        <div class="drawer-body">
-            
-            <div id="vistaLoginUnico">
-                <div class="form-group"><label>Correo Electrónico</label><input type="email" id="loginCorreo" placeholder="tucorreo@gmail.com"></div>
-                <div class="form-group"><label>Contraseña</label><input type="password" id="loginPassword" placeholder="Tu contraseña"></div>
-                <button onclick="iniciarSesionUsuario()" class="btn btn-buy" style="width: 100%; margin-top: 5px; padding: 10px;">Entrar</button>
-                <p class="auth-switch-text" style="text-align: center; margin-top: 15px; font-size: 0.85em; color: var(--text-muted);">
-        ¿No tienes una cuenta? <a onclick="alternarFormularioAuth('registro')" class="btn-auth-switch">Regístrate aquí</a>
-    </p>
-            </div>
-
-            <div id="contenedorRegistro" class="auth-form-container" style="display: none;">
-                <h3 style="color:#00f2ff; margin-top:0;">Crear Nueva Cuenta</h3>
-                
-                <div class="form-group">
-                    <label for="regNombre">Nombre completo</label>
-                    <input type="text" id="regNombre" placeholder="Tu nombre">
-                </div>
-
-                <div class="form-group">
-                    <label for="regCorreo">Correo electrónico</label>
-                    <input type="email" id="regCorreo" placeholder="correo@ejemplo.com">
-                </div>
-
-                <div class="form-group">
-                    <label for="regTelefono">Teléfono</label>
-                    <input type="tel" id="regTelefono" placeholder="Número de teléfono">
-                </div>
-
-                <div class="form-group">
-                    <label for="regPassword">Contraseña</label>
-                    <input type="password" id="regPassword" placeholder="Contraseña segura">
-                </div>
-
-                <div class="form-group">
-                    <label for="regSexo">Sexo</label>
-                    <select id="regSexo">
-                        <option value="">Seleccionar...</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Femenino">Femenino</option>
-                        <option value="Otro">Otro</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="regFechaNacimiento">Fecha de nacimiento</label>
-                    <input type="date" id="regFechaNacimiento">
-                </div>
-
-               <div class="form-group">
-                    <label>País</label>
-                    <select id="selectPais" class="form-control" onchange="cargarProvinciasSegunPais()">
-                        <option value="">Selecciona un país...</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Provincia / Estado</label>
-                    <select id="selectProvincia" class="form-control" onchange="cargarMunicipiosSegunProvincia()" disabled>
-                        <option value="">Selecciona una provincia...</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Municipio</label>
-                    <select id="selectMunicipio" class="form-control" disabled>
-                        <option value="">Selecciona un municipio...</option>
-                    </select>
-                </div>
-
-                <button type="button" class="btn btn-buy" style="width: 100%; margin-top: 5px; padding: 10px;" onclick="registrarNuevoUsuario()">Registrarse</button>
-                
-                <p class="auth-switch-text" style="text-align: center; margin-top: 15px; font-size: 0.85em; color: var(--text-muted);">
-                 ¿Ya tienes una cuenta? <a onclick="alternarFormularioAuth('login')" class="btn-auth-switch">Inicia sesión aquí</a>
-                </p>
-            </div>
-
-            <div id="vistaPanelLogueado" style="display: none;">
-                
-                <div class="folder-group" id="folderPerfil">
-                    <button class="folder-btn" onclick="toggleFolder('folderPerfil')">Perfil y Seguridad</button>
-                    <div class="folder-content">
-                        <h4 style="color:#00ccff; margin-top:0;">Datos Personales</h4>
-                        <p style="font-size:0.85em; color:var(--text-muted);"><strong style="color:#00ccff;">Nombre:</strong> <span id="pNombre"></span></p>
-                        <p style="font-size:0.85em; color:var(--text-muted);"><strong style="color:#00ccff;">Correo:</strong> <span id="pCorreo"></span></p>
-                        <p style="font-size:0.85em; color:var(--text-muted);"><strong style="color:#00ccff;">Teléfono:</strong> <span id="pTelefono"></span></p>
-                        
-                        <hr style="border:0; border-top:1px solid rgba(128,128,128,0.2); margin: 15px 0;">
-                        
-                        <h4 style="color:#00ccff; margin-top:0; font-size:0.95em;">Cambiar Contraseña</h4>
-                        <div class="form-group">
-                            <label>Contraseña Actual</label>
-                            <input type="password" id="passActual" placeholder="********">
-                        </div>
-                        <div class="form-group">
-                            <label>Nueva Contraseña</label>
-                            <input type="password" id="passNueva" placeholder="********">
-                        </div>
-                        <button onclick="cambiarContrasenaUsuario()" class="btn btn-ask" style="width: 100%; padding: 8px; font-size: 0.85em; margin-bottom: 10px;">Actualizar Contraseña</button>
-                        <button onclick="cerrarSesionUsuario()" class="btn" style="width: 100%; background: rgba(255, 77, 77, 0.2); color: #ff4d4d; border: 1px solid #ff4d4d; padding: 8px; font-size: 0.85em; margin-top:5px;">Cerrar Sesión</button>
+        <div class="nav-right-group">
+            <button class="notification-bell-btn" onclick="toggleTema()" id="themeToggleBtn" title="Cambiar Tema Claro/Oscuro">☀️</button>
+            <div class="notification-container">
+                <button class="notification-bell-btn" onclick="toggleNotificationDropdown()" title="Notificaciones de Órdenes">
+                    🔔
+                    <span id="notifBadge" class="notification-badge">0</span>
+                </button>
+                <div id="notifDropdown" class="notification-dropdown">
+                    <div class="notification-header">
+                        <span>Nuevas Órdenes</span>
+                        <span id="notifCountText" style="font-weight: normal; color: var(--text-muted);">0 pendientes</span>
                     </div>
-                </div>
-
-                <div class="folder-group" id="folderDirecciones">
-                    <button class="folder-btn" onclick="toggleFolder('folderDirecciones'); renderizarDirecciones();">Direcciones de Entrega</button>
-                    <div class="folder-content">
-                        <div id="listaDireccionesCliente" style="margin-bottom: 12px;"></div>
-                        <button onclick="abrirFormularioDireccion()" class="btn btn-ask" style="width: 100%; padding: 8px; font-size: 0.85em;">Nueva Dirección</button>
-                    </div>
-                </div>
-
-                <div class="folder-group" id="folderOrdenes">
-                    <button class="folder-btn" onclick="toggleFolder('folderOrdenes'); cargarOrdenesUsuario();">Registro de Órdenes</button>
-                    <div class="folder-content">
-                        <div id="listaOrdenesCliente">
-                            <p style="color: var(--text-muted); font-size: 0.85em; text-align: center;">No tienes órdenes registradas.</p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <div id="modalDireccion" class="modal">
-        <div class="modal-content">
-            <span class="cerrar-modal" onclick="cerrarModalDireccion()">&times;</span>
-            <h3 style="color: #00ccff; margin-top: 0; font-size: 1.1em;">Nueva Dirección</h3>
-            
-            <div class="form-group">
-                <label>Provincia</label>
-                <div class="dropdown-box-custom" id="customProvinciaBox">
-                    <div class="dropdown-box-toggle" id="provinciaToggleBtn" onclick="toggleCustomBox('customProvinciaMenu', event)">Seleccione Provincia...</div>
-                    <div class="dropdown-box-menu" id="customProvinciaMenu"></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Municipio</label>
-                <div class="dropdown-box-custom" id="customMunicipioBox">
-                    <div class="dropdown-box-toggle" id="municipioToggleBtn" onclick="toggleCustomBox('customMunicipioMenu', event)">Seleccione Municipio...</div>
-                    <div class="dropdown-box-menu" id="customMunicipioMenu"></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Dirección Exacta</label>
-                <input type="text" id="dirExacta" placeholder="Calle, número... Punto de referencia...">
-            </div>
-            <button onclick="guardarDireccionUsuario()" class="btn btn-buy" style="width: 100%; padding: 10px; margin-top: 5px;">Guardar Dirección</button>
-        </div>
-    </div>
-
-    <div id="modalCheckout" class="modal">
-        <div class="modal-content">
-            <span class="cerrar-modal" onclick="cerrarModalCheckout()">&times;</span>
-            <h3 style="color: #00ccff; margin-top: 0;">Finalizar Compra / Reserva</h3>
-            
-            <div class="form-group">
-                <label>Seleccionar Dirección de Envío</label>
-                <div class="dropdown-box-custom" id="customCheckoutDirBox">
-                    <div class="dropdown-box-toggle" id="checkoutDirToggleBtn" onclick="toggleCustomBox('customCheckoutDirMenu', event)">Seleccione Dirección...</div>
-                    <div class="dropdown-box-menu" id="customCheckoutDirMenu"></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Tipo de Pedido</label>
-                <div class="dropdown-box-custom" id="customTipoPedidoBox">
-                    <div class="dropdown-box-toggle" id="tipoPedidoToggleBtn" onclick="toggleCustomBox('customTipoPedidoMenu', event)">Entrega Inmediata / Normal</div>
-                    <div class="dropdown-box-menu" id="customTipoPedidoMenu">
-                        <div class="dropdown-box-item" onclick="seleccionarTipoPedido('Entrega Inmediata')">Entrega Inmediata / Normal</div>
-                        <div class="dropdown-box-item" onclick="seleccionarTipoPedido('Reserva Programada')">Reservar para Fecha y Hora</div>
+                    <div id="notifList" class="notification-list">
+                        <div class="notification-item" style="text-align: center; color: var(--text-muted);">Sin órdenes nuevas</div>
                     </div>
                 </div>
             </div>
-
-            <div id="seccionFechaReserva" style="display: none; background: var(--input-bg); padding: 10px; border-radius: 10px; border: 1px solid rgba(0,242,255,0.2); margin-bottom: 14px;">
-                <div class="form-group" style="margin-bottom: 8px;">
-                    <label>Fecha de Reserva</label>
-                    <input type="date" id="inputFechaReserva">
-                </div>
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label>Hora Estimada</label>
-                    <input type="time" id="inputHoraReserva">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Método de Pago</label>
-                <div class="dropdown-box-custom" id="customPagoBox">
-                    <div class="dropdown-box-toggle" id="pagoToggleBtn" onclick="toggleCustomBox('customPagoMenu', event)">Transferencia Bancaria</div>
-                    <div class="dropdown-box-menu" id="customPagoMenu">
-                        <div class="dropdown-box-item" onclick="seleccionarMetodoPago('Transferencia Bancaria')">Transferencia Bancaria</div>
-                        <div class="dropdown-box-item" onclick="seleccionarMetodoPago('Efectivo al Recibir')">Efectivo al Recibir</div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin: 15px 0; background: var(--input-bg); padding: 10px; border-radius: 8px;">
-                <p style="margin: 0; font-size: 0.85em; color: var(--text-muted);">Importe Total a Pagar:</p>
-                <h3 id="checkoutImporteTotal" style="color: #00ccff; margin: 5px 0 0 0;">$0.00</h3>
-            </div>
-            <button onclick="enviarOrdenAlBackend()" class="btn btn-buy" style="width: 100%; padding: 10px;">Enviar Pedido / Reserva</button>
+            <div id="userDisplay" class="user-badge">Admin</div>
         </div>
-    </div>
-
-    <header class="hero">
-        <p style="color: #00ccff;">Hardware & Gaming Premium</p>
-        <h1>Maximiza tu Potencial</h1>
-        <a href="#categoryTabs" class="btn-hero">Ver Catálogo</a>
     </header>
 
-    <div class="tabs" id="categoryTabs"></div>
-    <div id="app"></div>
-    <div id="loader" style="text-align: center; padding: 40px; color: #00ccff;">Cargando catálogo...</div>
+    <!-- VISTA 1: HOME DASHBOARD -->
+    <main id="view-home" class="view-section active main-container">
+        <div class="welcome-banner">
+            <h1>Panel de Control Principal</h1>
+            <p>Resumen de inventario, finanzas y operaciones.</p>
+        </div>
 
-   <div id="modalProducto" class="modal" onclick="cerrarDetalles(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="cerrar-modal" onclick="cerrarDetalles()">&times;</span>
-            <img id="modalImg" style="width:100%; aspect-ratio:1/1; object-fit:contain; border-radius:12px; background:var(--input-bg);" src="" alt="">
-            <h2 id="modalTitulo" style="margin: 10px 0 5px 0; font-size: 1.2em;"></h2>
-            <div id="modalPrecio" style="color:#00ccff; font-weight:bold; font-size:1.1em;"></div>
-            <div id="modalStock" style="margin: 5px 0;"></div>
-            <p id="modalDesc" style="color:var(--text-muted); font-size:0.9em;"></p>
-            
-            <!-- NUEVO: Contenedor de Calificación por Estrellas -->
-            <div id="modalEstrellasContainer" style="margin: 15px 0; text-align: center; border-top: 1px solid rgba(128,128,128,0.2); padding-top: 10px;">
-                <div id="estrellasVisuales" style="font-size: 1.2em; color: #ffd700;">
-                    ⭐⭐⭐⭐⭐ <span id="textoPromedio" style="color: var(--text-muted); font-size: 0.85em;">(0.0 - 0 reseñas)</span>
-                </div>
-                
-                <!-- Formulario de calificación (Solo visible si el usuario está registrado/logueado) -->
-                <div id="formCalificacion" style="display: none; margin-top: 10px; background: var(--input-bg); padding: 10px; border-radius: 8px;">
-                    <p style="margin: 0 0 5px 0; font-size: 0.85em; color: var(--text-muted);">Califica este producto:</p>
-                    <div class="star-rating-input" style="cursor: pointer; font-size: 1.5em; color: #ffd700;">
-                        <span onclick="enviarCalificacion(1)">★</span>
-                        <span onclick="enviarCalificacion(2)">★</span>
-                        <span onclick="enviarCalificacion(3)">★</span>
-                        <span onclick="enviarCalificacion(4)">★</span>
-                        <span onclick="enviarCalificacion(5)">★</span>
-                    </div>
-                </div>
-                
-                <!-- Aviso si no ha iniciado sesión -->
-                <p id="avisoLoginCalificar" style="display: none; font-size: 0.8em; color: #ff4d4d; margin-top: 5px;">
-                    Debes iniciar sesión para calificar este producto.
-                </p>
+        <div class="stats-grid">
+            <div class="stat-card" onclick="cambiarVista('productos')">
+                <h3>Total Productos</h3>
+                <div class="value" id="statTotal">--</div>
             </div>
-            <!-- FIN DEL NUEVO BLOQUE -->
+            <div class="stat-card" onclick="cambiarVista('usuarios')">
+                <h3>Usuarios Registrados</h3>
+                <div class="value" id="statUsuarios" style="color: var(--accent);">--</div>
+            </div>
+            <div class="stat-card" onclick="cambiarVista('ordenes')">
+                <h3>Total Órdenes</h3>
+                <div class="value" id="statOrdenes" style="color: #2ecc71;">--</div>
+            </div>
+            <div class="stat-card" onclick="abrirModalTasa()">
+                <h3>Tasa Actual (CUP)</h3>
+                <div class="value" id="statTasa">--</div>
+            </div>
+        </div>
 
-            <button id="modalBtnBuy" class="btn btn-buy" style="width:100%; padding:10px; margin-top:10px;">Añadir al Carrito</button>
+        <h3 style="color: var(--accent); margin-bottom: 15px;">Resumen Financiero de Órdenes</h3>
+        <div class="financial-summary-grid">
+            <div class="fin-card">
+                <h4>Hoy</h4>
+                <div class="fin-row"><span>Ventas:</span> <span id="hoyVenta" style="color: var(--accent);">$0.00</span></div>
+                <div class="fin-row"><span>Costo:</span> <span id="hoyCosto" style="color: #ff4d4d;">$0.00</span></div>
+                <div class="fin-row"><span>Ganancia:</span> <span id="hoyGanancia" style="color: #2ecc71;">$0.00</span></div>
+            </div>
+            <div class="fin-card">
+                <h4>Esta Semana</h4>
+                <div class="fin-row"><span>Ventas:</span> <span id="semVenta" style="color: var(--accent);">$0.00</span></div>
+                <div class="fin-row"><span>Costo:</span> <span id="semCosto" style="color: #ff4d4d;">$0.00</span></div>
+                <div class="fin-row"><span>Ganancia:</span> <span id="semGanancia" style="color: #2ecc71;">$0.00</span></div>
+            </div>
+            <div class="fin-card">
+                <h4>Este Mes</h4>
+                <div class="fin-row"><span>Ventas:</span> <span id="mesVenta" style="color: var(--accent);">$0.00</span></div>
+                <div class="fin-row"><span>Costo:</span> <span id="mesCosto" style="color: #ff4d4d;">$0.00</span></div>
+                <div class="fin-row"><span>Ganancia:</span> <span id="mesGanancia" style="color: #2ecc71;">$0.00</span></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- VISTA 2: GESTIÓN DE PRODUCTOS -->
+    <main id="view-productos" class="view-section main-container">
+        <div class="products-header">
+            <div>
+                <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Gestión de Productos</h1>
+                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Precios de venta, costo, estados y filtros de inventario.</p>
+            </div>
+            <button onclick="abrirModalProducto('nuevo')">+ Nuevo Producto</button>
+        </div>
+
+        <div class="filters-container">
+            <input type="text" id="filtroTexto" placeholder="🔍 Buscar nombre o código..." oninput="aplicarFiltrosProductos()">
+            <select id="filtroCategoria" onchange="aplicarFiltrosProductos()">
+                <option value="todos">📂 Todas las Categorías</option>
+            </select>
+            <select id="filtroEstado" onchange="aplicarFiltrosProductos()">
+                <option value="todos">🔹 Todos los Estados</option>
+                <option value="Disponible">Disponible</option>
+                <option value="Agotado">Agotado</option>
+            </select>
+            <select id="filtroPublicado" onchange="aplicarFiltrosProductos()">
+                <option value="todos">👁️ Publicación (Todos)</option>
+                <option value="true">Publicados (Sí)</option>
+                <option value="false">Ocultos (No)</option>
+            </select>
+            <select id="filtroStock" onchange="aplicarFiltrosProductos()">
+                <option value="todos">📦 Stock (Todos)</option>
+                <option value="con_stock">Con Stock (> 0)</option>
+                <option value="sin_stock">Sin Stock (0)</option>
+            </select>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Precio Venta</th>
+                        <th>Costo</th>
+                        <th>Ganancia</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Publicado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaProductosBody">
+                    <tr><td colspan="10" style="text-align:center;">Cargando productos...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- VISTA 3: GESTIÓN DE CATEGORÍAS -->
+    <main id="view-categorias" class="view-section main-container">
+        <div class="products-header">
+            <div>
+                <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Gestión de Categorías</h1>
+                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Crea, edita y corrige las categorías de tu plataforma.</p>
+            </div>
+        </div>
+
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; margin-bottom: 25px; display: flex; gap: 10px; max-width: 500px;">
+            <input type="text" id="nuevaCategoriaInput" placeholder="Nombre de la nueva categoría..." style="flex: 1;">
+            <button onclick="crearNuevaCategoriaSubmit()">Crear</button>
+        </div>
+
+        <div class="table-responsive" style="max-width: 700px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre de Categoría</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaCategoriasBody">
+                    <tr><td colspan="3" style="text-align:center;">Cargando categorías...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- VISTA 4: USUARIOS -->
+    <main id="view-usuarios" class="view-section main-container">
+        <div class="products-header">
+            <div>
+                <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Usuarios Registrados</h1>
+                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Listado y control de usuarios dados de alta en la plataforma.</p>
+            </div>
+        </div>
+
+        <div class="filters-container">
+            <input type="text" id="filtroBuscadorUsuarios" placeholder="🔍 Buscar por correo, nombre o teléfono..." oninput="filtrarUsuarios()">
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre / Usuario</th>
+                        <th>Correo Electrónico</th>
+                        <th>Teléfono</th>
+                        <th>Fecha de Registro</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaUsuariosBody">
+                    <tr><td colspan="5" style="text-align:center;">Cargando usuarios...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- VISTA 5: ÓRDENES -->
+    <main id="view-ordenes" class="view-section main-container">
+        <div class="products-header">
+            <div>
+                <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Monitoreo de Órdenes</h1>
+                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Haz clic en una orden para gestionarla en detalle.</p>
+            </div>
+        </div>
+
+        <div class="filters-container">
+            <input type="text" id="filtroOrdenTexto" placeholder="🔍 Buscar por ID de orden o cliente..." oninput="aplicarFiltrosOrdenes()">
+            
+            <select id="filtroOrdenEstado" onchange="aplicarFiltrosOrdenes()">
+                <option selected>⏳ Aprobación pendiente</option>
+                <option value="Aprobada">✔️ Aprobadas</option>
+                <option value="Preparando">📦 Preparadas</option>
+                <option value="Enviando">🚚 Enviadas</option>
+                <option value="Completada">✅ Completadas</option>
+                <option value="Cancelada">❌ Canceladas</option>
+                <option value="TODAS">📋 Ver Todas</option>
+            </select>
+
+            <div style="display: flex; align-items: center; gap: 5px; flex: 1; min-width: 220px;">
+                <span style="font-size: 0.75em; color: var(--text-muted);">Desde:</span>
+                <input type="date" id="filtroOrdenDesde" onchange="aplicarFiltrosOrdenes()" style="flex:1;">
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 5px; flex: 1; min-width: 220px;">
+                <span style="font-size: 0.75em; color: var(--text-muted);">Hasta:</span>
+                <input type="date" id="filtroOrdenHasta" onchange="aplicarFiltrosOrdenes()" style="flex:1;">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Orden</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Total (USD)</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaOrdenesBody">
+                    <tr><td colspan="6" style="text-align:center;">Cargando órdenes...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- VISTA 6: DETALLE ORDEN -->
+    <main id="view-detalle-orden" class="view-section main-container">
+        <div class="products-header no-print">
+            <div>
+                <h1 style="margin:0 0 5px 0; color:var(--accent); font-size:1.5em;">Gestión de Pedido</h1>
+                <p style="margin:0; color:var(--text-muted); font-size:0.85em;">Administra el estado y revisa los datos financieros de la orden.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-action" onclick="cambiarVista('ordenes')">← Volver al Registro</button>
+                <button onclick="window.print()" style="background: #2ecc71; color: #fff; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">📥 Imprimir PDF</button>
+            </div>
+        </div>
+
+        <div class="order-detail-card" id="printableOrderSection">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 id="detOrdenId" style="color: var(--accent); margin: 0;">Orden #--</h2>
+                <span id="detOrdenBadge" class="badge badge-estado" style="font-size: 0.9em; padding: 6px 12px;">Pendiente</span>
+            </div>
+
+            <div class="order-meta-grid">
+                <div class="meta-box"><span>Cliente / Correo</span><strong id="detCliente">--</strong></div>
+                <div class="meta-box"><span>Teléfono</span><strong id="detTelefono">--</strong></div>
+                <div class="meta-box"><span>Dirección de Entrega</span><strong id="detDireccion">--</strong></div>
+                <div class="meta-box"><span>Fecha y Hora</span><strong id="detFecha">--</strong></div>
+            </div>
+
+            <h3 style="color: var(--accent); font-size: 1.1em; margin-bottom: 10px;">Productos del Pedido</h3>
+            <div class="table-responsive" style="margin-bottom: 20px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unit.</th>
+                            <th>Subtotal Venta</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detTablaProductos"></tbody>
+                </table>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 20px; background: var(--bg-modal); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 25px;">
+                <div><span style="font-size: 0.8em; color: var(--text-muted);">Total Costo:</span> <strong id="detTotalCosto" style="color: #ff4d4d; display: block; font-size: 1.1em;">$0.00</strong></div>
+                <div><span style="font-size: 0.8em; color: var(--text-muted);">Total Venta:</span> <strong id="detTotalVenta" style="color: var(--accent); display: block; font-size: 1.1em;">$0.00</strong></div>
+                <div><span style="font-size: 0.8em; color: var(--text-muted);">Ganancia Estimada:</span> <strong id="detTotalGanancia" style="color: #2ecc71; display: block; font-size: 1.1em;">$0.00</strong></div>
+            </div>
+
+            <div class="no-print" style="background: var(--bg-modal); border: 1px solid var(--accent); border-radius: 12px; padding: 20px; text-align: center;">
+                <h4 style="color: var(--accent); margin-top: 0; margin-bottom: 15px;">Modificar Estado del Pedido</h4>
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="actualizarEstadoOrdenActual('Aprobada')" style="background: #00f2ff; color: #0f0f1a; font-weight: bold;">✔️ Aprobada</button>
+                    <button onclick="actualizarEstadoOrdenActual('Preparando la orden')" style="background: #3498db; color: #fff; font-weight: bold;">📦 Preparando</button>
+                    <button onclick="actualizarEstadoOrdenActual('Enviando pedido')" style="background: #e67e22; color: #fff; font-weight: bold;">🚚 Enviando</button>
+                    <button onclick="actualizarEstadoOrdenActual('Completada')" style="background: #2ecc71; color: #fff; font-weight: bold;">✅ Completar</button>
+                    <button onclick="actualizarEstadoOrdenActual('Cancelada')" style="background: #e74c3c; color: #fff; font-weight: bold;">❌ Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL PRODUCTO -->
+    <div id="productoModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; justify-content:center; align-items:center; padding:20px; box-sizing:border-box;">
+        <div style="background:var(--bg-modal); border:1px solid var(--accent); padding:25px; border-radius:16px; width:100%; max-width:450px; max-height: 90vh; overflow-y: auto;">
+            <h3 id="modalProductoTitulo" style="color:var(--accent); margin-top:0; text-align:center;">Nuevo Producto</h3>
+            
+            <div style="margin-bottom:10px;"><input type="text" id="prodCodigo" disabled style="width:100%;"></div>
+            <div style="margin-bottom:10px;"><input type="text" id="prodNombre" placeholder="Nombre del producto" style="width:100%;"></div>
+            
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <div style="flex:1;"><label style="font-size:0.75em; color:var(--text-muted);">Precio Venta ($)</label><input type="number" id="prodPrecio" placeholder="0.00" style="width:100%;"></div>
+                <div style="flex:1;"><label style="font-size:0.75em; color:var(--text-muted);">Precio Costo ($)</label><input type="number" id="prodCosto" placeholder="0.00" style="width:100%;"></div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <div style="flex:1;"><label style="font-size:0.75em; color:var(--text-muted);">Stock</label><input type="number" id="prodStock" value="5" style="width:100%;"></div>
+                <div style="flex:1;"><label style="font-size:0.75em; color:var(--text-muted);">Categoría</label><select id="prodCategoria" style="width:100%;"></select></div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <div style="flex:1;">
+                    <label style="font-size:0.75em; color:var(--text-muted);">Estado</label>
+                    <select id="prodEstado" style="width:100%;">
+                        <option value="Disponible">Disponible</option>
+                        <option value="Agotado">Agotado</option>
+                    </select>
+                </div>
+                <div style="flex:1;">
+                    <label style="font-size:0.75em; color:var(--text-muted);">Publicado</label>
+                    <select id="prodMostrar" style="width:100%;">
+                        <option value="true">Sí (Visible)</option>
+                        <option value="false">No (Oculto)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-bottom:15px;">
+    <label style="font-size:0.75em; color:var(--text-muted); display:block; margin-bottom:5px;">Descripción</label>
+    <textarea id="prodDescripcion" placeholder="Características principales..." style="width:100%; height:80px; resize:vertical;"></textarea>
+</div>
+
+            <div style="margin-bottom:15px;">
+                <label style="font-size:0.75em; color:var(--text-muted); display:block; margin-bottom:5px;">Imagen del Producto</label>
+                <input type="file" id="prodFile" accept="image/*" style="width:100%; margin-bottom:8px;" onchange="subirImagenACloudinary(this)">
+                <input type="text" id="prodImagenUrl" placeholder="https://res.cloudinary.com/..." style="width:100%;">
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <button onclick="guardarProductoSubmit()" style="flex:1; font-weight:bold;">Guardar</button>
+                <button onclick="cerrarModalProducto()" style="flex:1; background:transparent; color:var(--text-muted); border:1px solid var(--border-color);">Cancelar</button>
+            </div>
         </div>
     </div>
-<script src="app.js"></script>
+
+    <!-- MODAL TASA -->
+    <div id="tasaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; justify-content:center; align-items:center;">
+        <div style="background:var(--bg-modal); border:1px solid var(--accent); padding:25px; border-radius:16px; width:100%; max-width:320px; text-align:center;">
+            <h3 style="color:var(--accent); margin-top:0;">Actualizar Tasa</h3>
+            <input type="number" id="nuevaTasaInput" style="width:100%; margin-bottom:15px; text-align:center;">
+            <button onclick="guardarNuevaTasa()" style="padding:10px 20px; font-weight:bold; margin-right: 5px;">Guardar</button>
+            <button onclick="cerrarModalTasa()" style="padding:10px 20px; background:transparent; color:var(--text-muted); border:1px solid var(--border-color); border-radius: 8px;">Cancelar</button>
+        </div>
+    </div>
+    <script src="admin.js"></script>
 </body>
 </html>
